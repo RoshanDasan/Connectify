@@ -1,12 +1,19 @@
 import './App.css';
-import Auth from './components/Auth/Auth'
-
+import Auth from './scenes/Auth/Auth';
+import Home from './scenes/Home/Home';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 function App() {
   return (
-    <div className="App">
-    <Auth />
-    </div>
+    <Router>
+        <div>
+      
+          <Routes>
+            <Route  path="/" element={<Auth />} />
+            <Route  path="/home" element={<Home />} />
+          </Routes>
+        </div>
+      </Router>
   );
 }
 
-export default App;
+export default App; 
