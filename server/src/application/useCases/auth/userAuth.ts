@@ -1,9 +1,10 @@
+import { log } from 'console';
 import { HttpStatus } from '../../../types/httpstatuscodes';
 import AppError from '../../../utilities/appError';
 import { UserDbInterface } from '../../repositories/userDbRepositories';
 import { AuthServiceInterface } from '../../services/authServiceInterface';
 
-export const userRegister =async (user:{
+export const userRegister =async (user:{ 
     name: string;
     userName: string;
     email: string;
@@ -21,11 +22,10 @@ authService: ReturnType<AuthServiceInterface>
         throw new AppError('Email already exist : ', HttpStatus.UNAUTHORIZED)
     }
 
-    if(user.password.length <= 3){
-        throw new AppError('Password is empty ',HttpStatus.BAD_REQUEST);
-    }
 
-    user.password = await authService.encryptPassword(user.password);
+    let p = authService.encryptPassword(user.password);
+    console.log(p,'---//');
+    
     const { _id: userId} = await userRepository.addUser(user);
     const token = authService.generateToken(userId.toString());
     return token;
@@ -39,13 +39,15 @@ export const userLogin =async (
     authService: ReturnType<AuthServiceInterface>
 ) => {
     const user: any = await userRepository.getUserByUserName(userName);
+    console.log(user,'///');
+    
     if(!user){
         throw new AppError("User not exist", HttpStatus.UNAUTHORIZED);
     }
-    const checkPassword: any =  await authService.comparePassword(password, user.password);
+    const checkPassword: any =  authService.comparePassword(password, user.password);
     if(!checkPassword){
         throw new AppError("Password you entered was incorrect", HttpStatus.UNAUTHORIZED);
     }
     const token = authService.generateToken(user._id.toString());
     return token;
-};
+}; 

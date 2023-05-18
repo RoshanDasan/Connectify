@@ -16,6 +16,8 @@ const authControllers = (
     const dbUserRepository = userDbInterface(userDbservice());
     const authServices = authServiceInterface(authService());
     const registerUser = asyncHandler(async(req: Request, res: Response) => {
+        console.log(req.body,'-----------------');
+        
         const { name, userName, email, number, password } = req.body;
         const user = {
             name,
@@ -32,6 +34,7 @@ const authControllers = (
     });
     });
     const loginUser = asyncHandler(async(req: Request, res: Response) => {
+        
         const { userName, password } : { userName: string; password: string} = req.body;
         const token = await userLogin(userName, password, dbUserRepository, authServices);
         res.json({

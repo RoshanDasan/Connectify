@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "chrome",
+            "name": "http://addUser",
+            "request": "launch",
+            "url": "http://addUser"
+        }
+    ]
+}

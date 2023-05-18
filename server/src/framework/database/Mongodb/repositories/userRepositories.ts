@@ -1,4 +1,3 @@
-import { type } from "os";
 import User from "../models/userModel";
 
 export const userRepositoryMongoDB = () => {
@@ -9,13 +8,15 @@ export const userRepositoryMongoDB = () => {
         number: number;
         password: string;
     }) => {
-        const newUser = await new User(user);
+        const newUser = new User(user);
+        console.log(newUser,']]]]');
+        
         return await newUser.save();
     };
     const getUserByEmail = async (email:string) => {
         const user: any = await User.findOne({email});
         return user
-    };
+    };  
     const getUserByUserName = async (userName:string) => {
         const user: any = await User.findOne({userName})
         return user;
