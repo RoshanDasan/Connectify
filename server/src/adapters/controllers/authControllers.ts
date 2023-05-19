@@ -16,17 +16,19 @@ const authControllers = (
     const dbUserRepository = userDbInterface(userDbservice());
     const authServices = authServiceInterface(authService());
     const registerUser = asyncHandler(async(req: Request, res: Response) => {
-        console.log(req.body,'-----------------');
         
-        const { name, userName, email, number, password } = req.body;
+        const { name, userName, number,email, password } = req.body;
         const user = {
             name,
             userName,
-            email,
             number,
+            email,
             password,
     };
+    
     const token = await userRegister(user, dbUserRepository, authServices);
+    console.log(token,'tokennnn');
+    
     res.json({
         status:"success",
         message: "User registered",

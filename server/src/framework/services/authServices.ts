@@ -4,7 +4,7 @@ import configKeys from '../../config';
 
 export const authServices = () => {
     const encryptPassword = async (password:string) => {
-      console.log('=-=--=-=-=-',password);
+
       
         const salt = await bcrypt.genSalt(10);
         password = await bcrypt.hash(password, salt);
@@ -12,7 +12,7 @@ export const authServices = () => {
         
         return password;
     };
-    const compatePassword = (password:string, hasedPassword:string) => {
+    const comparePassword = (password:string, hasedPassword:string) => {
         return bcrypt.compare(password, hasedPassword);
     };
     const generateToken = (payload: string) => {
@@ -34,7 +34,7 @@ export const authServices = () => {
 
     return {
         encryptPassword, 
-        compatePassword,
+        comparePassword,
         generateToken,
         verifyToken
     }

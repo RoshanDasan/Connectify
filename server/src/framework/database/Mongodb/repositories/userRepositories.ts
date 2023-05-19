@@ -8,6 +8,8 @@ export const userRepositoryMongoDB = () => {
         number: number;
         password: string;
     }) => {
+        console.log(user,'34');
+        
         const newUser = new User(user);
         console.log(newUser,']]]]');
         

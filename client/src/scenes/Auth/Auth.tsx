@@ -4,15 +4,8 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import useStyles from './styles';
 import Input from './Input';
-
-const validationSchema = yup.object().shape({
-  name: yup.string().required('First Name is required'),
-  userName: yup.string().required('UserName is required'),
-  number: yup.string().required('Number is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().required('Password is required'),
-  confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match'),
-});
+import { useNavigate } from 'react-router-dom';
+import { axiosPost } from '../../api/api';
 
 const Auth: React.FC = () => {
   let classes = useStyles();
@@ -24,55 +17,73 @@ const Auth: React.FC = () => {
   };
 
   const handleSubmit = async (values: any, onSubmitProps: any) => {
-
-    if (isSignup) await register(values, onSubmitProps)
-    else await login(values, onSubmitProps)
+    if (isSignup) {
+      await register(values, onSubmitProps);
+    } else {
+      await login(values, onSubmitProps);
+    }
   };
+  const navigate = useNavigate();
 
   const register = async (values: object, submitProps: any) => {
     const formData = new FormData();
-  
+
     for (const [key, value] of Object.entries(values)) {
       formData.append(key, value);
     }
-  
-  console.log(values);
-  
+
+    console.log(values);
+
     try {
-      const registerResponse = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(values)
-      })
-      
-     } catch (error) {
-      console.error(error,'+++++++++++++');
+      console.log(values, 'valuuu');
+
+      await axiosPost('/register', values).then((response) => {
+        console.log(response);
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
-  
+
   const login = async (values: object, submitProps: any) => {
     console.log('login');
+    setIsSignup((prevIsSignup) => !prevIsSignup);
+  };
 
-  }
+  const getValidationSchema = () => {
+    if (isSignup) {
+      return yup.object().shape({
+        name: yup.string().required('Name is required'),
+        userName: yup.string().required('UserName is required'),
+        number: yup.string().required('Number is required'),
+        email: yup.string().email('Invalid email').required('Email is required'),
+        password: yup.string().required('Password is required'),
+        confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match'),
+      });
+    } else {
+      return yup.object().shape({
+        email: yup.string().email('Invalid email').required('Email is required'),
+        password: yup.string().required('Password is required'),
+      });
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
       name: '',
       userName: '',
-      number:'',
+      number: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
-    validationSchema: validationSchema,
+    validationSchema: getValidationSchema(),
     onSubmit: handleSubmit,
   });
 
   const switchMode = () => {
     setIsSignup((prevIsSignup) => !prevIsSignup);
   };
-
-  
 
   return (
     <Container component="main" maxWidth="xs">
@@ -102,12 +113,9 @@ const Auth: React.FC = () => {
                   error={formik.errors.userName}
                   half
                 />
-               
               </>
-              
-              
             )}
-             {isSignup && (
+            {isSignup && (
               <Input
                 name="number"
                 label="Number"

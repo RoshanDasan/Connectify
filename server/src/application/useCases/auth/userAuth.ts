@@ -1,4 +1,3 @@
-import { log } from 'console';
 import { HttpStatus } from '../../../types/httpstatuscodes';
 import AppError from '../../../utilities/appError';
 import { UserDbInterface } from '../../repositories/userDbRepositories';
@@ -22,11 +21,13 @@ authService: ReturnType<AuthServiceInterface>
         throw new AppError('Email already exist : ', HttpStatus.UNAUTHORIZED)
     }
 
+    
 
-    let p = authService.encryptPassword(user.password);
+    let p = await authService.encryptPassword(user.password);
     console.log(p,'---//');
     
     const { _id: userId} = await userRepository.addUser(user);
+    console.log()
     const token = authService.generateToken(userId.toString());
     return token;
 

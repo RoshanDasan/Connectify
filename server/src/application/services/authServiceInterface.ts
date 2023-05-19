@@ -1,17 +1,18 @@
 import { AuthServiceReturn } from "../../framework/services/authServices";
 
 export const authServiceInterface = (service: AuthServiceReturn) => {
-    const encryptPassword = (password: string) => {
-        service.encryptPassword(password);
+    const encryptPassword = async (password: string) => {
+        
+        return await service.encryptPassword(password);
     };
-    const comparePassword = (password: string, hashedPassword: string) => {
-        service.compatePassword(password, hashedPassword);
+    const comparePassword = async (password: string, hashedPassword: string) => {
+        return await service.comparePassword(password, hashedPassword);
     };
-    const verifyPassword = (token: string) => {
-        service.verifyToken(token);
+    const verifyPassword = async (token: string) => {
+        return await service.verifyToken(token);
     };
-    const generateToken = (payload: string) => {
-        service.generateToken(payload);
+    const generateToken = async (payload: string) => {
+        return await service.generateToken(payload);
     };
 
     return {
