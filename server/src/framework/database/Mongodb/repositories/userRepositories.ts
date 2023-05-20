@@ -20,7 +20,9 @@ export const userRepositoryMongoDB = () => {
         return user
     };  
     const getUserByUserName = async (userName:string) => {
+        
         const user: any = await User.findOne({userName})
+        console.log('findd' ,user);
         return user;
     };
     const getUserById = async (id:string) => {

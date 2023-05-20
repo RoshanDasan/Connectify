@@ -1,3 +1,4 @@
+import { log } from "console";
 import { userRepositoryMongoDB } from "../../framework/database/Mongodb/repositories/userRepositories";
 
 
@@ -15,13 +16,15 @@ export const userDbRepository = (repository: ReturnType<userRepositoryMongoDB>) 
     };
 
     const getUserByEmail = async (email: string) => {
-        await repository.getUserByEmail(email);
+        return await repository.getUserByEmail(email);
     };
     const getUserByUserName = async (userName: string) => {
-        await repository.getUserByUserName(userName);
+        console.log(userName);
+        
+       return await repository.getUserByUserName(userName);
     };
     const getUserById = async (id: string) => {
-        await repository.getUserById(id);
+        return await repository.getUserById(id);
     }
 
     return {

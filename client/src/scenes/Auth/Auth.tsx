@@ -5,12 +5,42 @@ import * as yup from 'yup';
 import useStyles from './styles';
 import Input from './Input';
 import { useNavigate } from 'react-router-dom';
-import { axiosPost } from '../../api/api';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setLogin } from '../../state';
 
 const Auth: React.FC = () => {
   let classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const dispatch = useDispatch()
+
+  interface RegisterResponse {
+    message?: any;
+    status: string;
+  }
+
+  interface LoginResponse {
+    message?: any;
+    status: string;
+    user: object;
+    token: string;
+  }
+
+  interface RegisterFormValues {
+    name: string;
+    userName: string;
+    number: string;
+    email: string;
+    password: string;
+  }
+
+  interface LoginFormValues {
+    userName: string;
+    password: string;
+  }
 
   const handleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -25,30 +55,86 @@ const Auth: React.FC = () => {
   };
   const navigate = useNavigate();
 
-  const register = async (values: object, submitProps: any) => {
-    const formData = new FormData();
 
-    for (const [key, value] of Object.entries(values)) {
-      formData.append(key, value);
-    }
 
-    console.log(values);
-
+  const register = async (values: RegisterFormValues, submitProps: any): Promise<void> => {
     try {
-      console.log(values, 'valuuu');
-
-      await axiosPost('/register', values).then((response) => {
-        console.log(response);
-      });
+      const response = await axios.post<RegisterResponse>('http://localhost:5000/api/auth/register', values);
+      console.log(response.data);
+  
+      // Handle the success response
+      if (response.data.status === 'success') {
+        // Show a success toast
+        setIsSignup((prevIsSignup) => !prevIsSignup);
+        console.log('success');
+        toast.success('Registration successful');
+  
+        // Perform additional actions upon successful registration
+  
+      } else {
+        console.log('failed');
+        console.log(response.data.message);
+  
+        // Handle the failure response
+        // Show an error toast
+        toast.error('Registration failed');
+      }
     } catch (error) {
-      console.error(error);
+      console.log('catch');
+  
+      // Extract the error message if available
+      const errorMessage = (error as any)?.response?.data?.message || 'An error occurred during registration';
+      console.log(errorMessage);
+  
+      // Handle the error case
+      // Show an error toast
+      toast.error(errorMessage);
     }
   };
 
-  const login = async (values: object, submitProps: any) => {
-    console.log('login');
-    setIsSignup((prevIsSignup) => !prevIsSignup);
-  };
+  const login = async (values:LoginFormValues, submitProps:any) => {
+    console.log('logg');
+    try {
+      const response = await axios.post<LoginResponse>('http://localhost:5000/api/auth/login', values);
+      console.log(response.data);
+  
+      // Handle the success response
+      if (response.data.status === 'success') {
+        // Show a success toast
+        console.log('success');
+        dispatch(
+          setLogin({
+            user : response.data.user,
+            token: response.data.token
+          })
+        )
+        navigate('/home')
+        toast.success('Login successful');
+        // Perform additional actions upon successful registration
+  
+      } else {
+        console.log('failed');
+        console.log(response.data.message);
+  
+        // Handle the failure response
+        // Show an error toast
+        toast.error('Login failed');
+      }
+    } catch (error) {
+      console.log('catch');
+  
+      // Extract the error message if available
+      const errorMessage = (error as any)?.response?.data?.message || 'An error occurred during Login';
+      console.log(errorMessage);
+  
+      // Handle the error case
+      // Show an error toast
+      toast.error(errorMessage);
+    }
+    
+  }
+
+
 
   const getValidationSchema = () => {
     if (isSignup) {
@@ -62,7 +148,7 @@ const Auth: React.FC = () => {
       });
     } else {
       return yup.object().shape({
-        email: yup.string().email('Invalid email').required('Email is required'),
+        userName: yup.string().required('UserName is required'),
         password: yup.string().required('Password is required'),
       });
     }
@@ -87,6 +173,7 @@ const Auth: React.FC = () => {
 
   return (
     <Container component="main" maxWidth="xs">
+      <ToastContainer position="bottom-left" />
       <Paper className={classes.paper} elevation={6}>
         <Avatar className={classes.avatar}></Avatar>
         <Typography component="h1" variant="h5">
@@ -105,18 +192,30 @@ const Auth: React.FC = () => {
                   autoFocus
                   half
                 />
+                  <Input
+                  name="userName"
+                  label="UserName"
+                  handleChange={formik.handleChange}
+                  value={formik.values.userName}
+                  error={formik.errors.userName}            
+                  half
+                />
+                    </>
+            )}
+             {!isSignup && (
                 <Input
                   name="userName"
                   label="UserName"
                   handleChange={formik.handleChange}
                   value={formik.values.userName}
-                  error={formik.errors.userName}
-                  half
+                  error={formik.errors.userName}            
+                  
                 />
-              </>
-            )}
+                )}
+          
             {isSignup && (
-              <Input
+              <>
+               <Input
                 name="number"
                 label="Number"
                 handleChange={formik.handleChange}
@@ -124,8 +223,7 @@ const Auth: React.FC = () => {
                 error={formik.errors.number}
                 type="number"
               />
-            )}
-            <Input
+                <Input
               name="email"
               label="Email Address"
               handleChange={formik.handleChange}
@@ -133,6 +231,10 @@ const Auth: React.FC = () => {
               error={formik.errors.email}
               type="email"
             />
+              </>
+             
+            )}
+          
             <Input
               name="password"
               label="Password"

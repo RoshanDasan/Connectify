@@ -23,8 +23,9 @@ authService: ReturnType<AuthServiceInterface>
 
     
 
-    let p = await authService.encryptPassword(user.password);
-    console.log(p,'---//');
+    let encryptedPassword = await authService.encryptPassword(user.password);
+    console.log(encryptedPassword,'---//');
+    user.password = encryptedPassword
     
     const { _id: userId} = await userRepository.addUser(user);
     console.log()
@@ -39,16 +40,23 @@ export const userLogin =async (
     userRepository: ReturnType<UserDbInterface>,
     authService: ReturnType<AuthServiceInterface>
 ) => {
+    console.log(userName,'namee');
+    
     const user: any = await userRepository.getUserByUserName(userName);
     console.log(user,'///');
     
     if(!user){
         throw new AppError("User not exist", HttpStatus.UNAUTHORIZED);
     }
-    const checkPassword: any =  authService.comparePassword(password, user.password);
+    const checkPassword: any = await authService.comparePassword(password, user.password);
     if(!checkPassword){
         throw new AppError("Password you entered was incorrect", HttpStatus.UNAUTHORIZED);
     }
-    const token = authService.generateToken(user._id.toString());
-    return token;
+    const token: string = await authService.generateToken(user._id.toString());
+    console.log(token,'lllllll');
+    
+    return {
+        token,
+        user
+    };
 }; 

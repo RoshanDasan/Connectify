@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery } from '@mui/material';
 import { Search, Message, DarkMode, LightMode, Notifications, Help, Menu, Close } from '@mui/icons-material';
+import Tooltip from '@mui/material/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMode, setLogout } from '../../state';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +11,7 @@ const Navbar = () => {
     const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state: any) => state.user);
+    const user = useSelector((state: any) => state.token.user);
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
 
     const theme = useTheme();
@@ -19,8 +20,11 @@ const Navbar = () => {
     const primaryLight = theme.palette.primary.light;
     const alt = theme.palette.background.paper;
 
-    const fullName = `roshan`;
-
+    const fullName = user.userName;
+    const Logout = () => {
+      dispatch(setLogout())
+      navigate('/')
+    }
 
 
     return (
@@ -42,7 +46,9 @@ const Navbar = () => {
                     <Flex sx={{ borderRadius: '9px', gap: '3rem', padding: '0.1rem 1.5rem' }}>
                         <InputBase placeholder='Search...' />
                         <IconButton>
+                        <Tooltip title="Search user" placement="bottom">
                             <Search />
+                            </ Tooltip >
                         </IconButton>
                     </Flex>
 
@@ -51,16 +57,26 @@ const Navbar = () => {
             </Flex>
             {isNonMobileScreens ? (
                 <Flex gap="2rem">
-                    <IconButton onClick={() => dispatch(setMode())}>
-                        {theme.palette.mode === "dark" ? (
-                            <DarkMode sx={{ fontSize: "25px" }} />
-                        ) : (
-                            <LightMode sx={{ color: dark, fontSize: "25px" }} />
-                        )}
-                    </IconButton>
+                   <IconButton onClick={() => dispatch(setMode())}>
+                    {theme.palette.mode === 'dark' ? (
+                      <Tooltip title="Light mode" placement="bottom">
+                        <LightMode sx={{ fontSize: '25px' }} />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title="Dark mode" placement="bottom">
+                        <DarkMode sx={{ color: dark, fontSize: '25px' }} />
+                      </Tooltip>
+                    )}
+                  </IconButton>
+                    <Tooltip title="Chat" placement="bottom">
+
                     <Message sx={{ fontSize: "25px" }} />
+                    </Tooltip>
+                    <Tooltip title="Notification" placement="bottom">
                     <Notifications sx={{ fontSize: "25px" }} />
-                    <Help sx={{ fontSize: "25px" }} />
+                    </Tooltip>
+
+                    
                     <FormControl sx={{ component: 'div' }}>
                         <Select
                             value={fullName}
@@ -82,7 +98,8 @@ const Navbar = () => {
                             <MenuItem value={fullName}>
                                 <Typography>{fullName}</Typography>
                             </MenuItem>
-                            <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+                            <MenuItem 
+                            onClick={Logout}>Log Out</MenuItem>
                         </Select>
                     </FormControl>
 
