@@ -3,16 +3,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userDbRepository = void 0;
 const userDbRepository = (repository) => {
     const addUser = async (user) => {
+        console.log(user, '-65');
         return await repository.addUser(user);
     };
     const getUserByEmail = async (email) => {
-        await repository.getUserByEmail(email);
+        return await repository.getUserByEmail(email);
     };
     const getUserByUserName = async (userName) => {
-        await repository.getUserByUserName(userName);
+        console.log(userName);
+        return await repository.getUserByUserName(userName);
     };
     const getUserById = async (id) => {
-        await repository.getUserById(id);
+        return await repository.getUserById(id);
     };
     return {
         addUser,

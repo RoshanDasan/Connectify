@@ -10,129 +10,41 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../../state';
+import { register, login } from '../../api/apiConnection/authConnect';
 
 const Auth: React.FC = () => {
   let classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const dispatch = useDispatch()
+  const navigate = useNavigate();
 
-  interface RegisterResponse {
-    message?: any;
-    status: string;
-  }
-
-  interface LoginResponse {
-    message?: any;
-    status: string;
-    user: object;
-    token: string;
-  }
-
-  interface RegisterFormValues {
-    name: string;
-    userName: string;
-    number: string;
-    email: string;
-    password: string;
-  }
-
-  interface LoginFormValues {
-    userName: string;
-    password: string;
-  }
+ 
 
   const handleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleSubmit = async (values: any, onSubmitProps: any) => {
+  const handleSubmit = async (values: any) => {
     if (isSignup) {
-      await register(values, onSubmitProps);
+     let response =  await register(values);
+     if(response == 'success'){
+      setIsSignup((prevIsSignup) => !prevIsSignup);
+     }
     } else {
-      await login(values, onSubmitProps);
+     let response: any = await login(values);
+     if(response){
+      dispatch(
+        setLogin({
+          user : response.data.user,
+          token: response.data.token
+        })
+      )
+      navigate('/home')
     }
+     }
+   
   };
-  const navigate = useNavigate();
-
-
-
-  const register = async (values: RegisterFormValues, submitProps: any): Promise<void> => {
-    try {
-      const response = await axios.post<RegisterResponse>('http://localhost:5000/api/auth/register', values);
-      console.log(response.data);
-  
-      // Handle the success response
-      if (response.data.status === 'success') {
-        // Show a success toast
-        setIsSignup((prevIsSignup) => !prevIsSignup);
-        console.log('success');
-        toast.success('Registration successful');
-  
-        // Perform additional actions upon successful registration
-  
-      } else {
-        console.log('failed');
-        console.log(response.data.message);
-  
-        // Handle the failure response
-        // Show an error toast
-        toast.error('Registration failed');
-      }
-    } catch (error) {
-      console.log('catch');
-  
-      // Extract the error message if available
-      const errorMessage = (error as any)?.response?.data?.message || 'An error occurred during registration';
-      console.log(errorMessage);
-  
-      // Handle the error case
-      // Show an error toast
-      toast.error(errorMessage);
-    }
-  };
-
-  const login = async (values:LoginFormValues, submitProps:any) => {
-    console.log('logg');
-    try {
-      const response = await axios.post<LoginResponse>('http://localhost:5000/api/auth/login', values);
-      console.log(response.data);
-  
-      // Handle the success response
-      if (response.data.status === 'success') {
-        // Show a success toast
-        console.log('success');
-        dispatch(
-          setLogin({
-            user : response.data.user,
-            token: response.data.token
-          })
-        )
-        navigate('/home')
-        toast.success('Login successful');
-        // Perform additional actions upon successful registration
-  
-      } else {
-        console.log('failed');
-        console.log(response.data.message);
-  
-        // Handle the failure response
-        // Show an error toast
-        toast.error('Login failed');
-      }
-    } catch (error) {
-      console.log('catch');
-  
-      // Extract the error message if available
-      const errorMessage = (error as any)?.response?.data?.message || 'An error occurred during Login';
-      console.log(errorMessage);
-  
-      // Handle the error case
-      // Show an error toast
-      toast.error(errorMessage);
-    }
-    
-  }
 
 
 

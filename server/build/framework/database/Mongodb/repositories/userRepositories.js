@@ -7,7 +7,9 @@ exports.userRepositoryMongoDB = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
 const userRepositoryMongoDB = () => {
     const addUser = async (user) => {
-        const newUser = await new userModel_1.default(user);
+        console.log(user, '34');
+        const newUser = new userModel_1.default(user);
+        console.log(newUser, ']]]]');
         return await newUser.save();
     };
     const getUserByEmail = async (email) => {
@@ -16,6 +18,7 @@ const userRepositoryMongoDB = () => {
     };
     const getUserByUserName = async (userName) => {
         const user = await userModel_1.default.findOne({ userName });
+        console.log('findd', user);
         return user;
     };
     const getUserById = async (id) => {

@@ -2,17 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authServiceInterface = void 0;
 const authServiceInterface = (service) => {
-    const encryptPassword = (password) => {
-        service.encryptPassword(password);
+    const encryptPassword = async (password) => {
+        return await service.encryptPassword(password);
     };
-    const comparePassword = (password, hashedPassword) => {
-        service.compatePassword(password, hashedPassword);
+    const comparePassword = async (password, hashedPassword) => {
+        return await service.comparePassword(password, hashedPassword);
     };
-    const verifyPassword = (token) => {
-        service.verifyToken(token);
+    const verifyPassword = async (token) => {
+        return await service.verifyToken(token);
     };
-    const generateToken = (payload) => {
-        service.generateToken(payload);
+    const generateToken = async (payload) => {
+        return await service.generateToken(payload);
     };
     return {
         encryptPassword,

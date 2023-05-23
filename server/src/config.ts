@@ -1,4 +1,3 @@
-import exp from 'constants';
 import dotenv from 'dotenv';
 
 dotenv.config();

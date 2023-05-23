@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Flex from '../../components/DisplayFlex';
 
 const Navbar = () => {
-    const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+    const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state: any) => state.token.user);
@@ -39,16 +39,16 @@ const Navbar = () => {
                         }
                     }}
                 >
-                    Connectify
+                    <img style={{height:'60px'}} src="../assets/logo.png" alt="" />
                 </Typography>
 
                 {isNonMobileScreens && (
                     <Flex sx={{ borderRadius: '9px', gap: '3rem', padding: '0.1rem 1.5rem' }}>
                         <InputBase placeholder='Search...' />
                         <IconButton>
-                        <Tooltip title="Search user" placement="bottom">
+                          <Tooltip title="Search user" placement="bottom">
                             <Search />
-                            </ Tooltip >
+                          </ Tooltip >
                         </IconButton>
                     </Flex>
 
@@ -147,15 +147,24 @@ const Navbar = () => {
               onClick={() => dispatch(setMode())}
               sx={{ fontSize: "25px" }}
             >
-              {theme.palette.mode === "dark" ? (
-                <DarkMode sx={{ fontSize: "25px" }} />
-              ) : (
-                <LightMode sx={{ color: dark, fontSize: "25px" }} />
-              )}
+           {theme.palette.mode === 'dark' ? (
+                      <Tooltip title="Light mode" placement="bottom">
+                        <LightMode sx={{ fontSize: '25px' }} />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title="Dark mode" placement="bottom">
+                        <DarkMode sx={{ color: dark, fontSize: '25px' }} />
+                      </Tooltip>
+                    )}
             </IconButton>
+            <Tooltip title="Chat" placement="bottom">
+
             <Message sx={{ fontSize: "25px" }} />
+            </Tooltip>
+            <Tooltip title="Notification" placement="bottom">
             <Notifications sx={{ fontSize: "25px" }} />
-            <Help sx={{ fontSize: "25px" }} />
+            </Tooltip>
+
             <FormControl sx={{ component: 'div' }}>
               <Select
                 value={fullName}

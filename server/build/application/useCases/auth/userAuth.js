@@ -13,17 +13,19 @@ const userRegister = async (user, userRepository, authService) => {
     if (isEmailExist) {
         throw new appError_1.default('Email already exist : ', httpstatuscodes_1.HttpStatus.UNAUTHORIZED);
     }
-    if (user.password.length <= 3) {
-        throw new appError_1.default('Password is empty ', httpstatuscodes_1.HttpStatus.BAD_REQUEST);
-    }
-    user.password = await authService.encryptPassword(user.password);
+    let encryptedPassword = await authService.encryptPassword(user.password);
+    console.log(encryptedPassword, '---//');
+    user.password = encryptedPassword;
     const { _id: userId } = await userRepository.addUser(user);
+    console.log();
     const token = authService.generateToken(userId.toString());
     return token;
 };
 exports.userRegister = userRegister;
 const userLogin = async (userName, password, userRepository, authService) => {
+    console.log(userName, 'namee');
     const user = await userRepository.getUserByUserName(userName);
+    console.log(user, '///');
     if (!user) {
         throw new appError_1.default("User not exist", httpstatuscodes_1.HttpStatus.UNAUTHORIZED);
     }
@@ -31,7 +33,11 @@ const userLogin = async (userName, password, userRepository, authService) => {
     if (!checkPassword) {
         throw new appError_1.default("Password you entered was incorrect", httpstatuscodes_1.HttpStatus.UNAUTHORIZED);
     }
-    const token = authService.generateToken(user._id.toString());
-    return token;
+    const token = await authService.generateToken(user._id.toString());
+    console.log(token, 'lllllll');
+    return {
+        token,
+        user
+    };
 };
 exports.userLogin = userLogin;
