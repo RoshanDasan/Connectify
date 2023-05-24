@@ -41,6 +41,7 @@ const Auth: React.FC = () => {
         })
       )
       navigate('/home')
+      toast.success('Login success')
     }
      }
    

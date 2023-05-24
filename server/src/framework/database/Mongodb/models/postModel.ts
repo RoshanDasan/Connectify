@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 // schema for adding POST
 const postSchema = new Schema(
     {
-        userId: {
+          userId: {
             type: String,
             required: true,
           },

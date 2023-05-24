@@ -6,8 +6,16 @@ export const postDbInterface = (repositories: ReturnType<postRepositoryType>) =>
 
     const getAllPost = async () => await repositories.getAllPost()
 
+    const uploadPost = async (post:{
+        userId: string;
+        description: string;
+        image: string;
+        userName: string;
+    }) => repositories.uploadPost(post)
+
     return {
-        getAllPost
+        getAllPost,
+        uploadPost
     }
 }
 
