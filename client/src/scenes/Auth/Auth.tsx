@@ -9,7 +9,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setLogin } from '../../state';
+import { setLogin, setUser } from '../../state';
 import { register, login } from '../../api/apiConnection/authConnect';
 
 const Auth: React.FC = () => {
@@ -38,6 +38,12 @@ const Auth: React.FC = () => {
         setLogin({
           user : response.data.user,
           token: response.data.token
+        })
+        
+      )
+      dispatch(
+        setUser({
+          user: response.data.user
         })
       )
       navigate('/home')

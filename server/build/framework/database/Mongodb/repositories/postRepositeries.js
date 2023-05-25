@@ -10,8 +10,14 @@ const postRepositoryMongoDb = () => {
     const getAllPost = async () => {
         return await postModel_1.default.find();
     };
+    const uploadPost = (async (post) => {
+        console.log(post, 'save post');
+        const newpost = new postModel_1.default(post);
+        return await newpost.save();
+    });
     return {
-        getAllPost
+        getAllPost,
+        uploadPost
     };
 };
 exports.postRepositoryMongoDb = postRepositoryMongoDb;

@@ -5,6 +5,8 @@ import { postRepositoryType } from "../../framework/database/Mongodb/repositorie
 export const postDbInterface = (repositories: ReturnType<postRepositoryType>) => {
 
     const getAllPost = async () => await repositories.getAllPost()
+    console.log('posttss');
+    
 
     const uploadPost = async (post:{
         userId: string;

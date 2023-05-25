@@ -15,8 +15,20 @@ const postControllers = (postDbInterface, postRepositoryType) => {
             posts
         });
     });
+    const uploadPost = (0, express_async_handler_1.default)(async (req, res) => {
+        const { userId, description, userName } = req.body;
+        const image = req?.file?.filename;
+        console.log(image, 'imagee');
+        const body = { userId, description, userName, image };
+        await (0, post_1.postCreate)(body, dbRepositoriesPost);
+        res.json({
+            status: 'upload-success',
+            body
+        });
+    });
     return {
-        getPosts
+        getPosts,
+        uploadPost
     };
 };
 exports.default = postControllers;

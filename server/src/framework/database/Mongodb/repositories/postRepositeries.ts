@@ -5,7 +5,9 @@ import Post from "../models/postModel";
 export const postRepositoryMongoDb = () => {
 
     const getAllPost = async () => {
-        return await Post.find()
+        return  await Post.find().sort({ createdAt: -1 });
+
+        
     }
     const uploadPost = (async (post:{
         userId: string;

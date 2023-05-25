@@ -4,8 +4,10 @@ exports.postDbInterface = void 0;
 // post database operation interface
 const postDbInterface = (repositories) => {
     const getAllPost = async () => await repositories.getAllPost();
+    const uploadPost = async (post) => repositories.uploadPost(post);
     return {
-        getAllPost
+        getAllPost,
+        uploadPost
     };
 };
 exports.postDbInterface = postDbInterface;

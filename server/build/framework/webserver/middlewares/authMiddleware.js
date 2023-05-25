@@ -8,7 +8,7 @@ const appError_1 = __importDefault(require("../../../utilities/appError"));
 const authServices_1 = require("../../services/authServices");
 const userAuthMiddleware = (req, res, next) => {
     let token = null;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    if (req.headers.authorization && req.headers.authorization.startsWith(`Bearer `)) {
         token = req.headers.authorization.split(' ')[1];
     }
     console.log(token, 'tokennn====================');

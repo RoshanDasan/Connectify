@@ -1,39 +1,61 @@
-import { Box, useMediaQuery } from "@mui/material";
-import Navbar from "../Navbar/Navbar";
+import React from 'react';
+import { Box, Typography, useMediaQuery } from '@mui/material';
+import Navbar from '../Navbar/Navbar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSelector } from "react-redux";
-import { Block } from "@mui/icons-material";
-import UserWidget from "../widgets/UserWidgets";
-import PostWidgets from "../widgets/PostWIdgets";
+import { useSelector } from 'react-redux';
+import UserWidget from '../widgets/UserWidgets';
+import PostUploadWidgets from '../widgets/PostUploadWidgets';
+import Sidebar from '../Sidebar/Sidebar';
+import { makeStyles } from '@mui/styles';
+import PostsWidgets from '../widgets/PostsWidgets';
+import Friend from '../../components/Friend';
+import Flex from '../../components/DisplayFlex';
+import FriensList from '../widgets/FriensList';
+
+
+const useStyles = makeStyles((theme) => ({
+  contentContainer: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
+  },
+}));
 
 const Home = () => {
-  const isNonMobileScreens = useMediaQuery("(min-width:100px)");
+  const classes = useStyles();
+  const isNonMobileScreens = useMediaQuery('(min-width: 800px)');
   const { _id } = useSelector((state: any) => state.token.user);
+
   return (
-    <Box>
+    <>
       <Navbar />
-      <Box
-        width="100%"
-        padding="2rem 6%"
-        display={isNonMobileScreens ? "flex" : "Block"}
-        gap="0.5rem"
-        justifyContent="space-between"
-      >
-        <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserWidget userId={_id} picturePath={''} />
+      <Box className={classes.contentContainer}>
+        {isNonMobileScreens && <Sidebar />}
+
+       
+        <Box flexBasis={isNonMobileScreens ? '26%' : '100%'} mt={!isNonMobileScreens ? '2rem' : undefined}>
+          <PostUploadWidgets picturePath={null} />
+          <PostsWidgets />
+          
+          
+          
         </Box>
-        <Box flexBasis={isNonMobileScreens ? "26%" : undefined}
-          mt={isNonMobileScreens ? undefined : "2rem"}
-        >
-          <PostWidgets picturePath={null} />
+        {isNonMobileScreens && (
+          <Box flexBasis={isNonMobileScreens ? '26%' : '100%'} ml={'2rem'}>
+          <UserWidget userId={_id} picturePath={''}/>
+         <FriensList />
         </Box>
-        {isNonMobileScreens && <Box flexBasis="26%" ></Box>}
+        )}
+
+        
       </Box>
 
       <ToastContainer position="bottom-left" />
-    </Box>
-  )
-}
+    </>
+  );
+};
 
-export default Home
+export default Home;
