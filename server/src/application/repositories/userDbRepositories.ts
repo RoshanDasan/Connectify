@@ -1,4 +1,3 @@
-import { log } from "console";
 import { userRepositoryMongoDB } from "../../framework/database/Mongodb/repositories/userRepositories";
 
 

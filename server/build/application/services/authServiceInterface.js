@@ -9,10 +9,10 @@ const authServiceInterface = (service) => {
         return await service.comparePassword(password, hashedPassword);
     };
     const verifyPassword = async (token) => {
-        return await service.verifyToken(token);
+        return service.verifyToken(token);
     };
     const generateToken = async (payload) => {
-        return await service.generateToken(payload);
+        return service.generateToken(payload);
     };
     return {
         encryptPassword,

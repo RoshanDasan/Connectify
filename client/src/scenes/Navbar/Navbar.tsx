@@ -27,7 +27,7 @@ const Navbar = () => {
   };
 
   return (
-    <Flex  padding='1rem 6%' sx={{ background: alt, alignItems: 'center' }}>
+    <Flex  sx={{ background: alt, alignItems: 'center' }} >
       <Flex gap='1.75rem' alignItems='center'>
         <Typography
           fontWeight='bold'
@@ -74,29 +74,10 @@ const Navbar = () => {
           <Tooltip title='Notification' placement='bottom'>
             <Notifications sx={{ fontSize: '25px' }} />
           </Tooltip>
+              <Typography>{fullName}</Typography>
+
           <FormControl sx={{ component: 'div' }}>
-            <Select
-              value={fullName}
-              sx={{
-                backgroundColor: light,
-                width: '150px',
-                borderRadius: '0.25rem',
-                p: '0.25rem 1rem',
-                '& .MuiSvgIcon-root': {
-                  pr: '0.25rem',
-                  width: '3rem',
-                },
-                '& .MuiSelect-select:focus': {
-                  backgroundColor: light,
-                },
-              }}
-              input={<InputBase />}
-            >
-              <MenuItem value={fullName}>
-                <Typography>{fullName}</Typography>
-              </MenuItem>
-              <MenuItem onClick={Logout}>Log Out</MenuItem>
-            </Select>
+           
           </FormControl>
         </Flex>
       ) : (

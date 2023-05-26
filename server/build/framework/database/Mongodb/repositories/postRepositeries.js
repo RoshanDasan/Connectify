@@ -8,7 +8,7 @@ const postModel_1 = __importDefault(require("../models/postModel"));
 // post database operations
 const postRepositoryMongoDb = () => {
     const getAllPost = async () => {
-        return await postModel_1.default.find();
+        return await postModel_1.default.find().sort({ createdAt: -1 });
     };
     const uploadPost = (async (post) => {
         console.log(post, 'save post');

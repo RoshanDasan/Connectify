@@ -3,7 +3,7 @@ import {
   ChatBubbleOutlineOutlined,
   FavoriteOutlined,
   FavoriteBorderOutlined,
-  ShareOutlined
+  Share
 } from "@mui/icons-material";
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import Flex from "../../components/DisplayFlex";
@@ -58,7 +58,7 @@ const PostWidget = ({ postId, postUserId, name, description, image, likes, comme
           </Flex>
         </Flex>
         <IconButton>
-          <ShareOutlined />
+          <Share />
         </IconButton>
       </Flex>
       {isComment && (

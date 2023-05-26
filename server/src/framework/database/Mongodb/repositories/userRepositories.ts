@@ -29,6 +29,7 @@ export const userRepositoryMongoDB = () => {
         const user: any = await User.findOne({_id:id})
         return user;
     };
+    
 
     return {
         addUser,

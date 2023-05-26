@@ -39,7 +39,7 @@ const authControllers = (authServiceInterface, authService, userDbInterface, use
     });
     return {
         registerUser,
-        loginUser
+        loginUser,
     };
 };
 exports.default = authControllers;

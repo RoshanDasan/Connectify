@@ -4,7 +4,9 @@ import { setPosts } from '../../state';
 import PostWidgetLoop from './PostWidgetLoop';
 import { getPosts } from '../../api/apiConnection/postConnection';
 import { LocalDiningRounded } from '@mui/icons-material';
-import { Typography } from '@mui/material';
+import { Avatar, Typography } from '@mui/material';
+import { Skeleton } from '@mui/lab';
+
 
 interface Post {
   _id: string;
@@ -37,27 +39,28 @@ const PostsWidgets = () => {
 
   return (
     <>
-    {loading?(
-      <Typography sx={{backgroundColor: 'green'}} textAlign='center'>Loading...</Typography>
-    ):(
-      <h1></h1>
-    )}
-    
-  
-      {post.map(({ _id, userId,  description, userName,  image, likes, comments }: Post) => (
-     
-        
-        <PostWidgetLoop
-          key={_id}
-          postId={_id}
-          userId={userId}
-          name={userName}
-          description={description}
-          image={image}
-          likes={likes}
-          comments={comments}
-        />
-      ))}
+      {loading ? (
+        <div>
+          <Skeleton variant="circular">
+            <Avatar />
+          </Skeleton>
+        </div>
+      ) : (
+        <div>
+          {post.map(({ _id, userId, userName, description, image, likes, comments }: Post) => (
+            <PostWidgetLoop
+              key={_id}
+              postId={_id}
+              userId={userId}
+              name={userName}
+              description={description}
+              image={image}
+              likes={likes}
+              comments={comments}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }

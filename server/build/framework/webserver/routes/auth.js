@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const authControllers_1 = __importDefault(require("../../../adapters/controllers/authControllers"));
 const userDbRepositories_1 = require("../../../application/repositories/userDbRepositories");
-const authServiceInterface_1 = require("../../../application/services/authServiceInterface");
 const userRepositories_1 = require("../../database/Mongodb/repositories/userRepositories");
+const authServiceInterface_1 = require("../../../application/services/authServiceInterface");
 const authServices_1 = require("../../services/authServices");
 const authRouter = () => {
     const router = express_1.default.Router();

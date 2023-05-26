@@ -24,7 +24,7 @@ const authControllers = (
             number,
             email,
             password,
-    };
+            };
     
     const token = await userRegister(user, dbUserRepository, authServices);
     console.log(token,'tokennnn');
@@ -50,7 +50,7 @@ const authControllers = (
 
     return {
         registerUser,
-        loginUser
+        loginUser,
     };
 };
 

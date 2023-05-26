@@ -2,6 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
 import { Home, Explore, Notifications, Person, Settings, ExitToApp, Message } from '@mui/icons-material';
+import { setLogout } from '../../state';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 
 const drawerWidth = 240;
@@ -32,6 +35,15 @@ const useStyles = makeStyles((theme: any) => ({
 const Sidebar: React.FC = () => {
     
     const classes = useStyles();
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const Logout = () => {
+      console.log('logout');
+      
+      dispatch(setLogout());
+      navigate('/');
+    };
   
 
   return (
@@ -73,7 +85,7 @@ const Sidebar: React.FC = () => {
             <ListItemIcon>
               <Person />
             </ListItemIcon>
-            <ListItemText primary="Profile" classes={{ primary: classes.listItemText }} />
+            <ListItemText primary="Profile" classes={{ primary: classes.listItemText }} onClick={() => navigate('/profile')}/>
           </ListItem>
         </List>
         <Divider />
@@ -88,7 +100,7 @@ const Sidebar: React.FC = () => {
             <ListItemIcon>
               <ExitToApp />
             </ListItemIcon>
-            <ListItemText primary="Logout" classes={{ primary: classes.listItemText }} />
+            <ListItemText primary="Logout" classes={{ primary: classes.listItemText }} onClick={Logout}/>
           </ListItem>
         </List>
       </Drawer>
@@ -97,3 +109,7 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
+function dispatch(arg0: { payload: undefined; type: "auth/setLogout"; }) {
+  throw new Error('Function not implemented.');
+}
+

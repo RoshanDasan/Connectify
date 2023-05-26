@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Avatar, Button, Paper, Grid, Container } from '@mui/material';
 import { useFormik } from 'formik';
+import  jwt_decode from 'jwt-decode';
 import * as yup from 'yup';
 import useStyles from './styles';
 import Input from './Input';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import GoogleAuth from '../../api/googleAuth/GoogleAuth';
 import { useDispatch } from 'react-redux';
 import { setLogin, setUser } from '../../state';
 import { register, login } from '../../api/apiConnection/authConnect';
@@ -15,9 +16,12 @@ import { register, login } from '../../api/apiConnection/authConnect';
 const Auth: React.FC = () => {
   let classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
-  const [isSignup, setIsSignup] = useState(false);
+  const [isSignup, setIsSignup] = useState(false); 
   const dispatch = useDispatch()
   const navigate = useNavigate();
+  
+ 
+
 
  
 
@@ -184,6 +188,7 @@ const Auth: React.FC = () => {
               </Button>
             </Grid>
           </Grid>
+          <div id='googleLoginButton'></div>
         </form>
       </Paper>
     </Container>
