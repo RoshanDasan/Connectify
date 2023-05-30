@@ -15,7 +15,7 @@ const PostWidget = ({ postId, postUserId, name, description, image, likes, comme
   
   const [isLike, setIsLike] = useState(false);
   const [isComment, setIsComment] = useState(false);
-  const picturePath = true;
+  const picturePath = image;
 
 
   return (

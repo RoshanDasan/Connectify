@@ -8,8 +8,23 @@ const  postRouter = () => {
     const router = express.Router();
     const controller = postControllers(postDbInterface, postRepositoryMongoDb);
 
+    // get all posts from db
     router.get('/', controller.getPosts);
+
+    // upload post
     router.post('/',uploads.single('image'), controller.uploadPost);
+
+    // get posts by a user
+    router.get('/userposts/:userId', controller.getUserPosts)
+
+    // get individual post by id
+    router.get('/post/:id', controller.getPost)
+
+    // delete particular post by id
+    router.delete('/:id', controller.deletePost)
+
+    // like and dilike post by user
+    router.patch('/like', controller.postLikeUpdate)
 
     return router;
 };

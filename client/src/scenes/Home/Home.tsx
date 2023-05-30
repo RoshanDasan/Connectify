@@ -27,8 +27,13 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const classes = useStyles();
   const isNonMobileScreens = useMediaQuery('(min-width: 800px)');
-  const { _id } = useSelector((state: any) => state.token.user);
+  const user: any = useSelector((state: any) => state.user);
 
+  let _id = '';
+  if (user) {
+    _id = user._id;
+  }
+  
   return (
     <>
       <Navbar />

@@ -19,12 +19,12 @@ interface Post {
 }
 const PostsWidgets = () => {
   const dispatch = useDispatch();
-  const token: string = useSelector((state: any) => state.token.token);
+  const token: string = useSelector((state: any) => state.token);
   const [post, setPost] = useState([]);
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getPosts(token).then((postResponse) => {
+      getPosts(token).then((postResponse) => {
       setLoading(true)
       console.log(postResponse, 'postsss');
       dispatch(setPosts({posts: postResponse}));

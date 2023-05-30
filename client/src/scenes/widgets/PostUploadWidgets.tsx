@@ -26,7 +26,6 @@ import Dropzone from 'react-dropzone';
 
 import WidgetWraper from '../../components/WidgetWraper';
 import { uploadPost } from '../../api/apiConnection/postConnection';
-import { getUser } from '../../api/apiConnection/userConnection';
 
 const PostUploadWidget = (picturePath: any) => {
 
@@ -34,11 +33,12 @@ const PostUploadWidget = (picturePath: any) => {
   const [image, setImage] = useState<File | null>(null);
   const [post, setPost] = useState('');
   const { palette } = useTheme();
-  const { _id, userName } = useSelector((state: any) => state.token.user);
-  const token = useSelector((state: any) => state.token.token);
+  const { _id, userName } = useSelector((state: any) => state.user);
+  const token = useSelector((state: any) => state.token);
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
 
   const handlePost = async () => {
+
     const formData = new FormData();
     formData.append('userId', _id);
     formData.append('userName', userName);
@@ -50,22 +50,10 @@ const PostUploadWidget = (picturePath: any) => {
     uploadPost(token, formData);
     setImage(null);
     setPost('');
+    window.location.reload()
   };
-  const getUsers = async () => {
-    try {
-      const userResponse: any = await getUser(_id, token);
-      
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getUsers();
-  }, []);
-
-
   return (
+
     <WidgetWraper  >
       <Flex gap='1.5rem' >
       <Avatar alt={userName} src={picturePath} />

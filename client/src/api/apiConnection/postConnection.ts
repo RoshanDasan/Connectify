@@ -1,17 +1,25 @@
 import baseURL from "../api";
 
 export const getPosts = async (token: string) => {
-    try {
-        const response = await baseURL.get(`/api/post`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        return response.data.posts;
-    } catch (error) {
-        throw error;
-    }
-}
+  try {
+    const response = await baseURL.get(`/api/post`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    
+    // Sort the posts based on createdAt in descending order
+    const sortedPosts = response.data.posts.sort((a: any, b: any) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+    
+    return sortedPosts;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 export const uploadPost = (token: string, body: any) => {
     console.log(token, body, 'bodyyy');
   

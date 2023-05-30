@@ -3,13 +3,17 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface AuthState {
   mode: string;
   user: any;
+  admin: any;
   token: any;
+  admintoken: any;
   posts: any[];
 }
 
 const initialState: AuthState = {
   mode: "light",
   user: null,
+  admin: null,
+  admintoken: null,
   token: null,
   posts: []
 };
@@ -29,6 +33,16 @@ export const authSlice = createSlice({
       state.user = null;
       state.token = null;
     },
+    setAdminLogin:(state, action: PayloadAction<{admin: any; admintoken: any }>) => {
+      state.admin = action.payload.admin;
+      state.admintoken = action.payload.admintoken;
+    },
+    
+    setAdminLogout: (state) => {
+      state.admin = null;
+      state.admintoken = null;
+    },
+
     
     setUser: (state, action: PayloadAction<{ user: any }>) => {
       if (state.user) {
@@ -57,5 +71,5 @@ export const authSlice = createSlice({
   }
 });
 
-export const { setMode, setLogin, setLogout,setUser, setFriends, setPosts, setPost } = authSlice.actions;
+export const { setMode, setLogin, setLogout,setUser, setFriends, setPosts, setPost, setAdminLogin, setAdminLogout } = authSlice.actions;
 export default authSlice.reducer;

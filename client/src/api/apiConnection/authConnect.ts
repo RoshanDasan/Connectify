@@ -21,14 +21,27 @@ interface RegisterResponse {
     password: string;
   }
 
+  
   interface LoginFormValues {
     userName: string;
     password: string;
   }
-export const register = async (values: RegisterFormValues): Promise<string> => {
+  interface AdminLoginFormValues {
+    email: string;
+    password: string;
+  }
+
+  interface AdminLoginResponse {
+    message?: any;
+    status: string;
+    admin: object;
+    token: string;
+  }
+
+export const register = async (values: RegisterFormValues): Promise<any> => {
   try {
     const response = await baseURL.post<RegisterResponse>('/api/auth/register', values);
-    console.log(response.data);
+    console.log(response,'=======/./.');
 
     if (response.data.status === 'success') {
       console.log('success');
@@ -38,7 +51,7 @@ export const register = async (values: RegisterFormValues): Promise<string> => {
       console.log('failed');
       console.log(response.data.message);
       toast.error('Registration failed');
-      return 'failed';
+      return false;
     }
   } catch (error) {
     console.log('catch');
@@ -56,19 +69,19 @@ export const login = async (values:LoginFormValues) => {
    
     try {
       const response = await baseURL.post<LoginResponse>('/api/auth/login', values);
-      console.log(response.data);
+      console.log(response,'///////');
   
       // Handle the success response
       if (response.data.status === 'success') {
-        console.log('success');
+        console.log(response.data,'successss');
         toast.success('Login successful');
-        return response;
+        return response.data.token;
   
       } else {
         console.log('failed');
         console.log(response.data.message);
         toast.error('Login failed');
-        return 'failed'
+        return false
       }
     } catch (error) {
       console.log('catch');
@@ -79,4 +92,31 @@ export const login = async (values:LoginFormValues) => {
       toast.error(errorMessage);
     }
     
+  }
+  
+  export const adminLogin =async (values: AdminLoginFormValues) => {
+    try {
+      const response = await baseURL.post<AdminLoginResponse>('/api/admin/login', values);
+      console.log(response.data.token,';;;;');
+  
+      // Handle the success response
+      if (response.data.status === 'success') {
+        console.log(response.data,'success');
+        toast.success('Login successful');
+        return response.data.token;
+  
+      } else {
+        console.log('failed');
+        console.log(response.data.message);
+        toast.error('Login failed');
+        return false
+      }
+    } catch (error) {
+      console.log('catch');
+  
+      // Extract the error message if available
+      const errorMessage = (error as any)?.response?.data?.message || 'An error occurred during Login';
+      console.log(errorMessage);
+      toast.error(errorMessage);
+    }
   }

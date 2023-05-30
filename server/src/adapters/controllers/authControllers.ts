@@ -27,7 +27,6 @@ const authControllers = (
             };
     
     const token = await userRegister(user, dbUserRepository, authServices);
-    console.log(token,'tokennnn');
     
     res.json({
         status:"success",
@@ -39,8 +38,7 @@ const authControllers = (
         
         const { userName, password } : { userName: string; password: string} = req.body;
         const token = await userLogin(userName, password, dbUserRepository, authServices);
-        console.log(token.token,'-------------------------------------------------------');       
-        res.setHeader('authorization', token.token);
+        // res.setHeader('authorization', token.token);
         res.json({
             status: "success",
             message: "user verified",

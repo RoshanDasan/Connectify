@@ -23,7 +23,7 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath }) => {
 
   const getUsers = async () => {
     try {
-      const userResponse: any = await getUser(userId, token.token);
+      const userResponse: any = await getUser(userId, token);
       setUser(userResponse);
     } catch (error) {
       console.log(error);

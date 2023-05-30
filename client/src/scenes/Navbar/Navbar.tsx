@@ -11,7 +11,7 @@ const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state: any) => state.token.user);
+  const user = useSelector((state: any) => state.user);
   const isNonMobileScreens = useMediaQuery('(min-width:1000px)');
 
   const theme = useTheme();
@@ -44,8 +44,8 @@ const Navbar = () => {
           <img style={{ height: '60px' }} src="../assets/logo.png" alt='' />
         </Typography>
 
-        {/* {isNonMobileScreens && (
-          <Flex sx={{ borderRadius: '9px', gap: '3rem', padding: '0.1rem 1.5rem' }}>
+        {isNonMobileScreens && (
+          <Flex sx={{ borderRadius: '9px', gap: '3rem', padding: '0.1rem 20rem' }}>
             <InputBase placeholder='Search...' />
             <IconButton>
               <Tooltip title='Search user' placement='bottom'>
@@ -53,7 +53,7 @@ const Navbar = () => {
               </Tooltip>
             </IconButton>
           </Flex>
-        )} */}
+        )}
       </Flex>
       {isNonMobileScreens ? (
         <Flex gap='2rem' alignItems='center'>

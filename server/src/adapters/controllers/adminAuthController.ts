@@ -21,7 +21,7 @@ const authControllers = (
         
         const { email, password }  = req.body;
         const token = await adminLogin(email, password, dbAdminRepository, authServices)
-        res.setHeader('authorization', token.token);
+        // res.setHeader('authorization', token.token);
         res.json({
             status: "success",
             message: "admin verified",

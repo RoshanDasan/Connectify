@@ -8,10 +8,8 @@ export const userRepositoryMongoDB = () => {
         number: number;
         password: string;
     }) => {
-        console.log(user,'34');
         
         const newUser = new User(user);
-        console.log(newUser,']]]]');
         
         return await newUser.save();
     };
@@ -22,7 +20,6 @@ export const userRepositoryMongoDB = () => {
     const getUserByUserName = async (userName:string) => {
         
         const user: any = await User.findOne({userName})
-        console.log('findd' ,user);
         return user;
     };
     const getUserById = async (id:string) => {

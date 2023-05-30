@@ -5,7 +5,6 @@ import { postRepositoryType } from "../../framework/database/Mongodb/repositorie
 export const postDbInterface: any = (repositories: ReturnType<postRepositoryType>) => {
 
     const getAllPost = async () => await repositories.getAllPost()
-    console.log('posttss');
     
 
     const uploadPost = async (post:{
@@ -15,9 +14,36 @@ export const postDbInterface: any = (repositories: ReturnType<postRepositoryType
         userName: string;
     }) => repositories.uploadPost(post)
 
+
+    const getPostsByUser = async (userId: string) => {
+        return await repositories.getPostsByUser(userId)
+    };
+
+    const getPostById =async (id:string) => {
+        return await repositories.getPostById(id)
+    }
+
+    const deletePost = async (id: string) => {
+        const deletedData = await repositories.deletePost(id)
+        return deletedData;
+    }
+
+    const dislikePost = async (id: string, userId: string) => {
+        await repositories.dislikePost(id, userId)
+    }
+
+    const likePost = async (id: string, userId: string) => {
+        await repositories.likePost(id, userId)
+    }
+
     return {
         getAllPost,
-        uploadPost
+        uploadPost,
+        getPostsByUser,
+        getPostById,
+        deletePost,
+        dislikePost,
+        likePost
     }
 }
 

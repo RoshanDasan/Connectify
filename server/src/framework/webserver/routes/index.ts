@@ -9,7 +9,7 @@ const routes = (app: Application) => {
     app.use('/api/auth', authRouter());
     app.use('/api/admin',adminauthRouter())
     app.use('/api/user',userAuthMiddleware, userRouter());
-    app.use('/api/post',userAuthMiddleware, postRouter())
+    app.use('/api/post', postRouter())
 }
 
 export default routes;

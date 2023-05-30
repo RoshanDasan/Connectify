@@ -9,7 +9,6 @@ export const userDbRepository = (repository: ReturnType<userRepositoryMongoDB>) 
         number: number;
         password: string;
     }) => {
-        console.log(user,'-65');
         
         return await repository.addUser(user);
     };
@@ -17,8 +16,8 @@ export const userDbRepository = (repository: ReturnType<userRepositoryMongoDB>) 
     const getUserByEmail = async (email: string) => {
         return await repository.getUserByEmail(email);
     };
+    
     const getUserByUserName = async (userName: string) => {
-        console.log(userName);
         
        return await repository.getUserByUserName(userName);
     };
