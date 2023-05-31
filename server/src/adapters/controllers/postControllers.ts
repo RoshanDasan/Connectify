@@ -67,9 +67,9 @@ const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryTyp
     const postLikeUpdate = expressAsyncHandler(async(req: Request, res: Response) => {
         
         const { id, userId } = req.query;
-       
-        
        await updateLike(id, userId, dbRepositoriesPost)
+       console.log('liked success');
+       
        res.json({
         status:'like update success'
        })

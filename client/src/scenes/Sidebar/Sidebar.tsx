@@ -61,7 +61,7 @@ const Sidebar: React.FC = () => {
             <ListItemIcon>
               <Home />
             </ListItemIcon>
-            <ListItemText primary="Home" classes={{ primary: classes.listItemText }} />
+            <ListItemText primary="Home" classes={{ primary: classes.listItemText }} onClick={() => navigate('/')}/>
           </ListItem>
           <ListItem button className={classes.listItem}>
             <ListItemIcon>

@@ -8,8 +8,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { themeSettings } from './theme';
-// import Profile from './scenes/ProfilePage/Profile';
-// import Sidebar from './scenes/Sidebar/Sidebar';
+import Profile from './scenes/ProfilePage/Profile';
 
 export function App() {
   const mode = useSelector((state: any) => state.mode);
@@ -25,6 +24,7 @@ export function App() {
   return (
     <div className='app'>
       <Router>
+     
         <ThemeProvider theme={theme}>
           <CssBaseline />
           
@@ -39,10 +39,10 @@ export function App() {
               path='/admin/home'
               element={ <AdminHome  />}
             />
-            {/* <Route
+            <Route
               path='/profile'
-              element={isAuth ? <Profile username={user.userName} followers={2} following={5} posts={0} /> : <Navigate to='/' />}
-            /> */}
+              element={isAuth ? <Profile /> : <Navigate to='/' />}
+            />
           </Routes>
         </ThemeProvider>
       </Router>

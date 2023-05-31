@@ -3,20 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '../../state';
 import PostWidgetLoop from './PostWidgetLoop';
 import { getPosts } from '../../api/apiConnection/postConnection';
-import { LocalDiningRounded } from '@mui/icons-material';
-import { Avatar, Typography } from '@mui/material';
+import { Avatar } from '@mui/material';
 import { Skeleton } from '@mui/lab';
 
 
-interface Post {
-  _id: string;
-  userId: string;
-  userName: string;
-  description: string;
-  image: string;
-  likes: number;
-  comments: number;
-}
 const PostsWidgets = () => {
   const dispatch = useDispatch();
   const token: string = useSelector((state: any) => state.token);
@@ -24,19 +14,21 @@ const PostsWidgets = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-      getPosts(token).then((postResponse) => {
-      setLoading(true)
-      console.log(postResponse, 'postsss');
-      dispatch(setPosts({posts: postResponse}));
-      setLoading(false)
-      setPost(postResponse)
-    });
-  },[])
- 
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const postResponse = await getPosts(token);
+        setPost(postResponse);
+        dispatch(setPosts({ posts: postResponse }));
+        setLoading(false);
+      } catch (error) {
+        // Handle any potential errors here
+        console.error('Error occurred while fetching posts:', error);
+      }
+    };
 
-  
-  console.log(post,'loooopppp');
-
+    fetchData();
+  }, []);
   return (
     <>
       {loading ? (
@@ -44,16 +36,22 @@ const PostsWidgets = () => {
           <Skeleton variant="circular">
             <Avatar />
           </Skeleton>
+          <Skeleton variant="text" width={200} />
+          <Skeleton width={400} height={400}>
+            {/* <PostWidgetLoop/> */}
+          </Skeleton>
         </div>
       ) : (
         <div>
-          {post.map(({ _id, userId, userName, description, image, likes, comments }: Post) => (
+          {post.map(({ _id, userId, description, userName, image, likes, comments }: any) => (
+
+
             <PostWidgetLoop
               key={_id}
-              postId={_id}
+              id={_id}
               userId={userId}
-              name={userName}
               description={description}
+              userName={userName}
               image={image}
               likes={likes}
               comments={comments}

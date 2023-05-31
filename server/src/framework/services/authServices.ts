@@ -8,7 +8,6 @@ export const authServices = () => {
       
         const salt = await bcrypt.genSalt(10);
         password = await bcrypt.hash(password, salt);
-        console.log(password,'=/');
         
         return password;
     };

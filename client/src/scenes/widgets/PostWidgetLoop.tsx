@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ChatBubbleOutlineOutlined,
   FavoriteOutlined,
@@ -7,33 +7,52 @@ import {
 } from "@mui/icons-material";
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import Flex from "../../components/DisplayFlex";
-import Friend from "../../components/Friend";
+import PostHeader from '../../components/PostHeader';
 import WidgetWraper from "../../components/WidgetWraper";
+import { useSelector } from 'react-redux';
+import { likePost } from '../../api/apiConnection/postConnection';
 
-const PostWidget = ({ postId, postUserId, name, description, image, likes, comments }: any) => {
-  console.log(postId, postUserId, name, description, image, likes, comments,'datasss');
+interface PostWidgetProps {
+  id: string;
+  userId: string;
+  description: string;
+  userName: string;
+  image: string;
+  likes: string[];
+  comments: any[];
+}
+
+const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userName, image, likes }) => {
+  console.log(image,'image');
   
   const [isLike, setIsLike] = useState(false);
   const [isComment, setIsComment] = useState(false);
-  const picturePath = image;
+  const picturePath = null;
+  const token: string = useSelector((state: any) => state.token);
+  const user: any = useSelector((state:any) => state.user._id);
 
+  const handleLike = async (id: string, userId: string) => {
+    const liked = likePost(id, userId, token);
+    setIsLike((prevState) => !prevState);
+    // location.reload()
+  };
+
+  useEffect(() => {
+    setIsLike(() => !isLike)
+    
+  },[])
+
+  
 
   return (
-    <WidgetWraper m='2rem 0' width='30rem'  >
-      <Friend 
-        friendId='1'
-        name={name}
-        subtitle='Chalakudi'
-        userPicturePath=''
-      />
-     
-      <Typography sx={{ mt: '1rem' }}>
-        {description}
-      </Typography>
-      {picturePath && (
-        <img 
+    <WidgetWraper m='2rem 0' width='30rem'>
+      <PostHeader friendId='1' name={userName} subtitle='Chalakudi' userPicturePath='' />
+
+      <Typography sx={{ mt: '1rem' }}>{description}</Typography>
+      {image && (
+        <img
           src={`http://localhost:5000/uploads/${image}`}
-          alt="img" 
+          alt="img"
           width='100%'
           style={{ borderRadius: '0.75rem', marginTop: '0.75rem' }}
         />
@@ -41,17 +60,13 @@ const PostWidget = ({ postId, postUserId, name, description, image, likes, comme
       <Flex mt='0.25rem'>
         <Flex gap='1rem'>
           <Flex gap='0.3rem'>
-            <IconButton onClick={() => setIsLike(!isLike)}>
-              {isLike ? (
-                <FavoriteOutlined sx={{ color: 'red' }} />
-              ) : (
-                <FavoriteBorderOutlined />
-              )}
+            <IconButton onClick={() => handleLike(id, user)}>
+              {likes.includes(user) ? <FavoriteOutlined sx={{ color: 'red' }} /> : <FavoriteBorderOutlined />}
             </IconButton>
-            <Typography>{isLike ? 11 : 10}</Typography>
+            <Typography>{likes.length}</Typography>
           </Flex>
           <Flex gap='0.3rem'>
-            <IconButton onClick={() => setIsComment(!isComment)} >
+            <IconButton onClick={() => setIsComment(!isComment)}>
               <ChatBubbleOutlineOutlined />
             </IconButton>
             <Typography>1</Typography>
@@ -65,16 +80,13 @@ const PostWidget = ({ postId, postUserId, name, description, image, likes, comme
         <Box mt='0.5rem'>
           <Box>
             <Divider />
-            <Typography>
-              Nice
-            </Typography>
+            <Typography>Nice</Typography>
           </Box>
           <Divider />
         </Box>
       )}
-      <Divider sx={{marginTop: '4rem'}} />
+      <Divider sx={{ marginTop: '4rem' }} />
     </WidgetWraper>
-    
   );
 };
 
