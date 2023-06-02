@@ -41,9 +41,7 @@ Prerequisites
 
 Installation
 
-    Clone the repository:
-
-bash
+   Clone the repository:
 
 git clone 
 
@@ -51,21 +49,16 @@ git clone
 
    Navigate to the project directory:
 
-bash
 
    cd your-repo
 
    Install dependencies for the backend:
     
 
-bash
-
     cd server
     npm install
 
    Install dependencies for the frontend:
-
-bash
 
     cd client
     npm install
@@ -76,7 +69,6 @@ Configuration
 
    Create a .env file in the backend directory and provide the required environment variables, such as:
 
-  bash
 
     PORT=3000
     MONGO_URI=mongodb://localhost:27017/social_media
@@ -86,7 +78,6 @@ Frontend:
 
   Create a .env file in the frontend directory and provide the required environment variables, such as:
 
-bash
 
         VITE_API_BASE_URL=http://localhost:3000/api
 
@@ -94,14 +85,12 @@ Usage
 
    Start the backend server:
 
-bash
 
     cd server
     npm run start
 
    Start the frontend development server:
 
-bash
 
     cd client
     npm run dev
