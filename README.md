@@ -1,5 +1,6 @@
 Project Name: Connectify
-Overview
+  
+  Overview
 
 This project is a social media application built using the MERN stack (MongoDB, Express, React, Node.js) and TypeScript. It follows the principles of clean architecture on the backend and utilizes Vite for fast and clean code on the frontend.
 Features
