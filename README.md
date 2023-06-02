@@ -26,8 +26,7 @@ Frontend
    React
     Vite
     TypeScript
-    HTML
-    CSS (or any preferred CSS-in-JS solution)
+    Material UI
     Axios (for API calls)
     React Router (for client-side routing)
     React Query (for data fetching and caching)
@@ -80,7 +79,7 @@ Frontend:
   Create a .env file in the frontend directory and provide the required environment variables, such as:
 
 
-        VITE_API_BASE_URL=http://localhost:3000/api
+        BASE_URL=http://localhost:3000/api
 
 Usage
 
