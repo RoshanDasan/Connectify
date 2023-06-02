@@ -4,7 +4,7 @@ Overview
 This project is a social media application built using the MERN stack (MongoDB, Express, React, Node.js) and TypeScript. It follows the principles of clean architecture on the backend and utilizes Vite for fast and clean code on the frontend.
 Features
 
-    User registration and authentication
+   User registration and authentication
     Create, edit, and delete posts
     Like and comment on posts
     User profile management
@@ -14,7 +14,7 @@ Features
 Tech Stack
 Backend
 
-    Node.js
+   Node.js
     Express.js
     MongoDB
     TypeScript
@@ -22,7 +22,7 @@ Backend
 
 Frontend
 
-    React
+   React
     Vite
     TypeScript
     HTML
@@ -35,7 +35,7 @@ Frontend
 Getting Started
 Prerequisites
 
-    Node.js 
+   Node.js 
     MongoDB 
     Git
 
@@ -45,36 +45,38 @@ Installation
 
 bash
 
-git clone https://github.com/RoshanDasan/Connectify.git
+git clone 
 
-    Navigate to the project directory:
+    https://github.com/RoshanDasan/Connectify.git
+
+   Navigate to the project directory:
 
 bash
 
-cd your-repo
+   cd your-repo
 
-    Install dependencies for the backend:
+   Install dependencies for the backend:
     
 
 bash
 
-cd server
-npm install
+    cd server
+    npm install
 
-    Install dependencies for the frontend:
+   Install dependencies for the frontend:
 
 bash
 
-cd client
-npm install
+    cd client
+    npm install
 
 Configuration
 
-    Backend:
+   Backend:
 
-        Create a .env file in the backend directory and provide the required environment variables, such as:
+   Create a .env file in the backend directory and provide the required environment variables, such as:
 
-        bash
+  bash
 
     PORT=3000
     MONGO_URI=mongodb://localhost:27017/social_media
@@ -82,29 +84,31 @@ Configuration
 
 Frontend:
 
-    Create a .env file in the frontend directory and provide the required environment variables, such as:
+  Create a .env file in the frontend directory and provide the required environment variables, such as:
 
-    bash
+bash
 
         VITE_API_BASE_URL=http://localhost:3000/api
 
 Usage
 
-    Start the backend server:
+   Start the backend server:
 
 bash
 
-cd server
-npm run start
+    cd server
+    npm run start
 
-    Start the frontend development server:
+   Start the frontend development server:
 
 bash
 
-cd client
-npm run dev
+    cd client
+    npm run dev
 
-    Open your browser and navigate to http://localhost:5173 to access the application.
+   Open your browser and navigate 
+   
+     http://localhost:5173
 
 Deployment
 
