@@ -12,9 +12,7 @@ const Friend = ({ friendId, userName, handleshowFreind, onButtonClick }: any) =>
   const dispatch = useDispatch();
 
   const setIsFriend = async (id: string, friendId: string) => {
-    console.log(id);
     const response = await followUser(id, friendId, token)
-    console.log(response?.data.friend,'follower responseee');
     dispatch(setFollower({
       followers:response?.data.friend._id
     }))

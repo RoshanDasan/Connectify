@@ -11,7 +11,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-
     },
     email: {
       type: String,
@@ -30,7 +29,10 @@ const userSchema = new Schema(
     bio: {
       type: String,
     },
-    isAdmin: {
+    gender: {
+      type: String
+    },
+    isBlock: {
       type: Boolean,
       default: false,
     },

@@ -51,7 +51,6 @@ const Home = () => {
 
   const handleButtonClick = () => {
     // Update the state or perform any action
-    console.log('global clickkkk');
     
     setData(() => !data);
   };

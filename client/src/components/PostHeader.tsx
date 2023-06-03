@@ -29,20 +29,19 @@ const PostHeader = ({ name, friendId, buttonClick }: any) => {
     const handleFollow = async (id: string, friendId: string) => {
         handleClose()
         const response = await followUser(id, friendId, token)
-        console.log(response,'unfolloww');
         dispatch(
             setUnfollower({
                 unfollower: response?.data.friend._id
             })
         )
 
-            buttonClick()
-        
+        buttonClick()
+
     }
 
     return (
         <Flex m='0.5rem 0 1.5rem 0' >
-            <Flex gap="1rem" onClick={()=>navigate(`/profile/${friendId}`)}>
+            <Flex gap="1rem" onClick={() => navigate(`/profile/${friendId}`)}>
                 {/* <UserImage image='../assets/photo.jpg' size="55px" /> */}
                 <Avatar />
                 <Box
@@ -58,47 +57,72 @@ const PostHeader = ({ name, friendId, buttonClick }: any) => {
                                 cursor: "pointer",
                             },
                         }}
-                        
+
                     >
                         {name}
                     </Typography>
 
                 </Box>
             </Flex>
+
             <div>
-                <IconButton
-                    aria-label="more"
-                    id="long-button"
-                    aria-controls={open ? 'long-menu' : undefined}
-                    aria-expanded={open ? 'true' : undefined}
-                    aria-haspopup="true"
-                    onClick={handleClick}
-                >
-                    <MoreVertIcon />
-                </IconButton>
-                <Menu
-                    id="long-menu"
-                    MenuListProps={{
-                        'aria-labelledby': 'long-button',
-                    }}
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    PaperProps={{
-                        style: {
-                            width: '20ch',
-                        },
-                    }}
-                >
-                 
-                        <MenuItem  onClick={handleClose} sx={{color: 'red'}}>
-                            Report
-                        </MenuItem>
-                        <MenuItem  onClick={() => handleFollow(id, friendId)}>
-                           Unfollow
-                        </MenuItem>
-               
-                </Menu>
+                {friendId === id ? (
+                    <>
+                        <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            aria-controls={open ? 'long-menu' : undefined}
+                            aria-expanded={open ? 'true' : undefined}
+                            aria-haspopup="true"
+                            onClick={handleClick}
+                        >
+                            <MoreVertIcon />
+                        </IconButton>
+                       
+
+                    
+                    </>
+
+                ) : (
+                    <>
+                         <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            aria-controls={open ? 'long-menu' : undefined}
+                            aria-expanded={open ? 'true' : undefined}
+                            aria-haspopup="true"
+                            onClick={handleClick}
+                        >
+                            <MoreVertIcon />
+                        </IconButton> 
+                        <Menu
+                     id="long-menu"
+                     MenuListProps={{
+                         'aria-labelledby': 'long-button',
+                     }}
+                     anchorEl={anchorEl}
+                     open={open}
+                     onClose={handleClose}
+                     PaperProps={{
+                         style: {
+                             width: '20ch',
+                         },
+                     }}
+                 >
+                  
+                         <MenuItem  onClick={handleClose} sx={{color: 'red'}}>
+                             Report
+                         </MenuItem>
+                         <MenuItem  onClick={() => handleFollow(id, friendId)}>
+                            Unfollow
+                         </MenuItem>
+                
+                 </Menu> 
+                    </>
+                )}
+
+
+
             </div>
         </Flex>
     );

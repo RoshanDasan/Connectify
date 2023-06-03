@@ -51,6 +51,13 @@ export const userDbRepository = (repository: ReturnType<userRepositoryMongoDB>) 
         return await repository.followFriend(id, friendId)
     }
 
+    const searchUser = async (prefix: string) => {
+        return await repository.searchUser(prefix);
+    }
+    const updateProfile = async (id: string, body: any) => {
+        return await repository.updateProfile(id, body)
+    }
+
 
 
     return {
@@ -63,7 +70,10 @@ export const userDbRepository = (repository: ReturnType<userRepositoryMongoDB>) 
         findFriend,
         unfollowFriend,
         followFriend,
-        getAllUsers
+        getAllUsers,
+        searchUser,
+        updateProfile
+        
 
     };
 };

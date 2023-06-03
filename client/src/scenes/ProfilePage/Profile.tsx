@@ -11,6 +11,8 @@ import { useParams } from 'react-router-dom';
 import { getUser } from '../../api/apiConnection/userConnection';
 import { getPostByUser } from '../../api/apiConnection/postConnection';
 import Navbar from '../Navbar/Navbar';
+import { ToastContainer } from 'react-toastify';
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -69,10 +71,10 @@ const style = {
 
 const Profile = () => {
   const classes = useStyles();
-  const theme = useTheme();
+  const theme: any = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const [userDetails, setUserDetails] = useState({})
+  const [userDetails, setUserDetails] = useState<any[]>([]);
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [clicked, setClicked] = useState(false)
@@ -82,8 +84,10 @@ const Profile = () => {
   const handleClose = () => setOpen(false);
 
 
-  const token: string = useSelector((state: any) => state.token._id);
+  const token: string = useSelector((state: any) => state.token);
+  const userid: string = useSelector((state: any) => state.user._id);
 
+  
   const getPosts = async () => {
     try {
       setLoading(true);
@@ -94,7 +98,7 @@ const Profile = () => {
 
       setLoading(false);
     } catch (error) {
-      console.log('Error retrieving user posts:', error);
+      throw error
     }
   };
 
@@ -182,15 +186,19 @@ const Profile = () => {
           <Typography variant="body2">Following</Typography>
         </div>
       </div>
+
+      {userid == id && (
+              <Button
+              variant="contained"
+              sx={{ backgroundColor: 'lightgray' }}
+              className={classes.button}
+              onClick={handleOpen}
+            >
+              Edit Profile
+            </Button>
+      )}
       
-      <Button
-        variant="contained"
-        sx={{ backgroundColor: 'lightgray' }}
-        className={classes.button}
-        onClick={handleOpen}
-      >
-        Edit Profile
-      </Button>
+
 
       <Flex width={isMobile ? '100%' : '60rem'} sx={{ display:'flex', flexWrap:'wrap', justifyContent: 'flex-start'}}>
         {userPosts.map(
@@ -218,11 +226,13 @@ const Profile = () => {
                   likes={likes}
                   comments={comments}
                   click={clikedFun}
+                  borderView={userid === id}
                 />
               </Flex>
             )
         )}
       </Flex>
+      <ToastContainer position="bottom-left" />
     </div>
     </>
    

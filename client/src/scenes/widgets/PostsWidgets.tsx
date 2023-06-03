@@ -16,7 +16,7 @@ const PostsWidgets = ({data, onButtonClick}:any) => {
 
 
   const buttonClicks = () => {
-    console.log('unfollowed');
+  
     
     setClicked(() => !clicked)
   }
@@ -31,7 +31,7 @@ const PostsWidgets = ({data, onButtonClick}:any) => {
       dispatch(setPosts({ posts: postResponse })); 
     } catch (error) {
       // Handle any potential errors here
-      console.error('Error occurred while fetching posts:', error);
+      throw error
     }
   };
 

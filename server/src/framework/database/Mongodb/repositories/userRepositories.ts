@@ -85,9 +85,34 @@ export const userRepositoryMongoDB = () => {
         return friendDetails
     }
 
-    
-    
+    const searchUser = async(prefix: any) => {
+        
+        const regex = new RegExp(`^${prefix}`, 'i');
+        const users = await User.find({ userName: regex });
 
+        return users
+    }
+
+    const updateProfile = async (_id: string, data: {
+        userName: string,
+        image: string,
+        bio: string,
+        gender: string
+      }) => {
+        const { userName, image, bio, gender } = data;
+      
+        const updateResult = await User.findByIdAndUpdate(_id, {
+          $set: {
+            userName,
+            dp:image,
+            bio,
+            gender
+          }
+        }, { new: true });
+      
+        return updateResult;
+      };
+          
     return {
         addUser,
         getUserByEmail,
@@ -98,7 +123,9 @@ export const userRepositoryMongoDB = () => {
         findFriend,
         unfollowFriend,
         followFriend,
-        getAllUsers
+        getAllUsers,
+        searchUser,
+        updateProfile
     };
 }
 

@@ -1,9 +1,8 @@
 import React from "react";
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import { Box, Button, CardActionArea, CardActions, Modal, TextField } from '@mui/material';
-import { Typography } from "@mui/material";
+import { Box,  CardActionArea,  Modal } from '@mui/material';
+import { toast } from 'react-toastify'
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -11,8 +10,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { deletePost } from "../api/apiConnection/postConnection";
 import { useSelector } from "react-redux";
 
-export default function Cards({ id, userId, description, userName, image, likes, comments, click }: any) {
+export default function Cards({ id, image, click, borderView }: any) {
 
+  
   const [openModal, setOpenModal] = React.useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleCloser = () => setOpenModal(false);
@@ -33,6 +33,7 @@ export default function Cards({ id, userId, description, userName, image, likes,
 
     await deletePost(_id, token)
     click()
+    toast.success('Post deleted')
   }
 
   const style = {
@@ -40,16 +41,18 @@ export default function Cards({ id, userId, description, userName, image, likes,
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: '80%',
+    height: '80%',
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    
     boxShadow: 24,
+    borderRadios: '5px',
     p: 4,
   };
 
   return (
-    <Card onClick={handleOpen} >
-      {/* <div>
+    <Card  >
+      <div>
         <Modal
           open={openModal}
           onClose={handleCloser}
@@ -59,8 +62,9 @@ export default function Cards({ id, userId, description, userName, image, likes,
           <Box sx={style}>
             <CardActionArea>
               <CardMedia
+              
                 component="img"
-                height="140"
+                height="550rem"
                 image={`http://localhost:5000/uploads/${image}`}
                 alt=""
               />
@@ -71,42 +75,49 @@ export default function Cards({ id, userId, description, userName, image, likes,
         </Modal>
       </div>
       <div >
-        <IconButton
-          aria-label="more"
-          id="long-button"
-          aria-controls={open ? 'long-menu' : undefined}
-          aria-expanded={open ? 'true' : undefined}
-          aria-haspopup="true"
-          onClick={handleClick}
-        >
-          <MoreVertIcon />
-        </IconButton>
-        <Menu
-          id="long-menu"
-          MenuListProps={{
-            'aria-labelledby': 'long-button',
-          }}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          PaperProps={{
-            style: {
-              width: '20ch',
-            },
-          }}
-        >
-
-          <MenuItem onClick={handleClose} >
-            Edit
-          </MenuItem>
-          <MenuItem onClick={() => handleDeletePost(id)}>
-            Delete
-          </MenuItem>
-
-        </Menu>
-      </div> */}
+        {borderView && (
+          <>
+           <IconButton
+            aria-label="more"
+            id="long-button"
+            aria-controls={open ? 'long-menu' : undefined}
+            aria-expanded={open ? 'true' : undefined}
+            aria-haspopup="true"
+            onClick={handleClick}
+          >
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="long-menu"
+            MenuListProps={{
+              'aria-labelledby': 'long-button',
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            PaperProps={{
+              style: {
+                width: '20ch',
+              },
+            }}
+          >
+  
+            <MenuItem onClick={handleClose} >
+              Edit
+            </MenuItem>
+            <MenuItem onClick={() => handleDeletePost(id)}>
+              Delete
+            </MenuItem>
+  
+          </Menu>
+          </>
+           
+        )}
+      
+      </div>
       {/* <CardActionArea> */}
         <CardMedia
+        onClick={handleOpen}
         sx={{height: '12rem'}}
           component="img"
           height="140"

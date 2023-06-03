@@ -29,7 +29,7 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data  }: a
       
       setUser(userResponse);
     } catch (error) {
-      console.log(error);
+      throw error
     }
   };
 

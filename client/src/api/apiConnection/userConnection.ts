@@ -1,7 +1,6 @@
 import baseURL from "../api";
 
 export const getUser = async (userId: string, token: string) => {
-    console.log(token);
   
     try {
     const response = await baseURL.get(`/api/user/${userId}`, {
@@ -12,7 +11,6 @@ export const getUser = async (userId: string, token: string) => {
 
     return response.data.user;
   } catch (error) {
-    console.log(error);
     throw error;
   }
   };
@@ -27,7 +25,6 @@ export const getUser = async (userId: string, token: string) => {
       return response.data.users
       
     } catch (error) {
-      console.error(error);
       throw error
     }
   }

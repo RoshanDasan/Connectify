@@ -47,7 +47,6 @@ const userId = useSelector((state:any) => state.user._id)
     const dispatch = useDispatch()
 
     const Logout = () => {
-      console.log('logout');
       
       dispatch(setLogout());
       navigate('/');

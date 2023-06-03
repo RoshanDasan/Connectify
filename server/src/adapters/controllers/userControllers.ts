@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { UserDbInterface } from '../../application/repositories/userDbRepositories';
-import { userById, followers, followings, addFollowers, getUserDetails } from '../../application/useCases/user/user';
+import { userById, followers, followings, addFollowers, getUserDetails, searchUserByPrefix, updateProfileInfo } from '../../application/useCases/user/user';
 import { userRepositoryMongoDB } from '../../framework/database/Mongodb/repositories/userRepositories';
 
 const userControllers = (
@@ -62,12 +62,39 @@ const userControllers = (
         })
     })
 
+    // search user 
+    const searchUser = asyncHandler(async(req: Request, res: Response) => {
+        
+        const { prefix } = req.params
+        
+        const users: any = await searchUserByPrefix(prefix, dbRepositoryUser);
+        res.json({
+            status: 'searched success',
+            users
+        })
+    })
+
+    // update profile informations
+    const updateProfile = asyncHandler(async(req: Request, res: Response) => {
+        const { id } = req.params;
+        const { userName, bio, gender } = req.body;
+        const image: any = req?.file?.filename;
+
+        const updateResult = await updateProfileInfo(id, { userName, image, bio, gender }, dbRepositoryUser );
+        res.json({
+            status: 'Update success',
+            data: updateResult
+        })
+    })
+
     return {
         getUserById,
         getFollowersList,
         getFollowingsList,
         insertFollowers,
-        getAllUsers
+        getAllUsers,
+        searchUser,
+        updateProfile
     };
 };
 

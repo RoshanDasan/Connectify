@@ -26,7 +26,6 @@ const AdminLogin = () => {
   const handleSubmit = async (values: any) => {
 
     let response: any = await adminLogin(values);
-    console.log(response.admin, '===', response.token, '///');
     
     if (response) {
       dispatch(

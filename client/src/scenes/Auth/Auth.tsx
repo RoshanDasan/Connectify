@@ -12,11 +12,12 @@ import { setLogin, setUser } from '../../state';
 import { register, login, googleLogin } from '../../api/apiConnection/authConnect';
 import { auth, provider } from '../../api/googleAuth/GoogleAuth';
 import { signInWithPopup } from 'firebase/auth';
+import { Google } from '@mui/icons-material';
 
 const Auth: React.FC = () => {
   let classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
-  const [isSignup, setIsSignup] = useState(false); 
+  const [isSignup, setIsSignup] = useState(false);
   const dispatch = useDispatch()
   const navigate = useNavigate();
 
@@ -26,48 +27,46 @@ const Auth: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     if (isSignup) {
-     let response =  await register(values);
-     if(response == 'success'){
-      setIsSignup((prevIsSignup) => !prevIsSignup);
-     }
+      let response = await register(values);
+      if (response == 'success') {
+        setIsSignup((prevIsSignup) => !prevIsSignup);
+      }
     } else {
-     let response: any = await login(values);
-     if(response){
-      dispatch(
-        setLogin({
-          user : response.user,
-          token: response.token
-        })
-        
-      )
-      console.log(response.user,'set userrr');
-      
-      dispatch(
-        setUser({
-          user: response.user
-        })
-      )
-      navigate('/home')
-      toast.success('Login success')
+      let response: any = await login(values);
+      if (response) {
+        dispatch(
+          setLogin({
+            user: response.user,
+            token: response.token
+          })
+
+        )
+
+        dispatch(
+          setUser({
+            user: response.user
+          })
+        )
+        navigate('/home')
+        toast.success('Login success')
+      }
     }
-     }
-   
+
   };
 
   const googleLoginHandle = () => {
     signInWithPopup(auth, provider).then(async (UserCredential: any) => {
-      console.log(UserCredential._tokenResponse);
       const values: any = UserCredential._tokenResponse
-      const {user, token}: any = await googleLogin(values)
-      
+      const { user, token }: any = await googleLogin(values)
+
       dispatch(
         setLogin({
-          user : user,
+          user: user,
           token: token
         })
-        
+
       )
-      
+
       dispatch(
         setUser({
           user: user
@@ -136,49 +135,49 @@ const Auth: React.FC = () => {
                   autoFocus
                   half
                 />
-                  <Input
+                <Input
                   name="userName"
                   label="UserName"
                   handleChange={formik.handleChange}
                   value={formik.values.userName}
-                  error={formik.errors.userName}            
+                  error={formik.errors.userName}
                   half
                 />
-                    </>
+              </>
             )}
-             {!isSignup && (
-                <Input
-                  name="userName"
-                  label="UserName"
-                  handleChange={formik.handleChange}
-                  value={formik.values.userName}
-                  error={formik.errors.userName}            
-                  
-                />
-                )}
-          
+            {!isSignup && (
+              <Input
+                name="userName"
+                label="UserName"
+                handleChange={formik.handleChange}
+                value={formik.values.userName}
+                error={formik.errors.userName}
+
+              />
+            )}
+
             {isSignup && (
               <>
-               <Input
-                name="number"
-                label="Number"
-                handleChange={formik.handleChange}
-                value={formik.values.number}
-                error={formik.errors.number}
-                type="number"
-              />
                 <Input
-              name="email"
-              label="Email Address"
-              handleChange={formik.handleChange}
-              value={formik.values.email}
-              error={formik.errors.email}
-              type="email"
-            />
+                  name="number"
+                  label="Number"
+                  handleChange={formik.handleChange}
+                  value={formik.values.number}
+                  error={formik.errors.number}
+                  type="number"
+                />
+                <Input
+                  name="email"
+                  label="Email Address"
+                  handleChange={formik.handleChange}
+                  value={formik.values.email}
+                  error={formik.errors.email}
+                  type="email"
+                />
               </>
-             
+
             )}
-          
+
             <Input
               name="password"
               label="Password"
@@ -199,17 +198,27 @@ const Auth: React.FC = () => {
               />
             )}
           </Grid>
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+          <Button type="submit" fullWidth variant="contained"color="info"  sx={{marginTop:'20px'}} className={classes.submit}>
             {isSignup ? 'Sign Up' : 'Sign In'}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Button onClick={switchMode}>
+              <Button onClick={switchMode} color='inherit'>
                 {isSignup ? 'Already have an account? Login In' : 'New user? Sign Up'}
               </Button>
             </Grid>
           </Grid>
-          <Button onClick={googleLoginHandle} >Login with google</Button>
+
+
+          <Button
+            fullWidth
+            variant="contained"
+            color="info"
+            startIcon={<Google />}
+            onClick={googleLoginHandle}
+          >
+            Sign in with Google
+          </Button>
         </form>
       </Paper>
     </Container>
