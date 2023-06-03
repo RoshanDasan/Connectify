@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 import { getAllUsers, getUser } from '../../api/apiConnection/userConnection'
 
 
-
 const FriensList = ({ onButtonClick }: any) => {
   const token = useSelector((state: any) => state.token)
   const userId = useSelector((state: any) => state.user._id)
@@ -26,7 +25,7 @@ const FriensList = ({ onButtonClick }: any) => {
 
   useEffect(() => {
     getUserDetails()
-  }, [clicked])
+  }, [clicked,onButtonClick])
 
 
 

@@ -29,7 +29,7 @@ import { uploadPost } from '../../api/apiConnection/postConnection';
 import { setUpdatePost } from '../../state';
 
 
-const PostUploadWidget = () => {
+const PostUploadWidget = ({ onButtonClick }: any) => {
 
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState<File | null>(null);
@@ -52,12 +52,12 @@ const PostUploadWidget = () => {
     }
     const upload: any = await uploadPost(token, formData)
 
-      console.log(upload,'newpostttt');
   
     
     dispatch(setUpdatePost({posts: upload.newPost}))
     setImage(null);
     setPost('');
+    onButtonClick()
 
     
   };

@@ -6,36 +6,38 @@ import { getPosts } from '../../api/apiConnection/postConnection';
 
 
 
-const PostsWidgets = (postClick: any) => {
+const PostsWidgets = ({data, onButtonClick}:any) => {
   const dispatch = useDispatch();
   const token: string = useSelector((state: any) => state.token);
+  const userId: string = useSelector((state: any) => state.user._id);
+  const user: any = useSelector((state: any) => state.user);
   const [post, setPost] = useState([]);
-  const [loading, setLoading] = useState(true)
   const [clicked, setClicked] = useState(false)
 
 
-  const buttonClick = () => {
-    console.log('clikeddd');
+  const buttonClicks = () => {
+    console.log('unfollowed');
     
     setClicked(() => !clicked)
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const postResponse = await getPosts(token);
-        setPost(postResponse);
-        dispatch(setPosts({ posts: postResponse })); 
-        setLoading(false);
-      } catch (error) {
-        // Handle any potential errors here
-        console.error('Error occurred while fetching posts:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const postResponse = await getPosts(token);
+     
+      const friendPosts = postResponse.filter((singlePost: any) => user.followers.includes(singlePost.userId) || singlePost.userId == userId)
+     
+      setPost(friendPosts);
+      dispatch(setPosts({ posts: postResponse })); 
+    } catch (error) {
+      // Handle any potential errors here
+      console.error('Error occurred while fetching posts:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-  }, [clicked]);
+  }, [clicked, data]);
   return (
     <>
 
@@ -52,7 +54,9 @@ const PostsWidgets = (postClick: any) => {
               image={image}
               likes={likes}
               comments={comments}
-              click={buttonClick}
+              click={buttonClicks}
+              globalClick = {onButtonClick}
+
             />
           ))}
         </div>

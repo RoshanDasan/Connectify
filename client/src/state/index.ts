@@ -33,17 +33,17 @@ export const authSlice = createSlice({
       state.user = null;
       state.token = null;
     },
-    setAdminLogin:(state, action: PayloadAction<{admin: any; admintoken: any }>) => {
+    setAdminLogin: (state, action: PayloadAction<{ admin: any; admintoken: any }>) => {
       state.admin = action.payload.admin;
       state.admintoken = action.payload.admintoken;
     },
-    
+
     setAdminLogout: (state) => {
       state.admin = null;
       state.admintoken = null;
     },
 
-    
+
     setUser: (state, action: PayloadAction<{ user: any }>) => {
       if (state.user) {
         state.user = action.payload.user;
@@ -51,16 +51,30 @@ export const authSlice = createSlice({
         console.error("user do not exist");
       }
     },
-    setFriends: (state, action: PayloadAction<{ friends: any[] }>) => {
+
+
+    setFollower: (state, action: PayloadAction<{ followers: any }>) => {
       if (state.user) {
-        state.user = action.payload.friends;
+        state.user.followers.push(action.payload.followers);
       } else {
-        console.error("Friends do not exist");
+        console.error("Failed to set");
       }
     },
+
+
+    setUnfollower:(state, action: PayloadAction<{unfollower: any}>) => {
+      if(state.user){
+        const filterData = state.user.followers.filter((follower: string) => follower !== action.payload.unfollower)
+        state.user.followers = filterData
+      }
+    },
+
+
     setPosts: (state, action: PayloadAction<{ posts: any[] }>) => {
       state.posts = action.payload.posts;
     },
+
+
     setPost: (state, action: PayloadAction<{ post_id: string; post: any }>) => {
       const updatedPosts = state.posts.map((post) => {
         if (post._id === action.payload.post_id) return action.payload.post;
@@ -68,12 +82,16 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
+
+
     setUpdatePost: (state, action) => {
 
       state.posts.push(action.payload.posts)
-  },
+    },
+
+
   }
 });
 
-export const { setMode, setLogin, setLogout,setUser, setFriends, setPosts, setPost,setUpdatePost, setAdminLogin, setAdminLogout } = authSlice.actions;
+export const { setMode, setLogin, setLogout, setUser, setFollower, setPosts, setPost, setUpdatePost, setAdminLogin, setAdminLogout,setUnfollower } = authSlice.actions;
 export default authSlice.reducer;
