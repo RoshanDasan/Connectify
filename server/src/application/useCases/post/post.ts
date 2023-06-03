@@ -23,6 +23,7 @@ export const postCreate = async (
   if(!newpost) {
     throw new AppError('Uploading failed', HttpStatus.BAD_REQUEST)
   }
+  return newpost
 };
 
 export const getPostsByUser = async (userId: any, repositories: ReturnType<postDbInterfaceType>) => {

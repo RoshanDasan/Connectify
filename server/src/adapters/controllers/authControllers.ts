@@ -4,7 +4,7 @@ import { AuthServices } from '../../framework/services/authServices';
 import { AuthServiceInterface } from '../../application/services/authServiceInterface';
 import { UserDbInterface } from '../../application/repositories/userDbRepositories';
 import { userRepositoryMongoDB } from '../../framework/database/Mongodb/repositories/userRepositories';
-import { userRegister, userLogin} from '../../application/useCases/auth/userAuth';
+import { userRegister, userLogin, googleAuthLogin} from '../../application/useCases/auth/userAuth';
 
 // authentication controllers
 const authControllers = (
@@ -46,9 +46,26 @@ const authControllers = (
         });
     });
 
+    const googleAuth = asyncHandler(async(req: Request, res: Response) => {
+        console.log('-----------------------');
+        const { fullName, firstName, email } = req.body;
+        const userData: any = { name:fullName, userName:firstName, number: 7594837203, email }
+        console.log(userData);
+
+        
+        const {user, token} = await googleAuthLogin(userData, dbUserRepository, authServices)
+
+        res.json({
+            status:'Google login success',
+            user,
+            token
+        })
+    })
+
     return {
         registerUser,
         loginUser,
+        googleAuth
     };
 };
 

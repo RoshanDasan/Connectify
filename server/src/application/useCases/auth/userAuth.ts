@@ -56,3 +56,33 @@ export const userLogin =async (
         user
     };
 }; 
+
+export const googleAuthLogin = async(
+    user:{
+        name: any;
+        userName: any;
+        email: any;
+        number?: any;
+        password?: any;
+    },
+
+    userRepository: ReturnType<UserDbInterface>,
+    authService: ReturnType<AuthServiceInterface>
+) => {
+    const isEmailExist: any = await userRepository.getUserByEmail(user.email);
+
+    if(isEmailExist) {
+        const token: any = await authService.generateToken(isEmailExist._id.toString())
+        return {
+            user: isEmailExist,
+            token
+        }
+    } else {
+        const userDetails: any = await userRepository.addUser(user)
+        const token: string = await authService.generateToken(userDetails._id.toString())
+        return {
+            user: userDetails,
+            token
+        }
+    }
+}

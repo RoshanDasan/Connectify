@@ -65,11 +65,9 @@ export const register = async (values: RegisterFormValues): Promise<any> => {
 };
 
 export const login = async (values:LoginFormValues) => {
-    console.log('logg');
    
     try {
       const response = await baseURL.post<LoginResponse>('/api/auth/login', values);
-      console.log(response,'///////');
   
       // Handle the success response
       if (response.data.status === 'success') {
@@ -92,6 +90,33 @@ export const login = async (values:LoginFormValues) => {
       toast.error(errorMessage);
     }
     
+  };
+
+  export const googleLogin = async ( values: any) => {
+    try {
+      console.log('goggleee kerii');
+      
+      const response = await baseURL.post('/api/auth/google_auth', values);
+      console.log('google irangi');
+      
+      console.log(response.data.status);
+      
+      if(response.data.status === 'Google login success') {
+        toast.success('Google Login success')
+        return response.data
+      }
+      else {
+        console.log('failed');
+        console.log(response.data.message);
+        toast.error('Login failed');
+        return false
+
+      }
+
+
+    } catch (error) {
+      
+    }
   }
   
   export const adminLogin =async (values: AdminLoginFormValues) => {

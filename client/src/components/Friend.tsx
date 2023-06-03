@@ -1,21 +1,25 @@
-import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
-import { Avatar, Box, IconButton, Typography, useTheme } from "@mui/material";
-import { useState } from "react";
+import { Avatar, Box, IconButton, Typography } from "@mui/material";
 import Flex from "./DisplayFlex";
+import { useSelector } from "react-redux";
+import { followUser } from "../api/apiConnection/userConnection";
 
 // eslint-disable-next-line react/prop-types
-const Friend = ({ name, subtitle, userPicturePath }: any) => {
+const Friend = ({ friendId, userName, handleshowFreind, onButtonClick }: any) => {
+  const id = useSelector((state:any) => state.user._id)
+  const token = useSelector((state:any) => state.token)
 
+  const setIsFriend = async (id: string, friendId: string) => {
+    console.log(id);
+    const response = await followUser(id, friendId, token)
+    console.log(response);
+    handleshowFreind()
+    onButtonClick()
+    
 
-  const { palette } = useTheme();
-  const primaryLight = palette.primary.light;
-  const primaryDark = palette.primary.dark;
-
-
-
-  const [isFriend, setIsFriend] = useState(false)
+  }
 
   return (
+
     <Flex m='0.5rem 0 1.5rem 0' >
       <Flex gap="1rem">
         {/* <UserImage image='../assets/photo.jpg' size="55px" /> */}
@@ -33,24 +37,16 @@ const Friend = ({ name, subtitle, userPicturePath }: any) => {
                 cursor: "pointer",
               },
             }}
+            
           >
-            {name}
-          </Typography>
-
-          <Typography fontSize="0.75rem">
-            {subtitle}
+            {userName}
           </Typography>
         </Box>
       </Flex>
-      <IconButton onClick={() => setIsFriend(!isFriend)}
+      <IconButton onClick={() => setIsFriend(id, friendId)}>
 
-        sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
-      >
-        {isFriend ? (
-          <PersonRemoveOutlined sx={{ color: primaryDark }} />
-        ) : (
-          <PersonAddOutlined sx={{ color: primaryDark }} />
-        )}
+        <Typography variant="h6" color={'blue'}>Follow</Typography>
+
       </IconButton>
     </Flex>
   );

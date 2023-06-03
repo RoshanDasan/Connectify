@@ -11,6 +11,9 @@ const userRouter = () => {
     const router = express_1.default.Router();
     const controllers = (0, userControllers_1.default)(userDbRepositories_1.userDbRepository, userRepositories_1.userRepositoryMongoDB);
     router.get('/:id', controllers.getUserById);
+    router.get('/followers/:id', controllers.getFollowersList);
+    router.get('/followings/:id', controllers.getFollowingsList);
+    router.patch('/', controllers.insertFollowers);
     return router;
 };
 exports.default = userRouter;

@@ -2,7 +2,7 @@ import express from "express";
 import postControllers from "../../../adapters/controllers/postControllers";
 import { postDbInterface } from "../../../application/repositories/postDbRepositories";
 import { postRepositoryMongoDb } from "../../database/Mongodb/repositories/postRepositeries";
-import { uploads } from "../../services/multerServices";
+import { upload } from "../../services/multerServices";
 
 const  postRouter = () => {
     const router = express.Router();
@@ -12,7 +12,7 @@ const  postRouter = () => {
     router.get('/', controller.getPosts);
 
     // upload post
-    router.post('/',uploads.single('image'), controller.uploadPost);
+    router.post('/',upload.single('image'), controller.uploadPost);
 
     // get posts by a user
     router.get('/userposts/:userId', controller.getUserPosts)

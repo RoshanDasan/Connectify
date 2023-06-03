@@ -22,12 +22,12 @@ const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryTyp
         
         
         const body = {userId, description, userName, image};
-        await postCreate(body,dbRepositoriesPost );
+        const newPost = await postCreate(body,dbRepositoriesPost );
         
         
         res.json({
             status:'upload-success',
-            body
+            newPost
         }) 
         
     })

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
-import { Avatar, Typography, Button } from '@mui/material';
+import { makeStyles, useTheme } from '@mui/styles';
+import { Avatar, Typography, Button, Box, TextField, useMediaQuery } from '@mui/material';
 import { Theme } from '@mui/material';
 import Sidebar from '../Sidebar/Sidebar';
 import Flex from '../../components/DisplayFlex';
 import Cards from '../../components/card';
 import { useSelector } from 'react-redux';
-import Skeleton from '@mui/material/Skeleton';
+import Modal from '@mui/material/Modal'
+import { useParams } from 'react-router-dom';
+import { getUser } from '../../api/apiConnection/userConnection';
 import { getPostByUser } from '../../api/apiConnection/postConnection';
+import Navbar from '../Navbar/Navbar';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -51,39 +54,71 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
-const Profile  = ({
 
-}) => {
+const Profile = () => {
   const classes = useStyles();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+
+  const [userDetails, setUserDetails] = useState({})
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [clicked, setClicked] = useState(false)
+  const { id } = useParams<{ id: any }>();
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  const userId: string = useSelector((state: any) => state.user._id);
-  const user: any = useSelector((state: any) => state.user);
+
   const token: string = useSelector((state: any) => state.token._id);
 
   const getPosts = async () => {
     try {
       setLoading(true);
-      const postArray: any = await getPostByUser(userId, token);
-      setUserPosts(postArray);
+      const userDetails: any = await getUser(id, token);
+      const postsDetails: any = await getPostByUser(id, token)
+      setUserDetails(userDetails)
+      setUserPosts(postsDetails);
+
       setLoading(false);
     } catch (error) {
       console.log('Error retrieving user posts:', error);
     }
   };
 
-  console.log(user,'user');
-  
-  
+  const clikedFun = () => {
+
+    setClicked(() => !clicked)
+  }
+
   useEffect(() => {
-    getPosts();
-  }, []);
+    getPosts().then(() => {
+    })
+
+  }, [id, clicked]);
+
+  
 
   return (
-    <div className={classes.root}>
-      <Sidebar />
+    <>
+      <Navbar />
+    {!isMobile && (
+
+   <Sidebar /> 
+    )}
+    <div className={classes.root} style={{marginLeft: '15vw'}}>
       <div className={classes.profileContainer}>
         <Avatar
           className={classes.avatar}
@@ -91,77 +126,106 @@ const Profile  = ({
           alt="Profile Picture"
         />
         <Typography variant="h5" className={classes.username}>
-          {user.userName}
+          {userDetails.name}
         </Typography>
       </div>
+
+      {/* modal open  */}
+      <div>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Text in a modal
+            </Typography>
+            <TextField
+              label="Name"
+              variant="filled"
+              fullWidth
+              color="primary"
+              InputLabelProps={{
+                shrink: true,
+                style: { color: '#9e9e9e' },
+              }}
+              InputProps={{
+                style: {
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '8px',
+                },
+              }}
+            />
+          </Box>
+        </Modal>
+      </div>
+
       <div className={classes.statsContainer}>
         <div className={classes.stat}>
           <Typography variant="subtitle1" className={classes.statNumber}>
-            {user.posts.length}
+            {userPosts.length}
           </Typography>
           <Typography variant="body2">Posts</Typography>
         </div>
         <div className={classes.stat}>
           <Typography variant="subtitle1" className={classes.statNumber}>
-            {/* {user.followers.length} */}0
+            {userDetails.followers ? userDetails.followers.length : 0}
           </Typography>
           <Typography variant="body2">Followers</Typography>
         </div>
         <div className={classes.stat}>
           <Typography variant="subtitle1" className={classes.statNumber}>
-            {user.following.length}
+            {userDetails.following ? userDetails.following.length : 0}
           </Typography>
           <Typography variant="body2">Following</Typography>
         </div>
       </div>
+      
       <Button
         variant="contained"
         sx={{ backgroundColor: 'lightgray' }}
         className={classes.button}
+        onClick={handleOpen}
       >
         Edit Profile
       </Button>
-      {loading ? (
-        <Flex m={10} sx={{ width: '50rem' }}>
-          <Skeleton variant="rectangular" width={300} height={300} />
-          <Skeleton variant="rectangular" width={300} height={300} />
-          <Skeleton variant="rectangular" width={300} height={300} />
-        </Flex>
-      ) : (
-        <Flex m={10} sx={{ width: '50rem' }}>
-          <Flex flexWrap="wrap">
-            {userPosts.map(
-              (
-                {
-                  _id,
-                  userId,
-                  description,
-                  userName,
-                  image,
-                  likes,
-                  comments,
-                },
-                index
-              ) =>
-                image && (
-                  <Flex key={index} sx={{ mt: '2rem' }}>
-                    <Cards
-                      key={_id}
-                      id={_id}
-                      userId={userId}
-                      description={description}
-                      userName={userName}
-                      image={image}
-                      likes={likes}
-                      comments={comments}
-                    />
-                  </Flex>
-                )
-            )}
-          </Flex>
-        </Flex>
-      )}
+
+      <Flex width={isMobile ? '100%' : '60rem'} sx={{ display:'flex', flexWrap:'wrap', justifyContent: 'flex-start'}}>
+        {userPosts.map(
+          (
+            {
+              _id,
+              userId,
+              description,
+              userName,
+              image,
+              likes,
+              comments,
+            },
+            index
+          ) =>
+            image && (
+              <Flex key={index} sx={{ m: isMobile ? '2rem .2rem .2rem .2rem' : '5rem .2rem .2rem .2rem' }}>
+                <Cards
+                  key={_id}
+                  id={_id}
+                  userId={userId}
+                  description={description}
+                  userName={userName}
+                  image={image}
+                  likes={likes}
+                  comments={comments}
+                  click={clikedFun}
+                />
+              </Flex>
+            )
+        )}
+      </Flex>
     </div>
+    </>
+   
   );
 };
 

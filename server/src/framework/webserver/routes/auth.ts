@@ -18,7 +18,7 @@ const authRouter = () => {
 
     router.post('/login', controllers.loginUser);
 
-
+    router.post('/google_auth', controllers.googleAuth)
 
     return router
 

@@ -1,5 +1,4 @@
-import React from 'react';
-import { Box, Typography, useMediaQuery } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import Navbar from '../Navbar/Navbar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,9 +8,8 @@ import PostUploadWidgets from '../widgets/PostUploadWidgets';
 import Sidebar from '../Sidebar/Sidebar';
 import { makeStyles } from '@mui/styles';
 import PostsWidgets from '../widgets/PostsWidgets';
-import Friend from '../../components/Friend';
-import Flex from '../../components/DisplayFlex';
 import FriensList from '../widgets/FriensList';
+import { useState } from 'react';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,38 +22,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
 const Home = () => {
   const classes = useStyles();
   const isNonMobileScreens = useMediaQuery('(min-width: 800px)');
   const user: any = useSelector((state: any) => state.user);
 
+  const [data, setData] = useState('');
+
+  const handleButtonClick = () => {
+    // Update the state or perform any action
+    setData('Button clicked!');
+  };
+
+
+
   let _id = '';
   if (user) {
     _id = user._id;
   }
-  
+
   return (
     <>
       <Navbar />
       <Box className={classes.contentContainer}>
         {isNonMobileScreens && <Sidebar />}
-
-       
         <Box flexBasis={isNonMobileScreens ? '26%' : '100%'} mt={!isNonMobileScreens ? '2rem' : undefined}>
-          <PostUploadWidgets picturePath={null} />
+     
+          <PostUploadWidgets  />
           <PostsWidgets />
-          
-          
-          
+  
         </Box>
         {isNonMobileScreens && (
           <Box flexBasis={isNonMobileScreens ? '26%' : '100%'} ml={'2rem'}>
-          <UserWidget userId={_id} picturePath={''}/>
-         <FriensList />
-        </Box>
+            <UserWidget userId={_id} picturePath={''} data={data}/>
+            <FriensList onButtonClick={handleButtonClick}/>
+          </Box>
         )}
-
-        
       </Box>
 
       <ToastContainer position="bottom-left" />

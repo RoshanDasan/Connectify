@@ -41,11 +41,9 @@ const userSchema = new mongoose_1.Schema({
     },
     number: {
         type: Number,
-        required: true,
     },
     password: {
         type: String,
-        required: true,
         minlength: 3
     },
     dp: {
@@ -70,12 +68,12 @@ const userSchema = new mongoose_1.Schema({
             ref: "User",
         },
     ],
-    posts: [
-        {
-            type: mongoose_1.default.Schema.Types.ObjectId,
-            ref: "Post",
-        },
-    ],
+    // posts: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Post",
+    //   },
+    // ],
 }, { timestamps: true });
 const User = (0, mongoose_1.model)("User", userSchema);
 exports.default = User;

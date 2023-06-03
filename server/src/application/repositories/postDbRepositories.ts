@@ -12,7 +12,7 @@ export const postDbInterface: any = (repositories: ReturnType<postRepositoryType
         description: string;
         image: string;
         userName: string;
-    }) => repositories.uploadPost(post)
+    }) => { return repositories.uploadPost(post)}
 
 
     const getPostsByUser = async (userId: string) => {

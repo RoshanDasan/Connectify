@@ -1,38 +1,18 @@
-import React,{useEffect} from 'react'
-import jwt_decode from 'jwt-decode';
-
-interface Window {
-  google: any;
-}
-
-function GoogleAuth() {
-  function handleCallbackResponse(response: any) {
-    console.log(response);
-    console.log(jwt_decode(response.credential));
-  }
-
-  useEffect(() => {
-    /* global google */
-    (window as unknown as Window).google.account.id.initialize({
-      client_id: "465788205530-d09rv4blovs5l31q350pluh7gn0e38cr.apps.googleusercontent.com",
-      callback: handleCallbackResponse
-    });
-  
-    (window as unknown as Window).google.accounts.id.renderButton(
-      document.getElementById("googleLoginButton")!,
-      { theme: "outline", size: 'large' }
-    );
-  }, []);
-  
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from 'firebase/auth'
+const firebaseConfig = {
+  apiKey: "AIzaSyC8mhLoRYtyrvj6nwZRrg-M0pDNEhB9pmg",
+  authDomain: "connectify-f50e3.firebaseapp.com",
+  projectId: "connectify-f50e3",
+  storageBucket: "connectify-f50e3.appspot.com",
+  messagingSenderId: "648893555299",
+  appId: "1:648893555299:web:d451d5591a45ac91c8ce56",
+  measurementId: "G-J7MD4RX44Z"
+};
 
 
-  return (
-    <div>
-      <div>
-      <div id='googleLoginButton'></div>
-      </div>
-    </div>
-  )
-}
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-export default GoogleAuth
+export { auth, provider }

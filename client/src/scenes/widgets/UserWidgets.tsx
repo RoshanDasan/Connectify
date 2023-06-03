@@ -10,9 +10,10 @@ import WidgetWraper from '../../components/WidgetWraper';
 interface UserWidgetProps {
   userId: string;
   picturePath: string;
+  data: any
 }
 
-const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath }) => {
+const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data  }: any) => {
   const [user, setUser] = useState<any>(null);
   const pellet = useTheme();
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath }) => {
   const getUsers = async () => {
     try {
       const userResponse: any = await getUser(userId, token);
+     
+      
       setUser(userResponse);
     } catch (error) {
       console.log(error);
@@ -32,13 +35,14 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath }) => {
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [data]);
 
   if (!user) {
     return null;
   }
+  
 
-  const { userName, followers } = user;
+  const { userName, followers, following } = user;
 
   return (
     <WidgetWraper>
@@ -51,7 +55,10 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath }) => {
               {userName}
             </Typography>
             <Typography color={medium} variant='subtitle2'>
-              {followers} followers
+              {followers.length} followers
+            </Typography>
+            <Typography color={medium} variant='subtitle2'>
+              {following.length} following
             </Typography>
           </Box>
         </Flex>
@@ -76,30 +83,6 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath }) => {
 
       <Divider />
 
-      {/* Fourth Row */}
-      {/* <Box p='1rem 0'>
-        <Typography fontSize='1rem' fontWeight='bold' mb='1rem'>
-          Social Profiles
-        </Typography>
-
-        <Flex gap='1rem' alignItems='center' mb='0.5rem'>
-          <img src="../assets/twitter.png" alt="twitter" />
-          <Box>
-            <Typography fontWeight='bold'>Twitter</Typography>
-            <Typography color={medium}>Social Network</Typography>
-          </Box>
-          <EditOutlined fontSize='small' />
-        </Flex>
-
-        <Flex gap='1rem' alignItems='center'>
-          <img src="../assets/linkedin.png" alt="linkedin" />
-          <Box>
-            <Typography fontWeight='bold'>LinkedIn</Typography>
-            <Typography color={medium}>Network Platform</Typography>
-          </Box>
-          <EditOutlined fontSize='small' />
-        </Flex>
-      </Box> */}
     </WidgetWraper>
   );
 };

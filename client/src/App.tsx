@@ -17,17 +17,15 @@ export function App() {
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
-  console.log(isAuth,'isuser');
-  console.log(isAdminAuth,'isadmin');
-  
+
 
   return (
     <div className='app'>
       <Router>
-     
+
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          
+
           <Routes>
             <Route path='/' element={isAuth ? <Home /> : <Auth />} />
             <Route
@@ -37,10 +35,10 @@ export function App() {
             <Route path='/admin' element={isAdminAuth ? <Home /> : <AdminLogin />} />
             <Route
               path='/admin/home'
-              element={ <AdminHome  />}
+              element={<AdminHome />}
             />
             <Route
-              path='/profile'
+              path='/profile/:id'
               element={isAuth ? <Profile /> : <Navigate to='/' />}
             />
           </Routes>

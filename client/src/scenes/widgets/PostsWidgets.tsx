@@ -3,15 +3,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '../../state';
 import PostWidgetLoop from './PostWidgetLoop';
 import { getPosts } from '../../api/apiConnection/postConnection';
-import { Avatar } from '@mui/material';
-import { Skeleton } from '@mui/lab';
 
 
-const PostsWidgets = () => {
+
+const PostsWidgets = (postClick: any) => {
   const dispatch = useDispatch();
   const token: string = useSelector((state: any) => state.token);
   const [post, setPost] = useState([]);
   const [loading, setLoading] = useState(true)
+  const [clicked, setClicked] = useState(false)
+
+
+  const buttonClick = () => {
+    console.log('clikeddd');
+    
+    setClicked(() => !clicked)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +26,7 @@ const PostsWidgets = () => {
         setLoading(true);
         const postResponse = await getPosts(token);
         setPost(postResponse);
-        dispatch(setPosts({ posts: postResponse }));
+        dispatch(setPosts({ posts: postResponse })); 
         setLoading(false);
       } catch (error) {
         // Handle any potential errors here
@@ -28,20 +35,10 @@ const PostsWidgets = () => {
     };
 
     fetchData();
-  }, []);
+  }, [clicked]);
   return (
     <>
-      {loading ? (
-        <div>
-          <Skeleton variant="circular">
-            <Avatar />
-          </Skeleton>
-          <Skeleton variant="text" width={200} />
-          <Skeleton width={400} height={400}>
-            {/* <PostWidgetLoop/> */}
-          </Skeleton>
-        </div>
-      ) : (
+
         <div>
           {post.map(({ _id, userId, description, userName, image, likes, comments }: any) => (
 
@@ -55,10 +52,11 @@ const PostsWidgets = () => {
               image={image}
               likes={likes}
               comments={comments}
+              click={buttonClick}
             />
           ))}
         </div>
-      )}
+  
     </>
   );
 }

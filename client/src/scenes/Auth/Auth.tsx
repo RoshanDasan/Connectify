@@ -9,7 +9,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
 import { setLogin, setUser } from '../../state';
-import { register, login } from '../../api/apiConnection/authConnect';
+import { register, login, googleLogin } from '../../api/apiConnection/authConnect';
+import { auth, provider } from '../../api/googleAuth/GoogleAuth';
+import { signInWithPopup } from 'firebase/auth';
 
 const Auth: React.FC = () => {
   let classes = useStyles();
@@ -51,6 +53,30 @@ const Auth: React.FC = () => {
      }
    
   };
+
+  const googleLoginHandle = () => {
+    signInWithPopup(auth, provider).then(async (UserCredential: any) => {
+      console.log(UserCredential._tokenResponse);
+      const values: any = UserCredential._tokenResponse
+      const {user, token}: any = await googleLogin(values)
+      
+      dispatch(
+        setLogin({
+          user : user,
+          token: token
+        })
+        
+      )
+      
+      dispatch(
+        setUser({
+          user: user
+        })
+      )
+      navigate('/home')
+      toast.success('Login success')
+    })
+  }
 
 
 
@@ -183,7 +209,7 @@ const Auth: React.FC = () => {
               </Button>
             </Grid>
           </Grid>
-          <div id='googleLoginButton'></div>
+          <Button onClick={googleLoginHandle} >Login with google</Button>
         </form>
       </Paper>
     </Container>

@@ -8,7 +8,7 @@ import userAuthMiddleware from '../middlewares/authMiddleware'
 const routes = (app: Application) => {
     app.use('/api/auth', authRouter());
     app.use('/api/admin',adminauthRouter())
-    app.use('/api/user',userAuthMiddleware, userRouter());
+    app.use('/api/user', userRouter());
     app.use('/api/post', postRouter())
 }
 

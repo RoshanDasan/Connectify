@@ -13,7 +13,7 @@ const authControllers = (authServiceInterface, authService, adminDbInterface, ad
         console.log('-------------------------------------------------------');
         const { email, password } = req.body;
         const token = await (0, adminAuth_1.adminLogin)(email, password, dbAdminRepository, authServices);
-        res.setHeader('authorization', token.token);
+        // res.setHeader('authorization', token.token);
         res.json({
             status: "success",
             message: "admin verified",

@@ -19,7 +19,6 @@ const authControllers = (authServiceInterface, authService, userDbInterface, use
             password,
         };
         const token = await (0, userAuth_1.userRegister)(user, dbUserRepository, authServices);
-        console.log(token, 'tokennnn');
         res.json({
             status: "success",
             message: "User registered",
@@ -29,17 +28,27 @@ const authControllers = (authServiceInterface, authService, userDbInterface, use
     const loginUser = (0, express_async_handler_1.default)(async (req, res) => {
         const { userName, password } = req.body;
         const token = await (0, userAuth_1.userLogin)(userName, password, dbUserRepository, authServices);
-        console.log(token.token, '-------------------------------------------------------');
-        res.setHeader('authorization', token.token);
+        // res.setHeader('authorization', token.token);
         res.json({
             status: "success",
             message: "user verified",
             token
         });
     });
+    const googleAuth = (0, express_async_handler_1.default)(async (req, res) => {
+        const { name, userName, number, email } = req.body;
+        const userData = { name, userName, number, email };
+        const { user, token } = await (0, userAuth_1.googleAuthLogin)(userData, dbUserRepository, authServices);
+        res.json({
+            status: 'Google login success',
+            user,
+            token
+        });
+    });
     return {
         registerUser,
         loginUser,
+        googleAuth
     };
 };
 exports.default = authControllers;

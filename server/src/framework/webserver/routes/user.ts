@@ -5,9 +5,18 @@ import { userRepositoryMongoDB } from '../../database/Mongodb/repositories/userR
 
 const userRouter = () => {
     const router = express.Router();
+
     const controllers = userControllers(userDbRepository,userRepositoryMongoDB);
 
+    router.get('/', controllers.getAllUsers)
+
     router.get('/:id', controllers.getUserById);
+
+    router.get('/followers/:id', controllers.getFollowersList);
+
+    router.get('/followings/:id', controllers.getFollowingsList);
+
+    router.patch('/', controllers.insertFollowers)
 
     return router;
 }

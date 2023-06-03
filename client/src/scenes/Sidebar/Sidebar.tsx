@@ -5,6 +5,7 @@ import { Home, Explore, Notifications, Person, Settings, ExitToApp, Message } fr
 import { setLogout } from '../../state';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 
 const drawerWidth = 240;
@@ -33,6 +34,13 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 const Sidebar: React.FC = () => {
+
+const userId = useSelector((state:any) => state.user._id)
+  const userStatus = {
+   user: true
+  };
+
+  
     
     const classes = useStyles();
     const navigate = useNavigate()
@@ -44,6 +52,7 @@ const Sidebar: React.FC = () => {
       dispatch(setLogout());
       navigate('/');
     };
+  
   
 
   return (
@@ -85,7 +94,7 @@ const Sidebar: React.FC = () => {
             <ListItemIcon>
               <Person />
             </ListItemIcon>
-            <ListItemText primary="Profile" classes={{ primary: classes.listItemText }} onClick={() => navigate('/profile')}/>
+            <ListItemText primary="Profile" classes={{ primary: classes.listItemText }} onClick={() => navigate(`/profile/${userId}`, { state: userStatus })}/>
           </ListItem>
         </List>
         <Divider />

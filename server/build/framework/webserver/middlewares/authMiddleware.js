@@ -11,7 +11,6 @@ const userAuthMiddleware = (req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith(`Bearer `)) {
         token = req.headers.authorization.split(' ')[1];
     }
-    console.log(token, 'tokennn====================');
     if (!token) {
         throw new appError_1.default("Token not found", httpstatuscodes_1.HttpStatus.UNAUTHORIZED);
     }

@@ -5,11 +5,17 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { followUser } from "../api/apiConnection/userConnection";
 
 // eslint-disable-next-line react/prop-types
-const PostHeader = ({ name, subtitle }: any) => {
+const PostHeader = ({ name, friendId }: any) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const navigate = useNavigate()
+    const id = useSelector((state: any) => state.user._id)
+    const token = useSelector((state: any) => state.token)
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -17,9 +23,16 @@ const PostHeader = ({ name, subtitle }: any) => {
         setAnchorEl(null);
     };
 
+    const handleFollow = async (id: string, friendId: string) => {
+        handleClose()
+        const response = await followUser(id, friendId, token)
+        console.log(response);
+        
+    }
+
     return (
         <Flex m='0.5rem 0 1.5rem 0' >
-            <Flex gap="1rem">
+            <Flex gap="1rem" onClick={()=>navigate(`/profile/${friendId}`)}>
                 {/* <UserImage image='../assets/photo.jpg' size="55px" /> */}
                 <Avatar />
                 <Box
@@ -35,13 +48,11 @@ const PostHeader = ({ name, subtitle }: any) => {
                                 cursor: "pointer",
                             },
                         }}
+                        
                     >
                         {name}
                     </Typography>
 
-                    <Typography fontSize="0.75rem">
-                        {subtitle}
-                    </Typography>
                 </Box>
             </Flex>
             <div>
@@ -73,7 +84,7 @@ const PostHeader = ({ name, subtitle }: any) => {
                         <MenuItem  onClick={handleClose} sx={{color: 'red'}}>
                             Report
                         </MenuItem>
-                        <MenuItem  onClick={handleClose}>
+                        <MenuItem  onClick={() => handleFollow(id, friendId)}>
                            Unfollow
                         </MenuItem>
                

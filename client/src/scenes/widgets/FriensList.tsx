@@ -1,33 +1,64 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Typography, ButtonBase } from '@mui/material'
 import Flex from '../../components/DisplayFlex'
 import Friend from '../../components/Friend'
+import { useSelector } from 'react-redux'
+import { getAllUsers, getUser } from '../../api/apiConnection/userConnection'
 
 
 
-const FriensList = () => {
-    const [listFriend, setListFriend] = useState(false)
+const FriensList = ({ onButtonClick }: any) => {
+  const token = useSelector((state: any) => state.token)
+  const userId = useSelector((state: any) => state.user._id)
+  const [listFriend, setListFriend] = useState(false)
+  const [users, setUsers] = useState([])
+  const [clicked, setClicked] = useState(false)
+
+  const getUserDetails = async () => {
+    const details = await getAllUsers(token)
+    const userDetail = await getUser(userId, token)
+    const excludedArray: any = details.filter((detail: any) => !userDetail.followers.includes(detail._id));
+    setUsers(excludedArray)
+  }
+  const handleshowFreind = () => {
+    setClicked(() => !clicked)
+  }
+
+  useEffect(() => {
+    getUserDetails()
+  }, [clicked])
+
+
+
   return (
     <>
-    <Flex>
-     <Typography>Suggested for you</Typography>
-     <ButtonBase onClick={()=> setListFriend(!listFriend)}>See all</ButtonBase>
-     
-    </Flex>
-    <Friend name='Roshan' subtitle='chalakudy' /><Friend name='Nikhil' subtitle='Kottayam' /><Friend name='Arjun' subtitle='Palakadu' />
-    {listFriend?(
-        <>
-         <Friend name='Rahul' subtitle='Mumbai' /><Friend name='Anirudh' subtitle='Palakkadu' /><Friend name='Sterin' subtitle='Thrissur' />
-        </>
-        
-    ):(
-        ''
-    )}
-   
+      <Flex>
+        <Typography>Suggested for you</Typography>
+        <ButtonBase onClick={() => setListFriend(!listFriend)}>See all</ButtonBase>
+
+      </Flex>
+      {users.map(({ userName, _id }: any) => (
+        _id != userId && (
+          <Friend
+            key={_id}
+            friendId={_id}
+            userName={userName}
+            handleshowFreind={handleshowFreind}
+            onButtonClick={onButtonClick}
+          />
+        )
+      ))}
+
+
+
 
     </>
-         
+
   )
 }
 
+
 export default FriensList
+
+
+

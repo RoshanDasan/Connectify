@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, createContext, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Box,
@@ -26,8 +26,10 @@ import Dropzone from 'react-dropzone';
 
 import WidgetWraper from '../../components/WidgetWraper';
 import { uploadPost } from '../../api/apiConnection/postConnection';
+import { setUpdatePost } from '../../state';
 
-const PostUploadWidget = (picturePath: any) => {
+
+const PostUploadWidget = () => {
 
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState<File | null>(null);
@@ -36,6 +38,7 @@ const PostUploadWidget = (picturePath: any) => {
   const { _id, userName } = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
+  const dispatch = useDispatch()
 
   const handlePost = async () => {
 
@@ -47,16 +50,22 @@ const PostUploadWidget = (picturePath: any) => {
       formData.append('image', image);
       formData.append('picturePath', image.name);
     }
-    uploadPost(token, formData);
+    const upload: any = await uploadPost(token, formData)
+
+      console.log(upload,'newpostttt');
+  
+    
+    dispatch(setUpdatePost({posts: upload.newPost}))
     setImage(null);
     setPost('');
-    window.location.reload()
+
+    
   };
   return (
 
     <WidgetWraper  >
       <Flex gap='1.5rem' >
-      <Avatar alt={userName} src={picturePath} />
+      <Avatar alt={userName} />
         <InputBase
           placeholder='Enter your thoughts'
           onChange={(e) => setPost(e.target.value)}

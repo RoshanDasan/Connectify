@@ -60,33 +60,34 @@ export const deletePost = async (id: string, token: string) => {
       }
     });
 
-    // Sort the posts based on createdAt in descending order
-    const sortedPosts = response.data.posts.sort((a: any, b: any) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
+    // // Sort the posts based on createdAt in descending order
+    // const sortedPosts = response.data.posts.sort((a: any, b: any) => {
+    //   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    // });
 
-    return sortedPosts;
+    return response;
   } catch (error) {
     throw error;
   }
 };
 
 
-export const uploadPost = (token: string, body: any) => {
-  console.log(token, body, 'bodyyy');
+export const uploadPost = async (token: string, body: any) => {
 
-  baseURL
+  try {
+   const response =  await baseURL
     .post(`/api/post`, body, {
       headers: {
         Authorization: `Bearer ${token}`,
-      },
+        "Content-Type": "multipart/form-data",
+      }
     })
-    .then((response) => {
-      console.log(response, 'success');
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-    });
+    return response.data
+  } catch (error) {
+    console.log(error);
+    throw error
+  }
+
 };
 
 export const likePost = (id: string, userId: string, token: string) => {

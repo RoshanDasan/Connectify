@@ -11,7 +11,6 @@ const authServices = () => {
     const encryptPassword = async (password) => {
         const salt = await bcryptjs_1.default.genSalt(10);
         password = await bcryptjs_1.default.hash(password, salt);
-        console.log(password, '=/');
         return password;
     };
     const comparePassword = (password, hasedPassword) => {
