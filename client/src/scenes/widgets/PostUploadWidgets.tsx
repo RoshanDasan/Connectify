@@ -63,6 +63,8 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
       formData.append('image', image);
       formData.append('picturePath', image.name);
     }
+    console.log(formData,'dataa');
+    
     const upload = await uploadPost(token, formData);
 
     dispatch(setUpdatePost({ posts: upload.newPost }));
@@ -73,7 +75,7 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
     onButtonClick();
   };
 
-  const handleInput = (e) => {
+  const handleInput = (e: any) => {
     setPost(e.target.value)
     if (/^\s*$/.test(e.target.value)) {
       setValid(true)
@@ -131,9 +133,8 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
               <Flex>
                 <Box
                   {...getRootProps()}
-                  border={`2px dashed ${palette.primary.main}`}
-                  p="1rem"
-                  width="100%"
+                  
+                
                   sx={{ '&:hover': { cursor: 'pointer' } }}
                 >
                   <input {...getInputProps()} />

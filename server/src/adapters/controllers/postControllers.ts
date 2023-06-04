@@ -19,6 +19,8 @@ const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryTyp
     const uploadPost = expressAsyncHandler(async (req: Request, res: Response) => {
         const { userId, description, userName } = req.body;
         const image: any = req?.file?.filename;
+        console.log(image);
+        console.log(req.body);
         
         
         const body = {userId, description, userName, image};

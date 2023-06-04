@@ -7,10 +7,14 @@ const storage : StorageEngine = multer.diskStorage({
         cb(null, 'public/uploads')
     },
     filename: (req, file, cb) => {
+        console.log('-----------------------');
+        
+        console.log(file);
+        
         const uniqueFilename = `${uuidv4()}-${file.originalname}`;
     cb(null, uniqueFilename);
     }
 });
 
-export const upload= multer({storage})
+export const upload = multer({storage})
 

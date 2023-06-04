@@ -94,16 +94,14 @@ export const userRepositoryMongoDB = () => {
     }
 
     const updateProfile = async (_id: string, data: {
-        userName: string,
         image: string,
         bio: string,
         gender: string
       }) => {
-        const { userName, image, bio, gender } = data;
+        const { image, bio, gender } = data;
       
         const updateResult = await User.findByIdAndUpdate(_id, {
           $set: {
-            userName,
             dp:image,
             bio,
             gender

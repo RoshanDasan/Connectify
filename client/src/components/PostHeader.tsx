@@ -12,7 +12,9 @@ import { useDispatch } from "react-redux";
 import { setUnfollower } from "../state";
 
 // eslint-disable-next-line react/prop-types
-const PostHeader = ({ name, friendId, buttonClick }: any) => {
+const PostHeader = ({ name, image, friendId, buttonClick }: any) => {
+    console.log(image, 'dppppp');
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate()
@@ -43,7 +45,13 @@ const PostHeader = ({ name, friendId, buttonClick }: any) => {
         <Flex m='0.5rem 0 1.5rem 0' >
             <Flex gap="1rem" onClick={() => navigate(`/profile/${friendId}`)}>
                 {/* <UserImage image='../assets/photo.jpg' size="55px" /> */}
-                <Avatar />
+                {image? (
+                    <div className="profile-picture">
+                        <Avatar alt={name} src={`http://localhost:5000/uploads/${image}`} />
+                    </div>
+                ) : (
+                    <Avatar alt={name} />
+                )}
                 <Box
 
                 >
@@ -78,14 +86,14 @@ const PostHeader = ({ name, friendId, buttonClick }: any) => {
                         >
                             <MoreVertIcon />
                         </IconButton>
-                       
 
-                    
+
+
                     </>
 
                 ) : (
                     <>
-                         <IconButton
+                        <IconButton
                             aria-label="more"
                             id="long-button"
                             aria-controls={open ? 'long-menu' : undefined}
@@ -94,30 +102,30 @@ const PostHeader = ({ name, friendId, buttonClick }: any) => {
                             onClick={handleClick}
                         >
                             <MoreVertIcon />
-                        </IconButton> 
+                        </IconButton>
                         <Menu
-                     id="long-menu"
-                     MenuListProps={{
-                         'aria-labelledby': 'long-button',
-                     }}
-                     anchorEl={anchorEl}
-                     open={open}
-                     onClose={handleClose}
-                     PaperProps={{
-                         style: {
-                             width: '20ch',
-                         },
-                     }}
-                 >
-                  
-                         <MenuItem  onClick={handleClose} sx={{color: 'red'}}>
-                             Report
-                         </MenuItem>
-                         <MenuItem  onClick={() => handleFollow(id, friendId)}>
-                            Unfollow
-                         </MenuItem>
-                
-                 </Menu> 
+                            id="long-menu"
+                            MenuListProps={{
+                                'aria-labelledby': 'long-button',
+                            }}
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            PaperProps={{
+                                style: {
+                                    width: '20ch',
+                                },
+                            }}
+                        >
+
+                            <MenuItem onClick={handleClose} sx={{ color: 'red' }}>
+                                Report
+                            </MenuItem>
+                            <MenuItem onClick={() => handleFollow(id, friendId)}>
+                                Unfollow
+                            </MenuItem>
+
+                        </Menu>
                     </>
                 )}
 

@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 import { getUser } from '../../api/apiConnection/userConnection';
 import { getPostByUser } from '../../api/apiConnection/postConnection';
 import Navbar from '../Navbar/Navbar';
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 
@@ -82,12 +83,13 @@ const Profile = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const navigate = useNavigate()
 
 
   const token: string = useSelector((state: any) => state.token);
   const userid: string = useSelector((state: any) => state.user._id);
 
-  
+
   const getPosts = async () => {
     try {
       setLoading(true);
@@ -95,7 +97,6 @@ const Profile = () => {
       const postsDetails: any = await getPostByUser(id, token)
       setUserDetails(userDetails)
       setUserPosts(postsDetails);
-
       setLoading(false);
     } catch (error) {
       throw error
@@ -113,129 +114,116 @@ const Profile = () => {
 
   }, [id, clicked]);
 
-  
+
 
   return (
     <>
       <Navbar />
-    {!isMobile && (
+      {!isMobile && (
 
-   <Sidebar /> 
-    )}
-    <div className={classes.root} style={{marginLeft: '15vw'}}>
-      <div className={classes.profileContainer}>
-        <Avatar
-          className={classes.avatar}
-          src="/path/to/profile/image.jpg"
-          alt="Profile Picture"
-        />
-        <Typography variant="h5" className={classes.username}>
-          {userDetails.name}
-        </Typography>
-      </div>
+        <Sidebar />
+      )}
 
-      {/* modal open  */}
-      <div>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Text in a modal
-            </Typography>
-            <TextField
-              label="Name"
-              variant="filled"
-              fullWidth
-              color="primary"
-              InputLabelProps={{
-                shrink: true,
-                style: { color: '#9e9e9e' },
-              }}
-              InputProps={{
-                style: {
-                  backgroundColor: '#f5f5f5',
-                  borderRadius: '8px',
-                },
-              }}
-            />
-          </Box>
-        </Modal>
-      </div>
+      <Flex>
 
-      <div className={classes.statsContainer}>
-        <div className={classes.stat}>
-          <Typography variant="subtitle1" className={classes.statNumber}>
-            {userPosts.length}
-          </Typography>
-          <Typography variant="body2">Posts</Typography>
-        </div>
-        <div className={classes.stat}>
-          <Typography variant="subtitle1" className={classes.statNumber}>
-            {userDetails.followers ? userDetails.followers.length : 0}
-          </Typography>
-          <Typography variant="body2">Followers</Typography>
-        </div>
-        <div className={classes.stat}>
-          <Typography variant="subtitle1" className={classes.statNumber}>
-            {userDetails.following ? userDetails.following.length : 0}
-          </Typography>
-          <Typography variant="body2">Following</Typography>
-        </div>
-      </div>
+      </Flex>
+      <div className={classes.root} style={{ marginLeft: '15vw' }}>
+        <Flex>
+          <div className={classes.profileContainer}>
+            {userDetails.dp ? (
+              <div style={{margin:'0 2rem 2rem 2rem'}}>
+                <Avatar sx={{ width: '8rem', height: '8rem' }} alt={userDetails.userName} src={`http://localhost:5000/uploads/${userDetails.dp}`} />
+              </div>
+            ) : (
+              <Avatar alt={userDetails.userName} />
+            )}
 
-      {userid == id && (
-              <Button
+          </div>
+          {userid == id && (
+            <Button
+              style={{margin:'0 2rem 2rem 2rem'}}
               variant="contained"
               sx={{ backgroundColor: 'lightgray' }}
               className={classes.button}
-              onClick={handleOpen}
+              onClick={() => navigate(`/accounts/edit/${id}`)}
             >
               Edit Profile
             </Button>
-      )}
-      
+          )}
 
 
-      <Flex width={isMobile ? '100%' : '60rem'} sx={{ display:'flex', flexWrap:'wrap', justifyContent: 'flex-start'}}>
-        {userPosts.map(
-          (
-            {
-              _id,
-              userId,
-              description,
-              userName,
-              image,
-              likes,
-              comments,
-            },
-            index
-          ) =>
-            image && (
-              <Flex key={index} sx={{ m: isMobile ? '2rem .2rem .2rem .2rem' : '5rem .2rem .2rem .2rem' }}>
-                <Cards
-                  key={_id}
-                  id={_id}
-                  userId={userId}
-                  description={description}
-                  userName={userName}
-                  image={image}
-                  likes={likes}
-                  comments={comments}
-                  click={clikedFun}
-                  borderView={userid === id}
-                />
-              </Flex>
-            )
-        )}
-      </Flex>
-      <ToastContainer position="bottom-left" />
-    </div>
+        </Flex>
+          <Typography  >{userDetails.bio}</Typography>
+
+
+
+
+        <Typography variant="h5" m={2} className={classes.username}>
+          {userDetails.name}
+        </Typography>
+
+
+
+        <div className={classes.statsContainer}>
+          <div className={classes.stat}>
+            <Typography variant="subtitle1" className={classes.statNumber}>
+              {userPosts.length}
+            </Typography>
+            <Typography variant="body2">Posts</Typography>
+          </div>
+          <div className={classes.stat}>
+            <Typography variant="subtitle1" className={classes.statNumber}>
+              {userDetails.followers ? userDetails.followers.length : 0}
+            </Typography>
+            <Typography variant="body2">Followers</Typography>
+          </div>
+          <div className={classes.stat}>
+            <Typography variant="subtitle1" className={classes.statNumber}>
+              {userDetails.following ? userDetails.following.length : 0}
+            </Typography>
+            <Typography variant="body2">Following</Typography>
+          </div>
+        </div>
+
+
+
+
+        <Flex width={isMobile ? '100%' : '60rem'} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+          {userPosts.map(
+            (
+              {
+                _id,
+                userId,
+                description,
+                userName,
+                image,
+                likes,
+                comments,
+              },
+              index
+            ) =>
+              image && (
+                <Flex key={index} sx={{ m: isMobile ? '2rem .2rem .2rem .2rem' : '5rem .2rem .2rem .2rem' }}>
+                  <Cards
+                    key={_id}
+                    id={_id}
+                    userId={userId}
+                    description={description}
+                    userName={userName}
+                    image={image}
+                    likes={likes}
+                    comments={comments}
+                    click={clikedFun}
+                    borderView={userid === id}
+                  />
+                </Flex>
+              )
+          )}
+        </Flex>
+        <ToastContainer position="bottom-left" />
+      </div>
     </>
-   
+
   );
 };
 

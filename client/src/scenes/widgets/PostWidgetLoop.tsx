@@ -25,11 +25,12 @@ interface PostWidgetProps {
 }
 
 const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userName, image, likes, click, globalClick }: PostWidgetProps) => {
-  
+
+
   const [isLike, setIsLike] = useState(false);
   const [isComment, setIsComment] = useState(false);
   const token: string = useSelector((state: any) => state.token);
-  const user: any = useSelector((state:any) => state.user._id);
+  const user: any = useSelector((state: any) => state.user._id);
 
   const handleLike = async (id: string, userId: string) => {
     const liked = likePost(id, userId, token);
@@ -39,14 +40,14 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
 
   useEffect(() => {
     setIsLike(() => !isLike)
-    
-  },[click])
 
-  
+  }, [click])
+
+
 
   return (
     <WidgetWraper m='2rem 0' width='30rem'>
-      <PostHeader name={userName} friendId={userId} buttonClick={globalClick} />
+      <PostHeader name={userName} image={image} friendId={userId} buttonClick={globalClick} />
 
       <Typography sx={{ mt: '1rem' }}>{description}</Typography>
       {image && (

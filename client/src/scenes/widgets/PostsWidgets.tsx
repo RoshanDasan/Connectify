@@ -6,7 +6,7 @@ import { getPosts } from '../../api/apiConnection/postConnection';
 
 
 
-const PostsWidgets = ({data, onButtonClick}:any) => {
+const PostsWidgets = ({ data, onButtonClick }: any) => {
   const dispatch = useDispatch();
   const token: string = useSelector((state: any) => state.token);
   const userId: string = useSelector((state: any) => state.user._id);
@@ -16,19 +16,19 @@ const PostsWidgets = ({data, onButtonClick}:any) => {
 
 
   const buttonClicks = () => {
-  
-    
+
+
     setClicked(() => !clicked)
   }
 
   const fetchData = async () => {
     try {
       const postResponse = await getPosts(token);
-     
+
       const friendPosts = postResponse.filter((singlePost: any) => user.followers.includes(singlePost.userId) || singlePost.userId == userId)
-     
+
       setPost(friendPosts);
-      dispatch(setPosts({ posts: postResponse })); 
+      dispatch(setPosts({ posts: postResponse }));
     } catch (error) {
       // Handle any potential errors here
       throw error
@@ -41,26 +41,26 @@ const PostsWidgets = ({data, onButtonClick}:any) => {
   return (
     <>
 
-        <div>
-          {post.map(({ _id, userId, description, userName, image, likes, comments }: any) => (
+      <div>
+        {post.map(({ _id, userId, description, userName, image, likes, comments }: any) => (
+          
 
+          <PostWidgetLoop
+            key={_id}
+            id={_id}
+            userId={userId}
+            description={description}
+            userName={userName}
+            image={image}
+            likes={likes}
+            comments={comments}
+            click={buttonClicks}
+            globalClick={onButtonClick}
 
-            <PostWidgetLoop
-              key={_id}
-              id={_id}
-              userId={userId}
-              description={description}
-              userName={userName}
-              image={image}
-              likes={likes}
-              comments={comments}
-              click={buttonClicks}
-              globalClick = {onButtonClick}
+          />
+        ))}
+      </div>
 
-            />
-          ))}
-        </div>
-  
     </>
   );
 }

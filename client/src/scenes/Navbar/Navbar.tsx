@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery } from '@mui/material';
-import { Search, Message, DarkMode, LightMode, Notifications, Help, Menu, Close } from '@mui/icons-material';
+import { Message, DarkMode, LightMode, Notifications, Help, Menu, Close } from '@mui/icons-material';
 import Tooltip from '@mui/material/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMode, setLogout } from '../../state';
@@ -44,16 +44,6 @@ const Navbar = () => {
           <img style={{ height: '60px' }} src="../assets/logo.png" alt='' />
         </Typography>
 
-        {isNonMobileScreens && (
-          <Flex sx={{ borderRadius: '9px', gap: '3rem', padding: '0.1rem 20rem' }}>
-            <InputBase placeholder='Search...' />
-            <IconButton>
-              <Tooltip title='Search user' placement='bottom'>
-                <Search />
-              </Tooltip>
-            </IconButton>
-          </Flex>
-        )}
       </Flex>
       {isNonMobileScreens ? (
         <Flex gap='2rem' alignItems='center'>

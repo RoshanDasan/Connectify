@@ -13,7 +13,7 @@ interface UserWidgetProps {
   data: any
 }
 
-const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data  }: any) => {
+const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data }: any) => {
   const [user, setUser] = useState<any>(null);
   const pellet = useTheme();
   const navigate = useNavigate();
@@ -25,8 +25,8 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data  }: a
   const getUsers = async () => {
     try {
       const userResponse: any = await getUser(userId, token);
-     
-      
+
+
       setUser(userResponse);
     } catch (error) {
       throw error
@@ -40,7 +40,7 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data  }: a
   if (!user) {
     return null;
   }
-  
+
 
   const { userName, followers, following } = user;
 
@@ -49,7 +49,13 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data  }: a
       {/* First Row */}
       <Flex gap='0.5rem' pb='1.1rem' onClick={() => navigate(`/profile/${userId}`)}>
         <Flex gap='1rem' alignItems='center'>
-          <Avatar alt={userName} src={picturePath} />
+          {user.dp ? (
+            <div className="profile-picture">
+              <Avatar alt={user.userName} src={`http://localhost:5000/uploads/${user.dp}`} />
+            </div>
+          ) : (
+            <Avatar alt={user.userName} />
+          )}
           <Box>
             <Typography variant='h4' color={dark} fontWeight='bold' sx={{ cursor: 'pointer' }}>
               {userName}
@@ -67,21 +73,6 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data  }: a
         </Tooltip>
       </Flex>
 
-      <Divider />
-
-      {/* Second Row */}
-      <Box p='1rem 0'>
-        <Flex mb='0.5rem' alignItems='center'>
-          <Typography color={medium}>Who's viewed your profile</Typography>
-          <Typography fontWeight='bold'>50</Typography>
-        </Flex>
-        <Flex alignItems='center'>
-          <Typography color={medium}>Impressions of your post</Typography>
-          <Typography fontWeight='bold'>Good</Typography>
-        </Flex>
-      </Box>
-
-      <Divider />
 
     </WidgetWraper>
   );

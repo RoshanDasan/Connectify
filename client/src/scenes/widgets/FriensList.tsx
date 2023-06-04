@@ -36,14 +36,16 @@ const FriensList = ({ onButtonClick }: any) => {
         <ButtonBase onClick={() => setListFriend(!listFriend)}>See all</ButtonBase>
 
       </Flex>
-      {users.map(({ userName, _id }: any) => (
+      {users.map(({ userName, _id, dp }: any) => (
         _id != userId && (
           <Friend
             key={_id}
             friendId={_id}
+            image={dp}
             userName={userName}
             handleshowFreind={handleshowFreind}
             onButtonClick={onButtonClick}
+            
           />
         )
       ))}

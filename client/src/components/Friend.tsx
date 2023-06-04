@@ -4,30 +4,40 @@ import { useSelector } from "react-redux";
 import { followUser } from "../api/apiConnection/userConnection";
 import { setFollower } from "../state";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
-const Friend = ({ friendId, userName, handleshowFreind, onButtonClick }: any) => {
-  const id = useSelector((state:any) => state.user._id)
-  const token = useSelector((state:any) => state.token)
+const Friend = ({ friendId, image, userName, handleshowFreind, onButtonClick }: any) => {
+
+  const id = useSelector((state: any) => state.user._id)
+  const token = useSelector((state: any) => state.token)
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const setIsFriend = async (id: string, friendId: string) => {
     const response = await followUser(id, friendId, token)
     dispatch(setFollower({
-      followers:response?.data.friend._id
+      followers: response?.data.friend._id
     }))
     handleshowFreind()
     onButtonClick()
-    
+
 
   }
 
   return (
 
-    <Flex m='0.5rem 0 1.5rem 0' >
+    <Flex m='0.5rem 0 1.5rem 0' onClick={(() => navigate(`/profile/${friendId}`))}>
       <Flex gap="1rem">
         {/* <UserImage image='../assets/photo.jpg' size="55px" /> */}
-        <Avatar />
+        {image ? (
+
+          <div className="profile-picture">
+            <Avatar alt={userName} src={`http://localhost:5000/uploads/${image}`} />
+          </div>
+        ) : (
+          <Avatar alt={userName} />
+        )}
         <Box
 
         >
@@ -41,7 +51,7 @@ const Friend = ({ friendId, userName, handleshowFreind, onButtonClick }: any) =>
                 cursor: "pointer",
               },
             }}
-            
+
           >
             {userName}
           </Typography>

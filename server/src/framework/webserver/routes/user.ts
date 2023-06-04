@@ -21,7 +21,7 @@ const userRouter = () => {
 
     router.get('/search/:prefix', controllers.searchUser)
 
-    router.put('/:id',upload.single('image'), controllers.updateProfile)
+    router.put('/:id',upload.single('file'), controllers.updateProfile)
     
     return router;
 }

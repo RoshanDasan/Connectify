@@ -49,11 +49,13 @@ export const addFollowers = async (id: any, friendId: any, repository: ReturnTyp
 }
 
 export const searchUserByPrefix = async (prefix: any, repository: ReturnType<UserDbInterface>) => {
+    if(!prefix) return HttpStatus.NOT_FOUND
     const searchedUsers: any = await repository.searchUser(prefix)
     return searchedUsers
 }
 
 export const updateProfileInfo = async (id: string, body: any,  repository: ReturnType<UserDbInterface>) => {
+    if(!body || !id) return HttpStatus.NOT_FOUND
     const updateProfile: any = await repository.updateProfile(id, body);
     return updateProfile
 }
