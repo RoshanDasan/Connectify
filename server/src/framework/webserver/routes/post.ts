@@ -14,6 +14,9 @@ const  postRouter = () => {
     // upload post
     router.post('/',upload.single('image'), controller.uploadPost);
 
+    // edit post
+    router.put('/edit_post/:postId', controller.editPost)
+
     // get posts by a user
     router.get('/userposts/:userId', controller.getUserPosts)
 
@@ -25,6 +28,12 @@ const  postRouter = () => {
 
     // like and dilike post by user
     router.patch('/like', controller.postLikeUpdate)
+
+    // push comment in post
+    router.patch('/comment/:postId/:userId', controller.commentPost)
+
+    // delete comment in post
+    router.delete('/delete_comment/:postId/:index', controller.commentDelete)
 
     return router;
 };

@@ -63,7 +63,6 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
       formData.append('image', image);
       formData.append('picturePath', image.name);
     }
-    console.log(formData,'dataa');
     
     const upload = await uploadPost(token, formData);
 

@@ -96,16 +96,10 @@ const AdminLogin = () => {
             />
 
           </Grid>
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-            {isSignup ? 'Sign Up' : 'Sign In'}
+          <Button type="submit" fullWidth variant="contained" color="info" className={classes.submit} sx={{marginTop:'15px', marginBottom:'15px'}}>
+            Sign Up
           </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Button onClick={switchMode}>
-                {isSignup ? 'Already have an account? Login In' : 'New user? Sign Up'}
-              </Button>
-            </Grid>
-          </Grid>
+        
           <div id='googleLoginButton'></div>
         </form>
       </Paper>

@@ -10,10 +10,10 @@ import { useSelector } from "react-redux";
 import { followUser } from "../api/apiConnection/userConnection";
 import { useDispatch } from "react-redux";
 import { setUnfollower } from "../state";
+import { toast } from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
 const PostHeader = ({ name, image, friendId, buttonClick }: any) => {
-    console.log(image, 'dppppp');
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -38,6 +38,7 @@ const PostHeader = ({ name, image, friendId, buttonClick }: any) => {
         )
 
         buttonClick()
+        toast.success(`You unfollowed ${name}`)
 
     }
 

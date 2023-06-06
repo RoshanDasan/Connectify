@@ -5,6 +5,7 @@ import { followUser } from "../api/apiConnection/userConnection";
 import { setFollower } from "../state";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
 const Friend = ({ friendId, image, userName, handleshowFreind, onButtonClick }: any) => {
@@ -21,13 +22,13 @@ const Friend = ({ friendId, image, userName, handleshowFreind, onButtonClick }: 
     }))
     handleshowFreind()
     onButtonClick()
-
+    toast.success(`You followed ${userName}`)
 
   }
 
   return (
 
-    <Flex m='0.5rem 0 1.5rem 0' onClick={(() => navigate(`/profile/${friendId}`))}>
+    <Flex m='0.5rem 0 1.5rem 0' >
       <Flex gap="1rem">
         {/* <UserImage image='../assets/photo.jpg' size="55px" /> */}
         {image ? (
@@ -51,7 +52,7 @@ const Friend = ({ friendId, image, userName, handleshowFreind, onButtonClick }: 
                 cursor: "pointer",
               },
             }}
-
+            onClick={(() => navigate(`/profile/${friendId}`))}
           >
             {userName}
           </Typography>

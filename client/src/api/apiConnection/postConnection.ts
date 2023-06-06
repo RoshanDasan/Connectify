@@ -105,3 +105,59 @@ export const likePost = (id: string, userId: string, token: string) => {
     });
 };
 
+
+export const postComment = async (postId: string, userId: string, body: any, token: string) => {
+  try {
+    console.log(postId, userId, body, token,'commentttt');
+    const data: {
+      comment: any;
+    } = {
+      comment: body
+    };
+    
+    const response = await baseURL.patch(`/api/post/comment/${postId}/${userId}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const deleteComment = (postId: string, index: number, token: string) => {
+  baseURL.delete(`/api/post/delete_comment/${postId}/${index}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }).then((response) => {
+    console.log(response);
+    
+    return response.data
+  }).catch((error) => {
+    throw error
+  })
+}
+
+export const editPost = (postId: string, description: any, token: string) => {
+  const data: {
+    description: any;
+  } = {
+    description
+  };
+  baseURL.put(`/api/post/edit_post/${postId}`, data, {
+    headers:{
+      Authorization: `Bearer ${token}`
+    }
+  }).then((response) => {
+    console.log(response);
+    
+  }).catch((err) => {
+    throw err
+  })
+}
+
