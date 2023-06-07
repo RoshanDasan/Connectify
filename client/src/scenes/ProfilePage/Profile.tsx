@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@mui/styles';
-import { Avatar, Typography, Button, Box, TextField, useMediaQuery } from '@mui/material';
-import { Theme } from '@mui/material';
+import { Avatar, Typography, Button, Modal, useMediaQuery, Divider, Skeleton } from '@mui/material';
 import Sidebar from '../Sidebar/Sidebar';
 import Flex from '../../components/DisplayFlex';
 import Cards from '../../components/card';
 import { useSelector } from 'react-redux';
-import Modal from '@mui/material/Modal'
-import { useParams } from 'react-router-dom';
-import { getUser } from '../../api/apiConnection/userConnection';
-import { getPostByUser } from '../../api/apiConnection/postConnection';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getUser, followUser } from '../../api/apiConnection/userConnection';
 import Navbar from '../Navbar/Navbar';
-import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { useFollowers, useFollowings, getPostByUser } from '../../api/apiConnection/postConnection';
+import { setFollower, setUnfollower } from '../../state';
+import { useDispatch } from 'react-redux';
 
-
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -45,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   stat: {
     textAlign: 'center',
+    cursor: 'pointer',
   },
   statNumber: {
     fontWeight: 'bold',
@@ -55,93 +54,173 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: 'red',
     },
   },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContent: {
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    width: '400px',
+    height: '500px',
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
-
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
 
 const Profile = () => {
   const classes = useStyles();
   const theme: any = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+  const [isLoading, setIsLoading] = useState(false)
+  const [userDetails, setUserDetails]: any = useState({});
+  const [userPosts, setUserPosts] = useState([]);
+  const [friendsData, setFriendData]: any = useState([]);
+  const [clicked, setClicked] = useState(false);
+  const [mainUser, setmainUser]: any = useState({});
+  const [type, setType] = useState('')
+  const { id }: any = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [userDetails, setUserDetails] = useState<any[]>([]);
-  const [userPosts, setUserPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [clicked, setClicked] = useState(false)
-  const { id } = useParams<{ id: any }>();
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const navigate = useNavigate()
+  const token = useSelector((state: any) => state.token);
+  const userId = useSelector((state: any) => state.user._id);
+  const user = useSelector((state: any) => state.user);
 
+  const [openModal, setOpenModal]: any = useState(false);
 
-  const token: string = useSelector((state: any) => state.token);
-  const userid: string = useSelector((state: any) => state.user._id);
+  const handleOpenModal = async (type: any) => {
 
+    setOpenModal(true);
+    console.log('----------------------------');
+    setIsLoading(true)
+    setType(type)
+    if (type === 'followers') {
+      console.log('iff', type);
 
-  const getPosts = async () => {
-    try {
-      setLoading(true);
-      const userDetails: any = await getUser(id, token);
-      const postsDetails: any = await getPostByUser(id, token)
-      setUserDetails(userDetails)
-      setUserPosts(postsDetails);
-      setLoading(false);
-    } catch (error) {
-      throw error
+      const { followers }: any = await useFollowers(id, token);
+      console.log(followers, 'data');
+
+      setFriendData(followers);
+      setIsLoading(false)
+    } else {
+      console.log('else', type);
+
+      const { followings }: any = await useFollowings(id, token);
+      console.log(followings, 'data');
+
+      setFriendData(followings);
+      setIsLoading(false)
+
     }
   };
 
-  const clikedFun = () => {
 
-    setClicked(() => !clicked)
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const getPosts = async () => {
+    try {
+      const userDetails = await getUser(id, token);
+      const postsDetails = await getPostByUser(id, token);
+      setUserDetails(userDetails);
+      setUserPosts(postsDetails);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleClick = () => {
+    setClicked(!clicked);
+  };
+
+  const setUnfollow = async (friendId: string) => {
+    const response = await followUser(userId, friendId, token)
+    console.log(response);
+    dispatch(setUnfollower({
+      unfollower: friendId
+    }))
+    if (type === 'followers') {
+      console.log('iff', type);
+
+      const { followers }: any = await useFollowers(id, token);
+      console.log(followers, 'data');
+
+      setFriendData(followers);
+      setIsLoading(false)
+    } else {
+      console.log('else', type);
+
+      const { followings }: any = await useFollowings(id, token);
+      console.log(followings, 'data');
+
+      setFriendData(followings);
+      setIsLoading(false)
+
+    }
+
+
+  }
+  const setFollow = async (friendId: string) => {
+    const response = await followUser(userId, friendId, token)
+    console.log(response);
+    dispatch(setFollower({
+      followers: friendId
+    }))
+    if (type === 'followers') {
+      console.log('iff', type);
+
+      const { followers }: any = await useFollowers(id, token);
+      console.log(followers, 'data');
+
+      setFriendData(followers);
+      setIsLoading(false)
+    } else {
+      console.log('else', type);
+
+      const { followings }: any = await useFollowings(id, token);
+      console.log(followings, 'data');
+
+      setFriendData(followings);
+      setIsLoading(false)
+
+    }
+
   }
 
   useEffect(() => {
-    getPosts().then(() => {
-    })
+    getPosts();
+    setmainUser(user)
 
   }, [id, clicked]);
-
-
 
   return (
     <>
       <Navbar />
-      {!isMobile && (
+      {!isMobile && <Sidebar />}
 
-        <Sidebar />
-      )}
+      <Flex />
 
-      <Flex>
-
-      </Flex>
       <div className={classes.root} style={{ marginLeft: '15vw' }}>
         <Flex>
           <div className={classes.profileContainer}>
             {userDetails.dp ? (
-              <div style={{margin:'0 2rem 2rem 2rem'}}>
-                <Avatar sx={{ width: '8rem', height: '8rem' }} alt={userDetails.userName} src={`http://localhost:5000/uploads/${userDetails.dp}`} />
+              <div style={{ margin: '0 10rem 2rem 0rem' }}>
+                <Avatar
+                  sx={{ width: '10rem', height: '10rem' }}
+                  alt={userDetails.userName}
+                  src={`http://localhost:5000/uploads/${userDetails.dp}`}
+                />
               </div>
             ) : (
               <Avatar alt={userDetails.userName} />
             )}
-
           </div>
-          {userid == id && (
+
+          {userId === id && (
             <Button
-              style={{margin:'0 2rem 2rem 2rem'}}
+              style={{ margin: '0 2rem 8rem 2rem' }}
               variant="contained"
               sx={{ backgroundColor: 'lightgray' }}
               className={classes.button}
@@ -151,33 +230,27 @@ const Profile = () => {
             </Button>
           )}
 
-
         </Flex>
-          <Typography  >{userDetails.bio}</Typography>
-
-
-
+        <Typography>{userDetails.bio}</Typography>
 
         <Typography variant="h5" m={2} className={classes.username}>
           {userDetails.name}
         </Typography>
 
-
-
         <div className={classes.statsContainer}>
           <div className={classes.stat}>
             <Typography variant="subtitle1" className={classes.statNumber}>
-              {userPosts.length}
+              {userPosts ? userPosts.length : 0}
             </Typography>
             <Typography variant="body2">Posts</Typography>
           </div>
-          <div className={classes.stat}>
+          <div className={classes.stat} onClick={() => handleOpenModal('followers')}>
             <Typography variant="subtitle1" className={classes.statNumber}>
               {userDetails.followers ? userDetails.followers.length : 0}
             </Typography>
             <Typography variant="body2">Followers</Typography>
           </div>
-          <div className={classes.stat}>
+          <div className={classes.stat} onClick={() => handleOpenModal('following')}>
             <Typography variant="subtitle1" className={classes.statNumber}>
               {userDetails.following ? userDetails.following.length : 0}
             </Typography>
@@ -185,45 +258,89 @@ const Profile = () => {
           </div>
         </div>
 
+        <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+          className={classes.modal}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+        >
+          <div className={classes.modalContent}>
+            <Typography variant='h2' textAlign='center'>
+              {type === 'followers' ? 'Followers' : 'Following'}
+            </Typography>
+            <Divider />
+            {isLoading ? (
+              <>
 
+                <Skeleton sx={{ width: '95%', height: '60px', margin: '10px' }} />
+                <Skeleton sx={{ width: '95%', height: '60px', margin: '10px' }} />
+              </>
 
-
-        <Flex width={isMobile ? '100%' : '60rem'} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
-          {userPosts.map(
-            (
-              {
-                _id,
-                userId,
-                description,
-                userName,
-                image,
-                likes,
-                comments,
-              },
-              index
-            ) =>
-              image && (
-                <Flex key={index} sx={{ m: isMobile ? '2rem .2rem .2rem .2rem' : '5rem .2rem .2rem .2rem' }}>
-                  <Cards
-                    key={_id}
-                    id={_id}
-                    userId={userId}
-                    description={description}
-                    userName={userName}
-                    image={image}
-                    likes={likes}
-                    comments={comments}
-                    click={clikedFun}
-                    borderView={userid === id}
-                  />
+            ) : (
+              friendsData.map((friend: any) => (
+                <Flex mt={3}>
+                  <div style={{ display: 'flex' }}>
+                    {friend.dp ? (
+                      <div className="profile-picture">
+                        <Avatar alt={friend.userName} src={`http://localhost:5000/uploads/${friend.dp}`} />
+                      </div>
+                    ) : (
+                      <Avatar alt={friend.userName} />
+                    )}
+                    <div style={{ paddingLeft: '15px' }}>
+                      <Typography variant='h6' key={friend.id}>{friend.userName}</Typography>
+                      <Typography>{friend.name}</Typography>
+                    </div>
+                  </div>
+                  {mainUser.followers.includes(friend._id) ? (
+                    <Button
+                      sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
+                      onClick={() => setUnfollow(friend._id)}
+                    >
+                      Remove
+                    </Button>
+                  ) : (
+                    <Button
+                      sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
+                      onClick={() => setFollow(friend._id)}
+                    >
+                      Follow
+                    </Button>
+                  )}
                 </Flex>
-              )
+              ))
+            )}
+          </div>
+        </Modal>
+
+
+        <Flex
+          width={isMobile ? '100%' : '60rem'}
+          sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}
+        >
+          {userPosts.map(({ _id, userId, description, userName, image, likes, comments }, index) =>
+            image ? (
+              <Flex key={index} sx={{ m: isMobile ? '2rem .2rem .2rem .2rem' : '5rem .2rem .2rem .2rem' }}>
+                <Cards
+                  key={_id}
+                  id={_id}
+                  userId={userId}
+                  description={description}
+                  userName={userName}
+                  image={image}
+                  likes={likes}
+                  comments={comments}
+                  click={handleClick}
+                  borderView={userId === id}
+                />
+              </Flex>
+            ) : null
           )}
         </Flex>
         <ToastContainer position="bottom-left" />
       </div>
     </>
-
   );
 };
 

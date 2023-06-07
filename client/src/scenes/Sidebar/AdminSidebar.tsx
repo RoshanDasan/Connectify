@@ -79,15 +79,15 @@ const AdminSidebar = () => {
             <ListItemIcon>
               <Explore />
             </ListItemIcon>
-            <ListItemText primary="Explore" classes={{ primary: classes.listItemText }} />
+            <ListItemText primary="User" classes={{ primary: classes.listItemText }} />
           </ListItem>
-          <ListItem button className={classes.listItem}>
+          <ListItem button className={classes.listItem} onClick={() => navigate('/admin/post/control')}>
             <ListItemIcon>
               <SearchOutlined />
             </ListItemIcon>
-            <ListItemText primary="Search" classes={{ primary: classes.listItemText }} />
+            <ListItemText primary="Post" classes={{ primary: classes.listItemText }} />
           </ListItem>
-          <ListItem button className={classes.listItem}>
+          {/* <ListItem button className={classes.listItem}>
             <ListItemIcon>
               <Notifications />
             </ListItemIcon>
@@ -107,7 +107,7 @@ const AdminSidebar = () => {
               <Person />
             </ListItemIcon>
             <ListItemText primary="Profile" classes={{ primary: classes.listItemText }} />
-          </ListItem>
+          </ListItem> */}
         </List>
         <Divider />
         <List>

@@ -35,6 +35,12 @@ const  postRouter = () => {
     // delete comment in post
     router.delete('/delete_comment/:postId/:index', controller.commentDelete)
 
+    // report post
+    router.post('/report/:userId/:postId', controller.reportPost)
+
+    // get reported users
+    router.get('/reported/:postId', controller.getReporters)
+
     return router;
 };
     

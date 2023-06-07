@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { postRepositoryType } from "../../framework/database/Mongodb/repositories/postRepositeries";
 import { postDbInterfaceType } from "../../application/repositories/postDbRepositories";
-import { getAllPost, postCreate, getPostsByUser, getPostById, deletePostById, updateLike, insertComment, deleteComment, postEdit } from '../../application/useCases/post/post'   
+import { getAllPost, postCreate, getPostsByUser, getPostById, deletePostById, updateLike, insertComment, deleteComment, postEdit, postReport, getReportedUsers } from '../../application/useCases/post/post'   
 
 const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryType: postRepositoryType ) => {
 
@@ -119,6 +119,26 @@ const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryTyp
         })
     })
 
+    const reportPost = expressAsyncHandler(async (req: Request, res: Response) => {
+        const { userId, postId } = req.params;
+        const { reason } = req.body;
+
+        const repostResponse = await postReport(userId, postId, reason, dbRepositoriesPost)
+        res.json({
+            status: 'posted success',
+            response: repostResponse
+        })
+    })
+
+    const getReporters = expressAsyncHandler(async (req: Request, res: Response) => {
+        const { postId } = req.params;
+        const users = await getReportedUsers(postId, dbRepositoriesPost);
+        res.json({
+            status: 'reposted users fetched',
+            users
+        })
+    })
+
 
     return {
         getPosts,
@@ -129,7 +149,9 @@ const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryTyp
         postLikeUpdate,
         commentPost,
         commentDelete,
-        editPost
+        editPost,
+        reportPost,
+        getReporters
     }
 }
 

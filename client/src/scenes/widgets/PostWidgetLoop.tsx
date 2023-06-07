@@ -90,7 +90,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
 
   return (
     <WidgetWraper m='2rem 0' width='30rem'>
-      <PostHeader name={userName} image={image} friendId={userId} buttonClick={globalClick} />
+      <PostHeader postId={id} name={userName} image={image} friendId={userId} buttonClick={globalClick} />
 
       <Typography sx={{ mt: '1rem' }}>{description}</Typography>
       {image && (

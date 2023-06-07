@@ -9,15 +9,11 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { getAllUsers } from '../../api/apiConnection/userConnection';
 import { useSelector } from 'react-redux';
-import moment from 'moment'
-
-
 
 interface Column {
   id: 'name' | 'userName' | 'email' | 'gender' | 'isBlock';
   label: string;
   minWidth?: number;
-  // align?: 'right';
   format?: (value: number) => string;
 }
 
@@ -28,54 +24,37 @@ const columns: readonly Column[] = [
     id: 'email',
     label: 'Email',
     minWidth: 170,
-    // align: 'right',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'gender',
     label: 'Gender',
     minWidth: 170,
-    // align: 'right',
     format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    // id: moment.duration('createdAt').humanize(true),
-    id:'isBlock',
+    id: 'isBlock',
     label: 'Active',
     minWidth: 170,
-    // align: 'right',
-   
   },
 ];
-
-interface Data {
-  name: string;
-  userName: string,
-  email: string,
-  gender: string
-  active: boolean
-}
 
 export default function UserList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setUsers] = React.useState([]);
-  const token: any = useSelector((state: any) => state.admintoken)
+  const [rows, setUsers] = React.useState<Data[]>([]);
+  const token = useSelector((state: any) => state.admintoken);
 
   const getuserDetails = async () => {
-    const users: any = await getAllUsers(token)
-    setUsers(users)
-    console.log(users);
-    
-  }
+    const users: any = await getAllUsers(token);
+    setUsers(users);
+  };
 
   React.useEffect(() => {
-    
-    getuserDetails()
-  },[])
-  
+    getuserDetails();
+  }, []);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (event: any, newPage: number) => {
     setPage(newPage);
   };
 
@@ -93,7 +72,7 @@ export default function UserList() {
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
-                  align={column.align}
+                  align="left"
                   style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
@@ -104,13 +83,13 @@ export default function UserList() {
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
+              .map((row: Data) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.userName}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <TableCell key={column.id} align={column.align}>
+                        <TableCell key={column.id} align="left">
                           {column.format && typeof value === 'number'
                             ? column.format(value)
                             : value}

@@ -1,4 +1,5 @@
 import Post from "../models/postModel";
+import User from "../models/userModel";
 import { ObjectId } from 'mongodb'
 
 // post database operations
@@ -69,6 +70,27 @@ export const postRepositoryMongoDb = () => {
         return updateResult
     }
 
+    const reportPost = async (userId: string, postId: string, reason: any) => {
+        const repostResponse = await Post.findByIdAndUpdate({_id: postId},{
+            $push:{reports:{userId, reason}}
+        })
+        return repostResponse;
+    }
+
+    const getReportedUsers = async(postId: string) => {
+        const  postDetails : any = await Post.findOne({_id: postId});
+        
+        const users: any = await Promise.all(
+            postDetails.reports.map(async ({userId}: any) => {
+                return await User.findOne({_id: userId})
+           })
+        )
+        return users;
+
+    }
+
+
+
 
     return {
         getAllPost,
@@ -80,7 +102,10 @@ export const postRepositoryMongoDb = () => {
         likePost,
         insertComment,
         pushComment,
-        editPost
+        editPost,
+        reportPost,
+        getReportedUsers
+        
     }
 }
 

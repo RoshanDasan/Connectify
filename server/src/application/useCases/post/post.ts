@@ -99,6 +99,17 @@ export const postEdit = async (postId: string, body: any,  repositories: ReturnT
   return commentResult;
 }
 
+// report post 
+export const postReport = async (userId: string, postId: string, reason: any, repositories: ReturnType<postDbInterfaceType>) => {
+  const response = await repositories.reportPost(userId, postId, reason)
+  return response;
+}
+
+export const getReportedUsers = async(postId: string, repositories: ReturnType<postDbInterfaceType>) => {
+  const users = await repositories.getReportedUsers(postId)
+  return users;
+}
+
 
 
 

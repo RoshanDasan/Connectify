@@ -1,4 +1,5 @@
 import baseURL from "../api";
+import { useQuery } from 'react-query';
 
 export const getPosts = async (token: string) => {
   try {
@@ -75,13 +76,13 @@ export const deletePost = async (id: string, token: string) => {
 export const uploadPost = async (token: string, body: any) => {
 
   try {
-   const response =  await baseURL
-    .post(`/api/post`, body, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      }
-    })
+    const response = await baseURL
+      .post(`/api/post`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        }
+      })
     return response.data
   } catch (error) {
     console.log(error);
@@ -108,19 +109,19 @@ export const likePost = (id: string, userId: string, token: string) => {
 
 export const postComment = async (postId: string, userId: string, body: any, token: string) => {
   try {
-    console.log(postId, userId, body, token,'commentttt');
+    console.log(postId, userId, body, token, 'commentttt');
     const data: {
       comment: any;
     } = {
       comment: body
     };
-    
+
     const response = await baseURL.patch(`/api/post/comment/${postId}/${userId}`, data, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
-    
+
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -136,7 +137,7 @@ export const deleteComment = (postId: string, index: number, token: string) => {
     }
   }).then((response) => {
     console.log(response);
-    
+
     return response.data
   }).catch((error) => {
     throw error
@@ -150,14 +151,64 @@ export const editPost = (postId: string, description: any, token: string) => {
     description
   };
   baseURL.put(`/api/post/edit_post/${postId}`, data, {
-    headers:{
+    headers: {
       Authorization: `Bearer ${token}`
     }
   }).then((response) => {
     console.log(response);
-    
+
   }).catch((err) => {
     throw err
   })
 }
+
+export const useFollowers = async (userId: string, token: string) => {
+
+  const response = await baseURL
+    .get(`/api/user/followers/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  return response.data;
+
+};
+
+
+export const useFollowings = async (userId: string, token: string) => {
+    const response = await baseURL
+      .get(`/api/user/followings/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    return response.data;
+};
+
+export const reportPost = async (userId: string, postId: string, reason: any, token: string) => {
+  const value: {
+    reason: any;
+  } = {
+    reason
+  };
+  const { data } = await baseURL.post(`/api/post/report/${userId}/${postId}`, value, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  return data;
+}
+
+export const reportedUsers = async (postId: string, token: string) => {
+  const { data } = await baseURL.get(`/api/post/reporters/${postId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return data;
+}
+
+
+
 
