@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Button,
     TextField,
@@ -8,6 +8,7 @@ import {
     Grid,
     Avatar,
 } from '@mui/material';
+import * as React from 'react';
 import Sidebar from '../scenes/Sidebar/Sidebar';
 import Navbar from '../scenes/Navbar/Navbar';
 import { useParams } from 'react-router-dom';
@@ -16,21 +17,26 @@ import { useSelector } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 
 type FormValues = {
     bio: string;
     gender: string;
+    date: any;
     file?: any; // Optional property to store the selected file
 };
 
 const EditProfile: React.FC = () => {
-    const { id } = useParams();
+    const { id }: any = useParams();
     const updateProfileMutation = useUpdateProfile();
     const token = useSelector((state: any) => state.token);
     const [user, setUser] = useState<any>({});
     const [click, setClick] = useState(false)
-    const [disable, setDisable] =useState(true)
+    const [disable, setDisable] = useState(true)
     const navigate = useNavigate()
 
     const getDetails = async () => {
@@ -45,7 +51,7 @@ const EditProfile: React.FC = () => {
     }, [click]);
 
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-        
+
         onDrop: (acceptedFiles) => {
             setFormValues((prevValues) => ({
                 ...prevValues,
@@ -57,6 +63,7 @@ const EditProfile: React.FC = () => {
         file: '',
         bio: '',
         gender: '',
+        date: ''
     });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,6 +91,11 @@ const EditProfile: React.FC = () => {
             formData.append('gender', user.gender);
         } else {
             formData.append('gender', formValues.gender);
+        }
+        if (formValues.date.trim() === '') {
+            formData.append('date', user.date);
+        } else {
+            formData.append('date', formValues.date);
         }
 
         updateProfileMutation.mutate({ id, values: formData, token });
@@ -135,7 +147,7 @@ const EditProfile: React.FC = () => {
                                             fullWidth
                                             multiline
                                             rows={4}
-                                            defaultValue={user.bio !== 'undefined'? user.bio : ''}
+                                            defaultValue={user.bio !== 'undefined' ? user.bio : ''}
                                             // value={user.bio}
                                             onChange={handleChange}
                                         />
@@ -152,18 +164,33 @@ const EditProfile: React.FC = () => {
                                             name="gender"
                                             fullWidth
                                             multiline
-                                            defaultValue={user.gender !== 'undefined'?user.gender:''}
+                                            defaultValue={user.gender !== 'undefined' ? user.gender : ''}
                                             // value={user.gender}
                                             onChange={handleChange}
                                         />
                                     </Box>
                                 </Box>
                             </Grid>
+                            {/* <Grid item xs={12}>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <Box sx={{ width: '30%' }}>
+                                        <Typography variant="subtitle1">DOB</Typography>
+                                    </Box>
+                                    <Box sx={{ width: '70%' }}>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DemoContainer components={['DatePicker']}>
+                                                <DatePicker label="Basic date picker" />
+                                            </DemoContainer>
+                                        </LocalizationProvider>
+                                    </Box>
+                                </Box>
+                            </Grid> */}
+
                             <Grid item xs={12}>
                                 <Button
                                     type="submit"
                                     disabled={disable}
-                                    
+
                                     variant="contained"
                                     color="info"
                                     sx={{ borderRadius: '10px', marginLeft: '10rem' }}

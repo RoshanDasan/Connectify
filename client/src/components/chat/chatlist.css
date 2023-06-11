@@ -1,0 +1,29 @@
+.Conversation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 10px;
+    border-radius: 0.5rem;
+  }
+  
+  .Conversation:hover {
+    background: #80808038;
+    cursor: pointer;
+  }
+  
+  .Online-dot {
+    background-color: greenyellow;
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .Follower-image {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .Conversation-name {
+    font-size: 0.8rem;
+  }
+  

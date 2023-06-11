@@ -44,7 +44,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
     setIsLike((prevState) => !prevState);
     click()
   };
-
+  
   const submitHandle = async () => {
     if (comment && !comment.match(/^\s/)) {
       

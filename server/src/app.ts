@@ -8,9 +8,21 @@ import errorHandler from './framework/webserver/middlewares/errorHandler';
 import AppError from './utilities/appError';
 import { HttpStatus } from './types/httpstatuscodes'
 import path from 'path';
+import { Server } from 'socket.io';
+import socketConfig from './framework/websocket/websocket';
 
 const app: Application = express();
 const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"]
+    }
+})
+
+// connect socket.io
+socketConfig(io);
 
 // mongoDB connection
 connectDB();

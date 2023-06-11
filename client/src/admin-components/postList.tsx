@@ -8,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import TableHead from '@mui/material/TableHead'; // Added TableHead import
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -16,7 +17,16 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import { getPosts, deletePost } from '../api/apiConnection/postConnection';
 import { useSelector } from 'react-redux';
-import { Button } from '@mui/material';
+import { Avatar, Button } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+import { blockUser } from '../../api/apiConnection/authConnect';
+import { ToastContainer, toast } from 'react-toastify';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -28,6 +38,8 @@ interface TablePaginationActionsProps {
 interface PostListProps {
   content: boolean;
 }
+
+
 
 function TablePaginationActions(props: TablePaginationActionsProps) {
   const theme = useTheme();
@@ -48,6 +60,10 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
+
+  
+
+
 
   return (
     <Box sx={{ flexShrink: 0, ml: 2.5 }}>
@@ -85,11 +101,24 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 
 const rowsPerPageOptions = [5, 10, 25, { label: 'All', value: -1 }];
 
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export default function PostList({ content }: PostListProps) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageOptions[0]);
   const [posts, setPosts] = React.useState<any[]>([]);
   const token = useSelector((state: any) => state.token);
+  const [currentPost, setCurrentPost]: any = React.useState('')
+  const [open, setOpen] = React.useState(false);
+  const [click, setClick] = React.useState(false)
 
   console.log(content);
 
@@ -106,20 +135,20 @@ export default function PostList({ content }: PostListProps) {
   React.useEffect(() => {
     if (content) {
       getAllPosts();
-     console.log(posts);
-     
+      console.log(posts);
     } else {
       // Handle other cases if needed
       getReportedPosts()
       console.log(posts);
-      
-
     }
-  }, [content]);
+  }, [click, content]);
 
 
-  const handleDeletePost = async (postId: any) => {
-    await deletePost(postId, token)
+  const handleDeletePost = async () => {
+    await deletePost(currentPost, token)
+    setClick(() => !click)
+    toast.success('Post Deleted')
+    handleClose()
   }
 
   // Calculate the total count of rows
@@ -144,34 +173,73 @@ export default function PostList({ content }: PostListProps) {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
+  const handleClickOpen = (postId: string) => {
+    setOpen(true);
+    setCurrentPost(postId)
+    
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+        <TableHead> {/* Added TableHead component */}
+          <TableRow>
+            <TableCell>Avatar</TableCell>
+            <TableCell>User Name</TableCell>
+            <TableCell align="right">Description</TableCell>
+            <TableCell align="right">Likes</TableCell>
+            <TableCell align="right">Comments</TableCell>
+            <TableCell align="right">Reports</TableCell>
+            <TableCell align="right">Actions</TableCell>
+          </TableRow>
+        </TableHead>
         <TableBody>
           {slicedRows.map((row: any) => (
             <TableRow key={row._id}>
+              <TableCell component="th" scope="row">
+                {row.image ? (
+                 <div>
+                 <Avatar
+                   sx={{ width: '3rem', height: '3rem' }}
+                   alt={row.userName}
+                   src={`http://localhost:5000/uploads/${row.image}`}
+                 />
+               </div>
+             ) : (
+               <Avatar 
+               sx={{ width: '3rem', height: '3rem' }}
+               alt={row.userName} />
+                )}
+              </TableCell>
               <TableCell component="th" scope="row">
                 {row.userName}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
                 {row.description}
-
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {row.likes.length}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {row.comments.length}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
                 {row.reports.length}
-
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
-                <Button onClick={() => handleDeletePost(row._id)}>
+                <Button variant="outlined" onClick={() => handleClickOpen(row._id)} color='error'>
                   Remove
                 </Button>
-
               </TableCell>
             </TableRow>
           ))}
           {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={3} />
+              <TableCell colSpan={7} />
             </TableRow>
           )}
         </TableBody>
@@ -179,7 +247,7 @@ export default function PostList({ content }: PostListProps) {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={rowsPerPageOptions}
-              colSpan={3}
+              colSpan={7}
               count={totalCount}
               rowsPerPage={rowsPerPage}
               page={page}
@@ -196,6 +264,28 @@ export default function PostList({ content }: PostListProps) {
           </TableRow>
         </TableFooter>
       </Table>
+      <div>
+       
+       <Dialog
+         open={open}
+         TransitionComponent={Transition}
+         keepMounted
+         onClose={handleClose}
+         aria-describedby="alert-dialog-slide-description"
+       >
+         <DialogTitle>{`Are you sure do you want to delete this post ?`}</DialogTitle>
+         <DialogContent>
+           <DialogContentText id="alert-dialog-slide-description">
+             
+           </DialogContentText>
+         </DialogContent>
+         <DialogActions>
+           <Button color='info' onClick={handleClose}>Cancel</Button>
+           <Button color='info' onClick={handleDeletePost}>Ok</Button>
+         </DialogActions>
+       </Dialog>
+     </div>
+     <ToastContainer position="bottom-left" />
     </TableContainer>
   );
 }

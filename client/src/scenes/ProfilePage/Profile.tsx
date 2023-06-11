@@ -78,6 +78,7 @@ const Profile = () => {
   const [friendsData, setFriendData]: any = useState([]);
   const [clicked, setClicked] = useState(false);
   const [mainUser, setmainUser]: any = useState({});
+  const [followButton, setFollowBotton] = useState('')
   const [type, setType] = useState('')
   const { id }: any = useParams();
   const navigate = useNavigate();
@@ -92,22 +93,17 @@ const Profile = () => {
   const handleOpenModal = async (type: any) => {
 
     setOpenModal(true);
-    console.log('----------------------------');
     setIsLoading(true)
     setType(type)
     if (type === 'followers') {
-      console.log('iff', type);
 
       const { followers }: any = await useFollowers(id, token);
-      console.log(followers, 'data');
 
       setFriendData(followers);
       setIsLoading(false)
     } else {
-      console.log('else', type);
 
       const { followings }: any = await useFollowings(id, token);
-      console.log(followings, 'data');
 
       setFriendData(followings);
       setIsLoading(false)
@@ -189,11 +185,52 @@ const Profile = () => {
 
   }
 
+  const handleFollowbutton = () => {
+    if (id !== userId) {
+      if (user.followers.includes(id)) {
+      setFollowBotton('unfollow')
+
+      } else {
+      setFollowBotton('follow')
+
+      }
+    } else {
+      console.log('njn thammee');
+
+      setFollowBotton('')
+    }
+  }
+
+  const handlefollow = async () => {
+
+    const {data}: any = await followUser(userId, id, token)
+    if(followButton == 'follow'){
+      dispatch(setFollower({
+        followers: id
+      }))
+    }else{
+      dispatch(
+        setUnfollower({
+            unfollower: id
+        })
+    )
+      
+    }
+    console.log(data);
+    if(data.status == 'follow'){
+      setFollowBotton('unfollow')
+    }else{
+      setFollowBotton('follow')
+    }
+    
+  }
+
   useEffect(() => {
     getPosts();
     setmainUser(user)
+    handleFollowbutton()
 
-  }, [id, clicked]);
+  }, [id, clicked, followButton]);
 
   return (
     <>
@@ -231,6 +268,15 @@ const Profile = () => {
           )}
 
         </Flex>
+        {userId !== id && (
+          <Flex>
+            {}
+            <Button variant='outlined' sx={{ mr: 5, mb:2 }} onClick={handlefollow}>{followButton}</Button>
+
+
+            <Button variant='outlined' sx={{ ml: 5, mb: 2 }}>Message</Button>
+          </Flex>
+        )}
         <Typography>{userDetails.bio}</Typography>
 
         <Typography variant="h5" m={2} className={classes.username}>

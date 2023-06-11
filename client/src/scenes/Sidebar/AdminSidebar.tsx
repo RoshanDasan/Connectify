@@ -75,7 +75,7 @@ const AdminSidebar = () => {
             </ListItemIcon>
             <ListItemText primary="Home" classes={{ primary: classes.listItemText }} />
           </ListItem>
-          <ListItem button className={classes.listItem}>
+          <ListItem button className={classes.listItem} onClick={() => navigate('/admin')}>
             <ListItemIcon>
               <Explore />
             </ListItemIcon>

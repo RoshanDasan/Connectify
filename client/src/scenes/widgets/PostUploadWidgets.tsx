@@ -33,7 +33,7 @@ import { getUser } from '../../api/apiConnection/userConnection';
 const PostUploadWidget = ({ onButtonClick }: any) => {
   const [isImage, setIsImage] = useState(false);
   const [dp, setDp] = useState('');
-  const [image, setImage] = useState(null);
+  const [image, setImage]: any = useState(null);
   const [post, setPost] = useState('');
   const [valid, setValid] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
@@ -54,6 +54,11 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
 
   const handlePost = async () => {
     setIsUploading(true);
+    setTimeout(() => {
+      setIsUploading(false)
+      onButtonClick();
+    }, 4000);
+
 
     const formData = new FormData();
     formData.append('userId', _id);
@@ -63,15 +68,14 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
       formData.append('image', image);
       formData.append('picturePath', image.name);
     }
-    
+
     const upload = await uploadPost(token, formData);
 
     dispatch(setUpdatePost({ posts: upload.newPost }));
     setImage(null);
     setPost('');
 
-    setIsUploading(false);
-    onButtonClick();
+    
   };
 
   const handleInput = (e: any) => {
@@ -83,6 +87,25 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
       setValid(false)
     }
   }
+
+  const [progress, setProgress] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          return 0;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 500);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
 
   return (
     <WidgetWraper>
@@ -132,8 +155,8 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
               <Flex>
                 <Box
                   {...getRootProps()}
-                  
-                
+
+
                   sx={{ '&:hover': { cursor: 'pointer' } }}
                 >
                   <input {...getInputProps()} />
@@ -205,7 +228,11 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
         </Button>
       </Flex>
 
-      {isUploading && <LinearProgress sx={{ marginTop: '1rem' }} />}
+      {isUploading &&
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress variant="determinate" value={progress} />
+        </Box>
+      }
     </WidgetWraper>
   );
 };

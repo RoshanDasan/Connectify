@@ -122,3 +122,15 @@ export const login = async (values:LoginFormValues) => {
       toast.error(errorMessage);
     }
   }
+
+
+  export const blockUser = async (userId: string) => {
+    try {
+      const response = await baseURL.patch(`/api/auth/user/block/${userId}`)
+      return response.data;
+      
+      
+    } catch (error) {
+      throw error
+    }
+  }
