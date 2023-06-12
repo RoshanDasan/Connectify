@@ -77,12 +77,12 @@ const userControllers = (
     // update profile informations
     const updateProfile = asyncHandler(async(req: Request, res: Response) => {
         const { id } = req.params;
-        const { bio, gender } = req.body;
+        const { bio, gender, city, date, file } = req.body;
         const image: any = req?.file?.filename;
         console.log(req.body);
         
 
-        const updateResult = await updateProfileInfo(id, {image, bio, gender }, dbRepositoryUser );
+        const updateResult = await updateProfileInfo(id, {file, bio, gender, city, date }, dbRepositoryUser );
         res.json({
             status: 'Update success',
             data: updateResult

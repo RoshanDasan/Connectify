@@ -1,6 +1,7 @@
 import Post from "../models/postModel";
 import User from "../models/userModel";
 import { ObjectId } from 'mongodb'
+import cloudinary from 'cloudinary'
 
 // post database operations
 

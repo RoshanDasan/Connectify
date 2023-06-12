@@ -15,7 +15,7 @@ const authRouter = () => {
     router.post('/register', controllers.registerUser);
     router.post('/login', controllers.loginUser);
     router.post('/google_auth', controllers.googleAuth);
-    router.post;
+    router.patch('/user/block/:id', controllers.blockUser);
     return router;
 };
 exports.default = authRouter;

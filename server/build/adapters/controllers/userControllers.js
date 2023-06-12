@@ -7,6 +7,14 @@ const express_async_handler_1 = __importDefault(require("express-async-handler")
 const user_1 = require("../../application/useCases/user/user");
 const userControllers = (userDbRepository, userDbRepositoryService) => {
     const dbRepositoryUser = userDbRepository(userDbRepositoryService());
+    // get all users list
+    const getAllUsers = (0, express_async_handler_1.default)(async (req, res) => {
+        const users = await (0, user_1.getUserDetails)(dbRepositoryUser);
+        res.json({
+            status: 'Get users success',
+            users
+        });
+    });
     // get a user details by id
     const getUserById = (0, express_async_handler_1.default)(async (req, res) => {
         const { id } = req.params;
@@ -43,11 +51,35 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
             friend
         });
     });
+    // search user 
+    const searchUser = (0, express_async_handler_1.default)(async (req, res) => {
+        const { prefix } = req.params;
+        const users = await (0, user_1.searchUserByPrefix)(prefix, dbRepositoryUser);
+        res.json({
+            status: 'searched success',
+            users
+        });
+    });
+    // update profile informations
+    const updateProfile = (0, express_async_handler_1.default)(async (req, res) => {
+        const { id } = req.params;
+        const { bio, gender, city, date } = req.body;
+        const image = req?.file?.filename;
+        console.log(req.body);
+        const updateResult = await (0, user_1.updateProfileInfo)(id, { image, bio, gender, city, date }, dbRepositoryUser);
+        res.json({
+            status: 'Update success',
+            data: updateResult
+        });
+    });
     return {
         getUserById,
         getFollowersList,
         getFollowingsList,
-        insertFollowers
+        insertFollowers,
+        getAllUsers,
+        searchUser,
+        updateProfile
     };
 };
 exports.default = userControllers;

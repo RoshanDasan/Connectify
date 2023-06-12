@@ -36,8 +36,10 @@ const authControllers = (authServiceInterface, authService, userDbInterface, use
         });
     });
     const googleAuth = (0, express_async_handler_1.default)(async (req, res) => {
-        const { name, userName, number, email } = req.body;
-        const userData = { name, userName, number, email };
+        console.log('-----------------------');
+        const { fullName, firstName, email } = req.body;
+        const userData = { name: fullName, userName: firstName, number: 7594837203, email };
+        console.log(userData);
         const { user, token } = await (0, userAuth_1.googleAuthLogin)(userData, dbUserRepository, authServices);
         res.json({
             status: 'Google login success',
@@ -45,10 +47,18 @@ const authControllers = (authServiceInterface, authService, userDbInterface, use
             token
         });
     });
+    const blockUser = (0, express_async_handler_1.default)(async (req, res) => {
+        const { id } = req.params;
+        const blockResult = await (0, userAuth_1.userBlock)(id, dbUserRepository);
+        res.json({
+            status: `${blockResult} success`
+        });
+    });
     return {
         registerUser,
         loginUser,
-        googleAuth
+        googleAuth,
+        blockUser
     };
 };
 exports.default = authControllers;

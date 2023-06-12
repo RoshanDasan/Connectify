@@ -7,13 +7,17 @@ const express_1 = __importDefault(require("express"));
 const userControllers_1 = __importDefault(require("../../../adapters/controllers/userControllers"));
 const userDbRepositories_1 = require("../../../application/repositories/userDbRepositories");
 const userRepositories_1 = require("../../database/Mongodb/repositories/userRepositories");
+const multerServices_1 = require("../../services/multerServices");
 const userRouter = () => {
     const router = express_1.default.Router();
     const controllers = (0, userControllers_1.default)(userDbRepositories_1.userDbRepository, userRepositories_1.userRepositoryMongoDB);
+    router.get('/', controllers.getAllUsers);
     router.get('/:id', controllers.getUserById);
     router.get('/followers/:id', controllers.getFollowersList);
     router.get('/followings/:id', controllers.getFollowingsList);
     router.patch('/', controllers.insertFollowers);
+    router.get('/search/:prefix', controllers.searchUser);
+    router.put('/:id', multerServices_1.upload.single('file'), controllers.updateProfile);
     return router;
 };
 exports.default = userRouter;

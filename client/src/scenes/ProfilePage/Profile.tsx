@@ -263,7 +263,7 @@ const Profile = () => {
                 <Avatar
                   sx={{ width: '10rem', height: '10rem' }}
                   alt={userDetails.userName}
-                  src={`http://localhost:5000/uploads/${userDetails.dp}`}
+                  src={userDetails.dp}
                 />
               </div>
             ) : (
@@ -345,7 +345,7 @@ const Profile = () => {
                   <div style={{ display: 'flex' }}>
                     {friend.dp ? (
                       <div className="profile-picture">
-                        <Avatar alt={friend.userName} src={`http://localhost:5000/uploads/${friend.dp}`} />
+                        <Avatar alt={friend.userName} src={friend.dp} />
                       </div>
                     ) : (
                       <Avatar alt={friend.userName} />

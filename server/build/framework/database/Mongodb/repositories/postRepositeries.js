@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postRepositoryMongoDb = void 0;
 const postModel_1 = __importDefault(require("../models/postModel"));
+const userModel_1 = __importDefault(require("../models/userModel"));
 const mongodb_1 = require("mongodb");
 // post database operations
 const postRepositoryMongoDb = () => {
@@ -32,6 +33,37 @@ const postRepositoryMongoDb = () => {
     const likePost = async (_id, userId) => {
         await postModel_1.default.findByIdAndUpdate({ _id }, { $push: { likes: userId } });
     };
+    const insertComment = async (postId, userId, comment) => {
+        const updateResult = await postModel_1.default.findByIdAndUpdate({ _id: postId }, {
+            $push: { comments: { userId, comment } }
+        });
+        return updateResult;
+    };
+    const pushComment = async (postId, comments) => {
+        const updateResult = await postModel_1.default.findByIdAndUpdate({ _id: postId }, {
+            $set: { comments }
+        });
+        return updateResult;
+    };
+    const editPost = async (_id, description) => {
+        const updateResult = await postModel_1.default.findByIdAndUpdate({ _id }, {
+            $set: { description }
+        });
+        return updateResult;
+    };
+    const reportPost = async (userId, postId, reason) => {
+        const repostResponse = await postModel_1.default.findByIdAndUpdate({ _id: postId }, {
+            $push: { reports: { userId, reason } }
+        });
+        return repostResponse;
+    };
+    const getReportedUsers = async (postId) => {
+        const postDetails = await postModel_1.default.findOne({ _id: postId });
+        const users = await Promise.all(postDetails.reports.map(async ({ userId }) => {
+            return await userModel_1.default.findOne({ _id: userId });
+        }));
+        return users;
+    };
     return {
         getAllPost,
         uploadPost,
@@ -39,7 +71,12 @@ const postRepositoryMongoDb = () => {
         getPostById,
         deletePost,
         dislikePost,
-        likePost
+        likePost,
+        insertComment,
+        pushComment,
+        editPost,
+        reportPost,
+        getReportedUsers
     };
 };
 exports.postRepositoryMongoDb = postRepositoryMongoDb;

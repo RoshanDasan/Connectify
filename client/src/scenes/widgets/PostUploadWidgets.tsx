@@ -5,44 +5,45 @@ import {
   Divider,
   Typography,
   InputBase,
-  useTheme,
-  Button,
   IconButton,
-  useMediaQuery,
-  Tooltip,
   Avatar,
   LinearProgress,
+  TextField,
+  InputAdornment,
 } from '@mui/material';
 import {
   EditOutlined,
   DeleteOutlined,
-  AttachFileOutlined,
-  GifBoxOutlined,
-  ImageOutlined,
-  MicOutlined,
-  MoreHorizOutlined,
+  CameraAltOutlined,
+  Send,
 } from '@mui/icons-material';
 import Flex from '../../components/DisplayFlex';
 import Dropzone from 'react-dropzone';
-
 import WidgetWraper from '../../components/WidgetWraper';
 import { uploadPost } from '../../api/apiConnection/postConnection';
 import { setUpdatePost } from '../../state';
 import { getUser } from '../../api/apiConnection/userConnection';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import { storage } from '../../api/googleAuth/GoogleAuth';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { v4 } from 'uuid'
 
 const PostUploadWidget = ({ onButtonClick }: any) => {
-  const [isImage, setIsImage] = useState(false);
-  const [dp, setDp] = useState('');
+  const [isImage, setIsImage]: any = useState(false);
+  const [dp, setDp]: any = useState('');
   const [image, setImage]: any = useState(null);
-  const [post, setPost] = useState('');
-  const [valid, setValid] = useState(true);
-  const [isUploading, setIsUploading] = useState(false);
-  const { palette } = useTheme();
+  const [post, setPost]: any = useState('');
+  const [valid, setValid]: any = useState(true);
+  const [isUploading, setIsUploading]: any = useState(false);
+  const [progress, setProgress]: any = React.useState(0);
+  const [crop, setCrop]: any = useState({ aspect: 16 / 9 });
+  const [croppedImage, setCroppedImage]: any = useState(null);
   const { _id, userName } = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
   const mode = useSelector((state: any) => state.mode);
-  const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
   const dispatch = useDispatch();
+
 
   useEffect(() => {
     const getUserData = async () => {
@@ -65,7 +66,13 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
     formData.append('userName', userName);
     formData.append('description', post);
     if (image) {
-      formData.append('image', image);
+      const imageRef = ref(storage, `posts/${image.name + v4()}`);
+      await uploadBytes(imageRef, image);
+  
+      // Get the download URL of the uploaded image
+      const imageUrl = await getDownloadURL(imageRef);
+  
+      formData.append('image', imageUrl);
       formData.append('picturePath', image.name);
     }
 
@@ -74,25 +81,21 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
     dispatch(setUpdatePost({ posts: upload.newPost }));
     setImage(null);
     setPost('');
-
-    
+    setIsUploading(false)
   };
 
   const handleInput = (e: any) => {
     setPost(e.target.value)
     if (/^\s*$/.test(e.target.value)) {
       setValid(true)
-
     } else {
       setValid(false)
     }
   }
 
-  const [progress, setProgress] = React.useState(0);
-
   React.useEffect(() => {
     const timer = setInterval(() => {
-      setProgress((oldProgress) => {
+      setProgress((oldProgress: any) => {
         if (oldProgress === 100) {
           return 0;
         }
@@ -106,133 +109,158 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
     };
   }, []);
 
+  const handleImageCrop = (imageDataUrl: any) => {
+    setCroppedImage(imageDataUrl);
+  };
 
   return (
     <WidgetWraper>
       <Flex gap="1.5rem">
         {dp ? (
           <div className="profile-picture">
-            <Avatar alt={userName} src={`http://localhost:5000/uploads/${dp}`} />
+            <Avatar alt={userName} src={dp} />
           </div>
         ) : (
           <Avatar alt={userName} />
         )}
 
         {mode === 'dark' ? (
-          <InputBase
-            placeholder="Enter your thoughts"
-            onChange={(e) => handleInput(e)}
-            value={post}
-            sx={{
-              width: '100%',
-              border: '2px solid black',
-              color: 'black',
-              backgroundColor: 'white',
-              borderRadius: '2rem',
-              padding: '.5rem 1.5rem',
-            }}
-          />
+          <>
+            <InputBase
+              placeholder="Enter your thoughts"
+              onChange={(e) => handleInput(e)}
+              value={post}
+              sx={{
+                width: '100%',
+                border: '2px solid black',
+                color: 'black',
+                borderRadius: '2rem',
+                padding: '.5rem 1.5rem',
+              }}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setIsImage(!isImage)}>
+                    <CameraAltOutlined />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            <IconButton onClick={handlePost} disabled={isUploading || valid}>
+              <Send />
+            </IconButton>
+          </>
         ) : (
-          <InputBase
-            placeholder="Enter your thoughts"
-            onChange={(e) => handleInput(e)}
-            value={post}
-            sx={{
-              width: '100%',
-              border: '2px solid black',
-              color: 'black',
-              borderRadius: '2rem',
-              padding: '.5rem 1.5rem',
-            }}
-          />
+          <>
+            <InputBase
+              placeholder="Enter your thoughts"
+              onChange={(e) => handleInput(e)}
+              value={post}
+              sx={{
+                width: '100%',
+                border: '2px solid black',
+                color: 'black',
+                borderRadius: '2rem',
+                padding: '.5rem .2rem .5rem 1.5rem',
+              }}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setIsImage(!isImage)}>
+                    <CameraAltOutlined />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            <IconButton onClick={handlePost} disabled={isUploading || valid}>
+              <Send />
+            </IconButton>
+          </>
         )}
       </Flex>
 
       {isImage && (
         <Box border="1px solid black" borderRadius="5px" mt="1rem" p="1rem">
-          <Dropzone multiple={false} onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}>
-            {({ getRootProps, getInputProps }) => (
-              <Flex>
-                <Box
-                  {...getRootProps()}
+          {!croppedImage && (
+            <Dropzone
+              multiple={false}
+              onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+            >
+              {({ getRootProps, getInputProps }: any) => (
+                <Flex>
+                  <Box
+                    {...getRootProps()}
+                    sx={{ '&:hover': { cursor: 'pointer' } }}
+                  >
+                    <TextField {...getInputProps()} />
+                    {!image ? (
+                      <p>Add Image Here</p>
+                    ) : (
+                      <Flex alignItems="center">
+                        <Typography>{image.name}</Typography>
+                        <EditOutlined fontSize="small" />
+                      </Flex>
+                    )}
+                  </Box>
+                  <CameraAltOutlined />
 
-
-                  sx={{ '&:hover': { cursor: 'pointer' } }}
-                >
-                  <input {...getInputProps()} />
-                  {!image ? (
-                    <p>Add Image Here</p>
-                  ) : (
-                    <Flex alignItems="center">
-                      <Typography>{image.name}</Typography>
-                      <EditOutlined fontSize="small" />
-                    </Flex>
+                  {image && (
+                    <IconButton
+                      onClick={() => setImage(null)}
+                      sx={{ width: '15%' }}
+                    >
+                      <DeleteOutlined fontSize="small" />
+                    </IconButton>
                   )}
-                </Box>
-                {image && (
-                  <IconButton onClick={() => setImage(null)} sx={{ width: '15%' }}>
-                    <DeleteOutlined fontSize="small" />
-                  </IconButton>
-                )}
-              </Flex>
-            )}
-          </Dropzone>
+                </Flex>
+              )}
+            </Dropzone>
+          )}
+
+          {image && !croppedImage && (
+            <ReactCrop
+              src={URL.createObjectURL(image)}
+              crop={crop}
+              onChange={(newCrop: any) => setCrop(newCrop)}
+              onComplete={(cropData) => {
+                const canvas = document.createElement('canvas');
+                const imageElement = document.createElement('img');
+                imageElement.src = URL.createObjectURL(image);
+                imageElement.onload = () => {
+                  canvas.width = cropData.width;
+                  canvas.height = cropData.height;
+                  const ctx: any = canvas.getContext('2d');
+                  ctx.drawImage(
+                    imageElement,
+                    cropData.x,
+                    cropData.y,
+                    cropData.width,
+                    cropData.height,
+                    0,
+                    0,
+                    cropData.width,
+                    cropData.height
+                  );
+                  const imageDataUrl = canvas.toDataURL('image/jpeg');
+                  handleImageCrop(imageDataUrl);
+                };
+              }}
+            />
+          )}
+
+          {croppedImage && (
+            <Box mt="1rem">
+              <img src={croppedImage} alt="Cropped" />
+            </Box>
+          )}
         </Box>
       )}
 
       <Divider sx={{ margin: '1.25rem 0' }} />
-      <Flex justifyContent="space-between">
-        <Flex gap="0.25rem" onClick={() => setIsImage(!isImage)}>
-          <Tooltip title="Image" placement="top" sx={{ cursor: 'pointer' }}>
-            <ImageOutlined fontSize="small" />
-          </Tooltip>
-        </Flex>
 
-        {isNonMobileScreens ? (
-          <>
-            <Flex gap="0.25rem">
-              <Tooltip title="Clip" placement="top">
-                <GifBoxOutlined fontSize="small" sx={{ cursor: 'pointer' }} />
-              </Tooltip>
-            </Flex>
-
-            <Flex gap="0.25rem">
-              <Tooltip title="Attachment" placement="top">
-                <AttachFileOutlined fontSize="small" sx={{ cursor: 'pointer' }} />
-              </Tooltip>
-            </Flex>
-
-            <Flex gap="0.25rem">
-              <Tooltip title="Audio" placement="top">
-                <MicOutlined fontSize="small" sx={{ cursor: 'pointer' }} />
-              </Tooltip>
-            </Flex>
-          </>
-        ) : (
-          <Flex gap="0.25rem">
-            <Tooltip title="More" placement="top">
-              <MoreHorizOutlined fontSize="small" sx={{ cursor: 'pointer' }} />
-            </Tooltip>
-          </Flex>
-        )}
-        <Button
-          disabled={isUploading || valid}
-          onClick={handlePost}
-          sx={{
-            color: 'white',
-            backgroundColor: 'darkgray',
-            borderRadius: '3rem',
-          }}
-        >
-          POST
-        </Button>
-      </Flex>
-
-      {isUploading &&
+      {isUploading && (
         <Box sx={{ width: '100%' }}>
-          <LinearProgress variant="determinate" value={progress} />
+          <LinearProgress color="info" variant="determinate" value={progress} />
         </Box>
-      }
+      )}
     </WidgetWraper>
   );
 };

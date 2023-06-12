@@ -21,6 +21,26 @@ const postDbInterface = (repositories) => {
     const likePost = async (id, userId) => {
         await repositories.likePost(id, userId);
     };
+    const insertComment = async (postId, userId, comment) => {
+        const insertResult = await repositories.insertComment(postId, userId, comment);
+        return insertResult;
+    };
+    const pushComment = async (postId, comments) => {
+        const updateResult = await repositories.pushComment(postId, comments);
+        return updateResult;
+    };
+    const editPost = async (postId, body) => {
+        const editPost = await repositories.editPost(postId, body);
+        return editPost;
+    };
+    const reportPost = async (userId, postId, reason) => {
+        const repostResponse = await repositories.reportPost(userId, postId, reason);
+        return repostResponse;
+    };
+    const getReportedUsers = async (postId) => {
+        const users = await repositories.getReportedUsers(postId);
+        return users;
+    };
     return {
         getAllPost,
         uploadPost,
@@ -28,7 +48,12 @@ const postDbInterface = (repositories) => {
         getPostById,
         deletePost,
         dislikePost,
-        likePost
+        likePost,
+        insertComment,
+        pushComment,
+        editPost,
+        reportPost,
+        getReportedUsers
     };
 };
 exports.postDbInterface = postDbInterface;

@@ -25,8 +25,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
-import { blockUser } from '../../api/apiConnection/authConnect';
 import { ToastContainer, toast } from 'react-toastify';
+import moment from 'moment'
 
 interface TablePaginationActionsProps {
   count: number;
@@ -193,6 +193,7 @@ export default function PostList({ content }: PostListProps) {
             <TableCell align="right">Description</TableCell>
             <TableCell align="right">Likes</TableCell>
             <TableCell align="right">Comments</TableCell>
+            <TableCell align="right">Posted</TableCell>
             <TableCell align="right">Reports</TableCell>
             <TableCell align="right">Actions</TableCell>
           </TableRow>
@@ -226,6 +227,9 @@ export default function PostList({ content }: PostListProps) {
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
                 {row.comments.length}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align="right">
+                {moment(row.createdAt).fromNow()}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
                 {row.reports.length}

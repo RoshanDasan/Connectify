@@ -1,7 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from 'firebase/auth'
+
+import { getStorage } from 'firebase/storage';
+
+
 const firebaseConfig = {
-  apiKey: "AIzaSyC8mhLoRYtyrvj6nwZRrg-M0pDNEhB9pmg",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "connectify-f50e3.firebaseapp.com",
   projectId: "connectify-f50e3",
   storageBucket: "connectify-f50e3.appspot.com",
@@ -14,5 +18,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+const storage = getStorage(app)
 
-export { auth, provider }
+export { auth, provider, storage }

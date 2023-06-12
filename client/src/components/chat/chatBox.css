@@ -1,5 +1,4 @@
 .ChatBox-container {
-    background: rgba(255, 255, 255, 0.64);
     border-radius: 1rem;
     display: grid;
     grid-template-rows:14vh 58vh 8vh;     
@@ -22,10 +21,10 @@
   }
   
   .message {
-    background: linear-gradient(98.63deg, #f9a225 0%, #f95f35 100%);
+    background: lightskyblue;
     color: white;
     padding: 0.7rem;
-    border-radius: 1rem 1rem 1rem 0;
+    border-radius: 1rem 1rem 1rem 1rem;
     max-width: 28rem;
     width: fit-content;
     display: flex;
@@ -41,12 +40,11 @@
   
   .own {
     align-self: flex-end;
-    border-radius: 1rem 1rem 0 1rem;
-    background: linear-gradient(98.63deg, #24e4f0 0%, #358ff9 100%);
+    border-radius: 1rem 1rem 1rem 1rem;
+    
   }
   
   .chat-sender {
-    background: white;
     display: flex;
     justify-content: space-between;
     height: 3.5rem;
@@ -59,7 +57,6 @@
   
   .chat-sender > input {
     height: 70%;
-    background-color: rgb(236, 236, 236);
     border-radius: 0.5rem;
     border: none;
     outline: none;
@@ -69,7 +66,6 @@
   }
   
   .chat-sender > div:nth-of-type(1) {
-    background: rgb(233, 233, 233);
     border-radius: 0.5rem;
     display: flex;
     align-items: center;
@@ -93,7 +89,6 @@
     align-items: center;
     justify-content: center;
     background-color: #4285f4;
-    color: white;
     border-radius: 0.5rem;
     padding: 1rem;
     cursor: pointer;

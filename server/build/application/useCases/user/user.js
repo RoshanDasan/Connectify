@@ -3,9 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addFollowers = exports.followings = exports.followers = exports.userById = void 0;
+exports.updateProfileInfo = exports.searchUserByPrefix = exports.addFollowers = exports.followings = exports.followers = exports.userById = exports.getUserDetails = void 0;
 const httpstatuscodes_1 = require("../../../types/httpstatuscodes");
 const appError_1 = __importDefault(require("../../../utilities/appError"));
+const getUserDetails = async (repository) => {
+    const users = await repository.getAllUsers();
+    return users;
+};
+exports.getUserDetails = getUserDetails;
 const userById = async (id, repository) => {
     const user = await repository.getUserById(id);
     if (!user) {
@@ -44,3 +49,17 @@ const addFollowers = async (id, friendId, repository) => {
     }
 };
 exports.addFollowers = addFollowers;
+const searchUserByPrefix = async (prefix, repository) => {
+    if (!prefix)
+        return httpstatuscodes_1.HttpStatus.NOT_FOUND;
+    const searchedUsers = await repository.searchUser(prefix);
+    return searchedUsers;
+};
+exports.searchUserByPrefix = searchUserByPrefix;
+const updateProfileInfo = async (id, body, repository) => {
+    if (!body || !id)
+        return httpstatuscodes_1.HttpStatus.NOT_FOUND;
+    const updateProfile = await repository.updateProfile(id, body);
+    return updateProfile;
+};
+exports.updateProfileInfo = updateProfileInfo;

@@ -51,4 +51,4 @@ var HttpStatus;
     HttpStatus[HttpStatus["SERVICE_UNAVAILABLE"] = 503] = "SERVICE_UNAVAILABLE";
     HttpStatus[HttpStatus["GATEWAY_TIMEOUT"] = 504] = "GATEWAY_TIMEOUT";
     HttpStatus[HttpStatus["HTTP_VERSION_NOT_SUPPORTED"] = 505] = "HTTP_VERSION_NOT_SUPPORTED";
-})(HttpStatus = exports.HttpStatus || (exports.HttpStatus = {}));
+})(HttpStatus || (exports.HttpStatus = HttpStatus = {}));

@@ -89,13 +89,13 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
 
 
   return (
-    <WidgetWraper m='2rem 0' width='30rem'>
+    <WidgetWraper  width='30rem'>
       <PostHeader postId={id} name={userName} image={image} friendId={userId} buttonClick={globalClick} />
 
       <Typography sx={{ mt: '1rem' }}>{description}</Typography>
       {image && (
         <img
-          src={`http://localhost:5000/uploads/${image}`}
+          src={image}
           alt="img"
           width='100%'
           style={{ borderRadius: '0.75rem', marginTop: '0.75rem' }}
@@ -116,9 +116,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
             <Typography>{comments.length}</Typography>
           </Flex>
         </Flex>
-        <IconButton>
-          <Share />
-        </IconButton>
+
       </Flex>
       {isComment && (
         <Box mt="0.5rem" bgcolor="#f5f5f5" borderRadius="8px" padding="1rem">

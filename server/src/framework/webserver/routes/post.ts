@@ -12,7 +12,7 @@ const  postRouter = () => {
     router.get('/', controller.getPosts);
 
     // upload post
-    router.post('/',upload.single('image'), controller.uploadPost);
+    router.post('/', upload.single('image'), controller.uploadPost);
 
     // edit post
     router.put('/edit_post/:postId', controller.editPost)

@@ -13,8 +13,18 @@ const errorHandler_1 = __importDefault(require("./framework/webserver/middleware
 const appError_1 = __importDefault(require("./utilities/appError"));
 const httpstatuscodes_1 = require("./types/httpstatuscodes");
 const path_1 = __importDefault(require("path"));
+const socket_io_1 = require("socket.io");
+const websocket_1 = __importDefault(require("./framework/websocket/websocket"));
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
+const io = new socket_io_1.Server(server, {
+    cors: {
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"]
+    }
+});
+// connect socket.io
+(0, websocket_1.default)(io);
 // mongoDB connection
 (0, connection_1.default)();
 // middleware configuration

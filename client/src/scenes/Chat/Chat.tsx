@@ -7,6 +7,7 @@ import ChatList from '../../components/chat/ChatList';
 import ChatBox from '../../components/chat/ChatBox';
 import { io, Socket } from 'socket.io-client';
 import { setCurrentChat } from '../../state';
+import Navbar from '../Navbar/Navbar';
 
 
 const Chat = () => {
@@ -69,7 +70,9 @@ const Chat = () => {
   
 
   return (
-    <div className="Chat" style={{ marginTop: '6rem' }}>
+    <>
+    <Navbar />
+     <div className="Chat">
       <div className="Left-side-chat">
         <div className="Chat-container">
           <h2>Chats</h2>
@@ -88,6 +91,8 @@ const Chat = () => {
         </div>
       </div>
     </div>
+    </>
+   
   );
 };
 

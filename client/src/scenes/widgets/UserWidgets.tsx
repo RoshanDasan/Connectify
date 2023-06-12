@@ -85,7 +85,7 @@ const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data }) =>
         <Flex gap="1rem" alignItems="center">
           {user.dp ? (
             <div className="profile-picture">
-              <Avatar alt={user.userName} src={`http://localhost:5000/uploads/${user.dp}`} />
+              <Avatar alt={user.userName} src={user.dp} />
             </div>
           ) : (
             <Avatar alt={user.userName} />

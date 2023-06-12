@@ -16,6 +16,7 @@ const postSchema = new mongoose_1.Schema({
     },
     likes: [],
     comments: [],
+    reports: [],
     createdAt: {
         type: Date,
         default: new Date(),

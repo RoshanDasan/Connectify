@@ -1,0 +1,2 @@
+import cloudinary from "../../config";
+

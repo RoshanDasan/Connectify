@@ -11,12 +11,13 @@ import { deletePost } from "../api/apiConnection/postConnection";
 import { useSelector } from "react-redux";
 import { getPostById, editPost } from "../api/apiConnection/postConnection";
 
-export default function Cards({ id, image, click, borderView }: any) {
+export default function Cards({ id, userId, image, click, borderView }: any) {
   const [openModal, setOpenModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState(image);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const token: any = useSelector((state: any) => state.token);
+  const {_id}: any = useSelector((state: any) => state.user);
   const open = Boolean(anchorEl);
 
   const handleOpen = () => setOpenModal(true);
@@ -93,7 +94,7 @@ export default function Cards({ id, image, click, borderView }: any) {
               <CardMedia
                 component="img"
 
-                image={`http://localhost:5000/uploads/${image}`}
+                image={image}
                 alt=""
               />
             </CardActionArea>
@@ -117,7 +118,7 @@ export default function Cards({ id, image, click, borderView }: any) {
         </Modal>
       </div>
       <div>
-        {borderView && (
+        {borderView && _id === userId  && (
           <>
             <IconButton
               aria-label="more"
@@ -155,7 +156,7 @@ export default function Cards({ id, image, click, borderView }: any) {
           sx={{ height: '12rem' }}
           component="img"
           height="140"
-          image={`http://localhost:5000/uploads/${image}`}
+          image={image}
           alt=""
         />
       </CardActionArea>

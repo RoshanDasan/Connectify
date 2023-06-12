@@ -9,6 +9,7 @@ import { PersistGate, } from 'redux-persist/integration/react';
 import storage from 'redux-persist/lib/storage';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import ErrorBoundary from './ErrorBoundary';
 
 const persistConfig = { key: 'root', storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
@@ -30,7 +31,9 @@ ReactDOM.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistStore(store)}>
         <QueryClientProvider client={queryClient}>
+          <ErrorBoundary>
           <App />
+          </ErrorBoundary>
         </QueryClientProvider>
       </PersistGate>
     </Provider>
