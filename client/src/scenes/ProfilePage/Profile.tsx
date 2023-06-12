@@ -10,8 +10,10 @@ import { getUser, followUser } from '../../api/apiConnection/userConnection';
 import Navbar from '../Navbar/Navbar';
 import { ToastContainer } from 'react-toastify';
 import { useFollowers, useFollowings, getPostByUser } from '../../api/apiConnection/postConnection';
-import { setFollower, setUnfollower } from '../../state';
+import { setCurrentChat, setFollower, setUnfollower } from '../../state';
 import { useDispatch } from 'react-redux';
+import { getSingleChat } from '../../api/apiConnection/chatConnection';
+import { createChat } from '../../api/apiConnection/chatConnection';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -232,6 +234,20 @@ const Profile = () => {
 
   }, [id, clicked, followButton]);
 
+
+  const handleMessage = async () => {
+    try {
+      const response = await createChat(userId, id, token);
+      const {chat} = await getSingleChat(userId, id, token);
+      dispatch(setCurrentChat({ currentchat: chat[0] }));
+      navigate('/chat')
+      // Handle the response as needed
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
   return (
     <>
       <Navbar />
@@ -274,7 +290,7 @@ const Profile = () => {
             <Button variant='outlined' sx={{ mr: 5, mb:2 }} onClick={handlefollow}>{followButton}</Button>
 
 
-            <Button variant='outlined' sx={{ ml: 5, mb: 2 }}>Message</Button>
+            <Button variant='outlined' sx={{ ml: 5, mb: 2 }} onClick={handleMessage}>Message</Button>
           </Flex>
         )}
         <Typography>{userDetails.bio}</Typography>

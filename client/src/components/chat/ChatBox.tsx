@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { getUser } from '../../api/apiConnection/userConnection';
 import { useSelector } from 'react-redux';
 import './chatBox.css';
@@ -6,7 +6,7 @@ import Flex from '../DisplayFlex';
 import { Avatar, IconButton } from '@mui/material';
 import { getMessages, sendMessage } from '../../api/apiConnection/chatConnection';
 import { format } from 'timeago.js';
-import { Send } from '@mui/icons-material';
+import { Send, PhotoCamera } from '@mui/icons-material';
 import InputEmoji from 'react-input-emoji';
 
 interface ChatBoxProps {
@@ -22,10 +22,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, re
   const [newMessage, setNewMessage] = useState<string>('');
   const token = useSelector((state: any) => state.token);
   const userId = useSelector((state: any) => state.user._id);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const scroll = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (receiveMessage !== null && receiveMessage?.chatId === chat?._id) {
-      setMessages([...messages, receiveMessage]);
+      setMessages((prevMessages) => [...prevMessages, receiveMessage]);
     }
   }, [receiveMessage]);
 
@@ -57,7 +59,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, re
   const handleMessageSubmit = async () => {
     try {
       await sendMessage({ chatId: chat._id, senderId: userId, message: newMessage }, token);
-      setMessages([...messages, { senderId: userId, message: newMessage }]);
+      setMessages((prevMessages) => [...prevMessages, { senderId: userId, message: newMessage }]);
       setNewMessage('');
     } catch (error) {
       console.log(error);
@@ -68,45 +70,70 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, re
     setSendMessage({ chatId: chat._id, senderId: userId, message: newMessage, receiverId });
   };
 
+  const handleFileInputChange = () => {
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      // Handle the selected file here (e.g., send it to the server)
+      // You can use a file upload library or make a custom API call
+    }
+  };
+
+  const handlePictureUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   return (
     <div className="ChatBox-container">
-      <div className="chat-header">
-        <div className="follower">
-          <Flex sx={{ justifyContent: 'flex-start' }}>
-            {userData?.dp ? (
-              <div className="profile-picture">
-                <Avatar alt={userData.userName} src={`http://localhost:5000/uploads/${userData.dp}`} sx={{ m: '10px' }} />
-              </div>
-            ) : (
-              <Avatar alt={userData?.userName} sx={{ m: '10px' }} />
-            )}
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span className="name" style={{ fontSize: '0.8rem', fontStyle: 'initial' }}>
-                {userData?.userName}
-              </span>
-              <span>Online</span>
+      {chat ? (
+        <>
+          <div className="chat-header">
+            <div className="follower">
+              <Flex sx={{ justifyContent: 'flex-start' }}>
+                {userData?.dp ? (
+                  <div className="profile-picture">
+                    <Avatar alt={userData.userName} src={`http://localhost:5000/uploads/${userData.dp}`} sx={{ m: '10px' }} />
+                  </div>
+                ) : (
+                  <Avatar alt={userData?.userName} sx={{ m: '10px' }} />
+                )}
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span className="name" style={{ fontSize: '0.8rem', fontStyle: 'initial' }}>
+                    {userData?.userName}
+                  </span>
+                  
+                </div>
+              </Flex>
             </div>
-          </Flex>
-        </div>
-      </div>
-
-      <div className="chat-body">
-        {messages.map((message: any) => (
-          <div className={message.senderId === currentUser ? 'message own' : 'message'} key={message.createdAt}>
-            <span>{message.message}</span>
-            <span>{format(message.createdAt)}</span>
           </div>
-        ))}
-      </div>
 
-      <div className="chat-sender">
-        <h1>+</h1>
-        <InputEmoji value={newMessage} onChange={setNewMessage} />
+          <div className="chat-body">
+            {messages.map((message: any, index: number) => (
+              <div ref={index === messages.length - 1 ? scroll : null} className={message.senderId === currentUser ? 'message own' : 'message'} key={message.createdAt}>
+                <span>{message.message}</span>
+                <span>{format(message.createdAt)}</span>
+              </div>
+            ))}
+          </div>
 
-        <IconButton onClick={handleMessageSubmit}>
-          <Send />
-        </IconButton>
-      </div>
+          <div className="chat-sender">
+            <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleFileInputChange} />
+            <IconButton onClick={handlePictureUpload}>
+              <PhotoCamera />
+            </IconButton>
+            <InputEmoji value={newMessage} onChange={setNewMessage} />
+
+            <IconButton onClick={handleMessageSubmit}>
+              <Send />
+            </IconButton>
+          </div>
+        </>
+      ) : (
+        <div style={{ textAlign: 'center', marginTop: '50px', fontSize: '1.5rem', color: '#888' }}>Tap to chat</div>
+      )}
     </div>
   );
 };

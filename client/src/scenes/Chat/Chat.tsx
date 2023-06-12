@@ -1,21 +1,28 @@
 import { useEffect, useRef, useState } from 'react';
 import './chat.css';
 import { TextField } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getChat } from '../../api/apiConnection/chatConnection';
 import ChatList from '../../components/chat/ChatList';
 import ChatBox from '../../components/chat/ChatBox';
 import { io, Socket } from 'socket.io-client';
+import { setCurrentChat } from '../../state';
+
 
 const Chat = () => {
-  const [chats, setChats] = useState([]);
-  const [currentChat, setCurrentChat] = useState(null);
+  const [chats, setChats]: any = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [sendMessage, setSendMessage] = useState(null);
   const [receiveMessage, setReceiveMessage] = useState(null);
   const userId = useSelector((state: any) => state.user._id);
   const token = useSelector((state: any) => state.token);
   const socket = useRef<Socket | null>(null);
+  const currentchatstate = useSelector((state: any) => state.currentchat)
+  const dispatch = useDispatch()
+
+  const handleCurrentChat = (chat: any) => {
+    dispatch(setCurrentChat({ currentchat: chat }));
+  }
 
   useEffect(() => {
     socket.current = io('http://localhost:5000');
@@ -49,6 +56,18 @@ const Chat = () => {
     getChatList();
   }, [userId]);
 
+  const checkOnline = (chat: any) => {
+    const chatMember = chat.members.find((member: any) => member !== userId);
+    
+    const online = onlineUsers.find((user: any) => user.userId === chatMember)
+    
+    
+    return online? true : false;
+  }
+
+
+  
+
   return (
     <div className="Chat" style={{ marginTop: '6rem' }}>
       <div className="Left-side-chat">
@@ -56,8 +75,8 @@ const Chat = () => {
           <h2>Chats</h2>
           <div className="Chat-list">
             {chats.map((chat: any) => (
-              <div key={chat._id} onClick={() => setCurrentChat(chat)} style={{ cursor: 'pointer' }}>
-                <ChatList data={chat} userId={userId} token={token} />
+              <div key={chat._id} onClick={() => handleCurrentChat(chat)} style={{ cursor: 'pointer' }}>
+                <ChatList data={chat} userId={userId} token={token} online={checkOnline(chat)}/>
               </div>
             ))}
           </div>
@@ -65,7 +84,7 @@ const Chat = () => {
       </div>
       <div className="Right-side-chat">
         <div>
-          <ChatBox chat={currentChat} currentUser={userId} setSendMessage={setSendMessage} receiveMessage={receiveMessage} />
+          <ChatBox chat={currentchatstate} currentUser={userId} setSendMessage={setSendMessage} receiveMessage={receiveMessage} />
         </div>
       </div>
     </div>

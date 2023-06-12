@@ -113,7 +113,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
             <IconButton onClick={() => handleCommentView()}>
               <ChatBubbleOutlineOutlined />
             </IconButton>
-            <Typography>1</Typography>
+            <Typography>{comments.length}</Typography>
           </Flex>
         </Flex>
         <IconButton>

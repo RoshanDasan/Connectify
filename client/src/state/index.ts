@@ -7,6 +7,7 @@ interface AuthState {
   token: any;
   admintoken: any;
   posts: any[];
+  currentchat: any;
 }
 
 const initialState: AuthState = {
@@ -15,7 +16,8 @@ const initialState: AuthState = {
   admin: null,
   admintoken: null,
   token: null,
-  posts: []
+  posts: [],
+  currentchat: null
 };
 
 export const authSlice = createSlice({
@@ -32,6 +34,7 @@ export const authSlice = createSlice({
     setLogout: (state) => {
       state.user = null;
       state.token = null;
+      state.currentchat = null;
     },
     setAdminLogin: (state, action: PayloadAction<{ admin: any; admintoken: any }>) => {
       state.admin = action.payload.admin;
@@ -74,6 +77,10 @@ export const authSlice = createSlice({
       state.posts = action.payload.posts;
     },
 
+    setCurrentChat: (state, action: PayloadAction<{ currentchat: any }>) => {
+      state.currentchat = action.payload.currentchat;
+    },
+
 
     setPost: (state, action: PayloadAction<{ post_id: string; post: any }>) => {
       const updatedPosts = state.posts.map((post) => {
@@ -93,5 +100,5 @@ export const authSlice = createSlice({
   }
 });
 
-export const { setMode, setLogin, setLogout, setUser, setFollower, setPosts, setPost, setUpdatePost, setAdminLogin, setAdminLogout,setUnfollower } = authSlice.actions;
+export const { setMode, setLogin, setLogout, setUser, setFollower, setPosts, setPost, setUpdatePost, setAdminLogin, setAdminLogout,setUnfollower, setCurrentChat } = authSlice.actions;
 export default authSlice.reducer;

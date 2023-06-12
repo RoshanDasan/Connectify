@@ -45,3 +45,34 @@ export const sendMessage = async (data: any, token: string) => {
         throw error;
     }
 };
+
+export const createChat = async (senderId: string, recieverId: string, token: string) => {
+    try {
+
+        const response = await baseURL.post(`/api/chat/${senderId}/${recieverId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        console.log(response);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getSingleChat = async (firstId: string, secondId: string, token: string) => {
+    try {
+        const response = await baseURL.get(`/api/chat/${firstId}/${secondId}`,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        console.log(response);
+        return response.data
+        
+        
+    } catch (error) {
+        throw error
+    }
+}

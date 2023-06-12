@@ -8,7 +8,7 @@ const chatController = (chatRepositoriesInterfaceType: chatRepositoriesInterface
     const chatRepositeries = chatRepositoriesInterfaceType(chatRepositoryType());
 
     const chatCreate = expressAsyncHandler(async (req: Request, res: Response) => {
-        const { senderId, recieverId } = req.body;
+        const { senderId, recieverId } = req.params;
         const newChat = await createChat(senderId, recieverId, chatRepositeries);
         res.json({
             status: 'success',
@@ -22,6 +22,7 @@ const chatController = (chatRepositoriesInterfaceType: chatRepositoriesInterface
         res.json({
             status: 'success',
             chats
+            
         })
     })
 

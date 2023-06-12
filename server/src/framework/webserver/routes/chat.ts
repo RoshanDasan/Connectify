@@ -8,7 +8,7 @@ const chatRouter = () => {
     const controllers = chatController(chatRepositoriesInterface, chatRepositoryMongoDB);
 
     // create new chat box between two users
-    router.post('/', controllers.chatCreate);
+    router.post('/:senderId/:recieverId', controllers.chatCreate);
 
     // get all chats by user
     router.get('/:userId', controllers.getChats);
