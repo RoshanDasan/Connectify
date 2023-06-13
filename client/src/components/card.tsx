@@ -11,7 +11,7 @@ import { deletePost } from "../api/apiConnection/postConnection";
 import { useSelector } from "react-redux";
 import { getPostById, editPost } from "../api/apiConnection/postConnection";
 
-export default function Cards({ id, userId, image, click, borderView }: any) {
+export default function Cards({ id, userId, image,click, borderView}: any) {
   const [openModal, setOpenModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState(image);

@@ -11,6 +11,7 @@ export const postDbInterface: any = (repositories: ReturnType<postRepositoryType
         userId: string;
         description: string;
         image: string;
+        video: string;
         userName: string;
     }) => { return repositories.uploadPost(post)}
 

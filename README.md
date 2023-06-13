@@ -56,12 +56,13 @@ git clone
     
 
     cd server
-    npm install
+    yarn install
+    
 
    Install dependencies for the frontend:
 
     cd client
-    npm install
+    yarn install
 
 Configuration
 
@@ -87,13 +88,13 @@ Usage
 
 
     cd server
-    npm run start
+    yarn run dev
 
    Start the frontend development server:
 
 
     cd client
-    npm run dev
+    yarn run dev
 
    Open your browser and navigate 
    

@@ -17,13 +17,10 @@ const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryTyp
     })
 
     const uploadPost = expressAsyncHandler(async (req: Request, res: Response) => {
-        const { userId, description, userName, image } = req.body;
-        // const image: any = req?.file?.filename;
-        console.log(image,'image');
-        console.log(req.body,'body');
+        const { userId, description, userName, image, video } = req.body;
         
         
-        const body = {userId, description, userName, image};
+        const body = {userId, description, userName, image , video};
         const newPost = await postCreate(body,dbRepositoriesPost );
         
         
@@ -70,7 +67,6 @@ const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryTyp
         
         const { id, userId } = req.query;
        await updateLike(id, userId, dbRepositoriesPost)
-       console.log('liked success');
        
        res.json({
         status:'like update success'
@@ -80,14 +76,11 @@ const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryTyp
 
     const commentPost = expressAsyncHandler(async(req: Request, res: Response) => {
         const { postId, userId } = req.params;
-        console.log(req.body);
         
         const { comment } = req.body
-        console.log(comment);
         
         const updateResult = await insertComment(postId, userId, comment, dbRepositoriesPost)
 
-        console.log(updateResult);
         
         res.json({
             status: 'comment success',
@@ -97,7 +90,6 @@ const postControllers = (postDbInterface: postDbInterfaceType, postRepositoryTyp
 
     const commentDelete = expressAsyncHandler( async(req: Request, res: Response) => {
         const { postId, index } = req.params;
-        console.log(postId, index);
         
         const deleteResult = await deleteComment(postId, index, dbRepositoriesPost)
 

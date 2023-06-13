@@ -194,7 +194,7 @@ export default function UserList() {
                     <Avatar
                       sx={{ width: '3rem', height: '3rem' }}
                       alt={row.userName}
-                      src={`http://localhost:5000/uploads/${row.dp}`}
+                      src={row.dp}
                     />
                   </div>
                 ) : (

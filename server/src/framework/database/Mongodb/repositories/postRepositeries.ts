@@ -15,6 +15,7 @@ export const postRepositoryMongoDb = () => {
         userId: string;
         description: string;
         image: string;
+        video: string;
         userName: string;
     }) => {
         const newpost = new Post(post);

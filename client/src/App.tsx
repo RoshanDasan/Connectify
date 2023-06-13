@@ -24,8 +24,7 @@ export function App() {
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
-console.log(isBlocked);
-const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
 if(isBlocked){
   dispatch(setLogout())

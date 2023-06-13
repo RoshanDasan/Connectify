@@ -57,7 +57,6 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
     setIsUploading(true);
     setTimeout(() => {
       setIsUploading(false)
-      onButtonClick();
     }, 4000);
 
 
@@ -65,16 +64,33 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
     formData.append('userId', _id);
     formData.append('userName', userName);
     formData.append('description', post);
-    if (image) {
-      const imageRef = ref(storage, `posts/${image.name + v4()}`);
-      await uploadBytes(imageRef, image);
+   if (image) {
+  const imageRef = ref(storage, `posts/${image.name + v4()}`);
   
-      // Get the download URL of the uploaded image
-      const imageUrl = await getDownloadURL(imageRef);
-  
-      formData.append('image', imageUrl);
-      formData.append('picturePath', image.name);
-    }
+  // Check if the image file is a video by checking the file extension
+  const isVideo = image.name.toLowerCase().endsWith('.mp4');
+
+  if (isVideo) {
+    // Upload the video file
+    await uploadBytes(imageRef, image);
+
+    // Get the download URL of the uploaded video
+    const videoUrl = await getDownloadURL(imageRef);
+
+    formData.append('video', videoUrl);
+    formData.append('videoPath', image.name);
+  } else {
+    // Upload the image file (assuming it's not a video)
+    await uploadBytes(imageRef, image);
+
+    // Get the download URL of the uploaded image
+    const imageUrl = await getDownloadURL(imageRef);
+
+    formData.append('image', imageUrl);
+    formData.append('picturePath', image.name);
+  }
+}
+
 
     const upload = await uploadPost(token, formData);
 
@@ -82,6 +98,7 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
     setImage(null);
     setPost('');
     setIsUploading(false)
+    onButtonClick();
   };
 
   const handleInput = (e: any) => {
@@ -192,7 +209,7 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
                   >
                     <TextField {...getInputProps()} />
                     {!image ? (
-                      <p>Add Image Here</p>
+                      <p>Upload image or video here</p>
                     ) : (
                       <Flex alignItems="center">
                         <Typography>{image.name}</Typography>

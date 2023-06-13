@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
-import {
-  ChatBubbleOutlineOutlined,
-  FavoriteOutlined,
-  FavoriteBorderOutlined,
-  Share,
-  DeleteOutlined,
-  Send
-} from "@mui/icons-material";
-import { Box, Divider, IconButton, TextField, Typography } from "@mui/material";
+import { ChatBubbleOutlineOutlined, FavoriteOutlined, FavoriteBorderOutlined, DeleteOutlined, Send, Speaker, VolumeUp, VolumeOff, VolumeMute, VolumeOffRounded, VolumeOffOutlined, VolumeUpOutlined } from "@mui/icons-material";
+import { Box, CircularProgress, Divider, IconButton, TextField, Typography } from "@mui/material";
 import Flex from "../../components/DisplayFlex";
 import PostHeader from '../../components/PostHeader';
 import WidgetWraper from "../../components/WidgetWraper";
@@ -22,77 +15,112 @@ interface PostWidgetProps {
   description: string;
   userName: string;
   image: string;
+  video: string;
   likes: any[];
-  comments: any[];
+  commentList: any[];
   click: any;
   globalClick: any;
 }
 
-const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userName, image, likes, click, globalClick }: PostWidgetProps) => {
-
-
+const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userName, image, video, likes, commentList, click, globalClick }: PostWidgetProps) => {
   const [isLike, setIsLike] = useState(false);
   const [isComment, setIsComment] = useState(false);
-  const [comment, setComment] = useState('')
-  const [comments, setComments] = useState([])
+  const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
   const token: string = useSelector((state: any) => state.token);
   const user: any = useSelector((state: any) => state.user._id);
   const { name }: any = useSelector((state: any) => state.user);
 
   const handleLike = async (id: string, userId: string) => {
-    const liked = likePost(id, userId, token);
+    const liked = await likePost(id, userId, token);
     setIsLike((prevState) => !prevState);
-    click()
+    // click();
+    globalClick();
   };
-  
+
   const submitHandle = async () => {
     if (comment && !comment.match(/^\s/)) {
-      
-      const postCommentResult: any = await postComment(id, user, `${name} : ${comment}`, token)
-      
-      setComment('')
-      const response: any = await getPostById(id, token)
-      const { comments } = response.data.post
-      setComments(comments)
+      const postCommentResult: any = await postComment(id, user, `${name} : ${comment}`, token);
+      setComment('');
+      const response: any = await getPostById(id, token);
+      const { comments } = response.data.post;
+      setComments(comments);
     } else {
-      console.log('no commentss');
-
+      console.log('no comments');
     }
-
-
-
-  }
+  };
 
   const handleCommentView = async () => {
-
-
-    const response: any = await getPostById(id, token)
-    const { comments } = response.data.post
-    setComments(comments)
-    setIsComment(() => !isComment)
-  }
+    const response: any = await getPostById(id, token);
+    const { comments } = response.data.post;
+    setComments(comments);
+    setIsComment((prevState) => !prevState);
+  };
 
   const handleDelete = async (index: number) => {
-    const deleteResponse: any = deleteComment(id, index, token)
-    const response: any = await getPostById(id, token)
-    const { comments } = response.data.post
-    setComments(comments)
-
-
-  }
+    const deleteResponse: any = await deleteComment(id, index, token);
+    const response: any = await getPostById(id, token);
+    const { comments } = response.data.post;
+    setComments(comments);
+    handleCommentView();
+  };
 
   useEffect(() => {
-    setIsLike(() => !isLike)
+    setIsLike((prevState) => !prevState);
+  }, [click]);
 
-  }, [click])
+  const VideoPlayer = () => {
+    const [muted, setMuted] = useState(true);
 
+    const toggleMute = () => {
+      setMuted((prevState) => !prevState);
+    };
 
+    return (
+      <div style={{ position: 'relative' }}>
+        {video ? (
+          <video
+            src={video}
+            alt="video"
+            width="100%"
+            style={{ borderRadius: '0.75rem', marginTop: '0.75rem' }}
+            autoPlay
+            loop
+            muted={muted}
+          >
+            <p>Your browser does not support the video tag.</p>
+          </video>
+
+        ) : (
+          <Box sx={{ display: 'flex' }}>
+            <CircularProgress />
+          </Box>
+
+        )}
+
+        <button
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '10px',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+          onClick={toggleMute}
+        >
+          {muted ? < VolumeOffOutlined /> : <VolumeUpOutlined />}
+        </button>
+      </div>
+    );
+  };
 
   return (
-    <WidgetWraper  width='30rem'>
-      <PostHeader postId={id} name={userName} image={image} friendId={userId} buttonClick={globalClick} />
+    <WidgetWraper width='30rem'>
+      <PostHeader postId={id} name={userName} image={image} video={video} friendId={userId} buttonClick={globalClick} />
 
       <Typography sx={{ mt: '1rem' }}>{description}</Typography>
+
       {image && (
         <img
           src={image}
@@ -101,6 +129,9 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
           style={{ borderRadius: '0.75rem', marginTop: '0.75rem' }}
         />
       )}
+
+      {video && <VideoPlayer />}
+
       <Flex mt='0.25rem'>
         <Flex gap='1rem'>
           <Flex gap='0.3rem'>
@@ -113,14 +144,14 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
             <IconButton onClick={() => handleCommentView()}>
               <ChatBubbleOutlineOutlined />
             </IconButton>
-            <Typography>{comments.length}</Typography>
+            <Typography>{commentList.length}</Typography>
           </Flex>
         </Flex>
-
       </Flex>
+
       {isComment && (
         <Box mt="0.5rem" bgcolor="#f5f5f5" borderRadius="8px" padding="1rem">
-          {comments.map(({ comment }, index) => (
+          {comments.map(({ comment, userId }: any, index) => (
             <React.Fragment key={index}>
               <Box>
                 <Divider />
@@ -138,10 +169,12 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
                   >
                     {comment}
                   </Typography>
-                  <IconButton size="small" onClick={() => handleDelete(index)}>
-                    {/* Use an Instagram-like delete button icon */}
-                    <DeleteOutlined />
-                  </IconButton>
+                  {userId == user && (
+                    <IconButton size="small" onClick={() => handleDelete(index)}>
+                      {/* Use an Instagram-like delete button icon */}
+                      <DeleteOutlined />
+                    </IconButton>
+                  )}
                 </Flex>
               </Box>
               <Divider />
@@ -159,15 +192,13 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
               onChange={(e) => setComment(e.target.value)}
             // Add Instagram-like input field styles here
             />
-            <IconButton onClick={() => submitHandle()
-            }>
-
+            <IconButton onClick={submitHandle}>
               <Send />
             </IconButton>
           </Box>
         </Box>
-
       )}
+
       <Divider sx={{ marginTop: '4rem' }} />
     </WidgetWraper>
   );

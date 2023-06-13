@@ -9,6 +9,7 @@ interface IPost extends Document {
   reports: any[];
   createdAt: Date;
   image?: string;
+  video?: string;
   location: {
     type: string;
     coordinates: number[];
@@ -36,6 +37,7 @@ const postSchema = new Schema<IPost>(
       default: new Date(),
     },
     image: String,
+    video: String,
     location: {
       type: {
         type: String,

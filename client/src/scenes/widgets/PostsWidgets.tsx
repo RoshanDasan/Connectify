@@ -55,7 +55,7 @@ const PostsWidgets = ({ data, onButtonClick }: any) => {
       )}
 
       <div>
-        {post.map(({ _id, userId, description, userName, image, likes, comments }: any) => (
+        {post.map(({ _id, userId, description, userName, image,video, likes, comments }: any) => (
 
 
           <PostWidgetLoop
@@ -65,8 +65,9 @@ const PostsWidgets = ({ data, onButtonClick }: any) => {
             description={description}
             userName={userName}
             image={image}
+            video={video}
             likes={likes}
-            comments={comments}
+            commentList={comments}
             click={buttonClicks}
             globalClick={onButtonClick}
 

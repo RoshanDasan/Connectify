@@ -207,7 +207,7 @@ export default function PostList({ content }: PostListProps) {
                  <Avatar
                    sx={{ width: '3rem', height: '3rem' }}
                    alt={row.userName}
-                   src={`http://localhost:5000/uploads/${row.image}`}
+                   src={row.image}
                  />
                </div>
              ) : (
