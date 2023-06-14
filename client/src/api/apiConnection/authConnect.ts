@@ -40,7 +40,7 @@ interface RegisterResponse {
 
 export const register = async (values: RegisterFormValues): Promise<any> => {
   try {
-    const response = await baseURL.post<RegisterResponse>('/api/auth/register', values);
+    const response = await baseURL.post<RegisterResponse>('/auth/register', values);
 
     if (response.data.status === 'success') {
       toast.success('Registration successful');
@@ -61,7 +61,7 @@ export const register = async (values: RegisterFormValues): Promise<any> => {
 export const login = async (values:LoginFormValues) => {
    
     try {
-      const response = await baseURL.post<LoginResponse>('/api/auth/login', values);
+      const response = await baseURL.post<LoginResponse>('/auth/login', values);
   
       // Handle the success response
       if (response.data.status === 'success') {
@@ -83,7 +83,7 @@ export const login = async (values:LoginFormValues) => {
   export const googleLogin = async ( values: any) => {
     try {
       
-      const response = await baseURL.post('/api/auth/google_auth', values);
+      const response = await baseURL.post('/auth/google_auth', values);
       
       
       if(response.data.status === 'Google login success') {
@@ -104,7 +104,7 @@ export const login = async (values:LoginFormValues) => {
   
   export const adminLogin =async (values: AdminLoginFormValues) => {
     try {
-      const response = await baseURL.post<AdminLoginResponse>('/api/admin/login', values);
+      const response = await baseURL.post<AdminLoginResponse>('/admin/login', values);
   
       // Handle the success response
       if (response.data.status === 'success') {
@@ -126,7 +126,7 @@ export const login = async (values:LoginFormValues) => {
 
   export const blockUser = async (userId: string) => {
     try {
-      const response = await baseURL.patch(`/api/auth/user/block/${userId}`)
+      const response = await baseURL.patch(`/auth/user/block/${userId}`)
       return response.data;
       
       

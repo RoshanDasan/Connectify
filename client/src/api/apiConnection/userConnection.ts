@@ -1,10 +1,10 @@
-import baseURL from "../api";
+import baseURL from '../api';
 import { useQuery, useMutation } from 'react-query';
 
 export const getUser = async (userId: string, token: string) => {
 
   try {
-    const response = await baseURL.get(`/api/user/${userId}`, {
+    const response = await baseURL.get(`/user/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -16,9 +16,9 @@ export const getUser = async (userId: string, token: string) => {
   }
 };
 
-export const getAllUsers = async (token: string) => {
+export const getAllUsers = async (token: string, userId: string) => {
   try {
-    const response = await baseURL.get(`/api/user`, {
+    const response = await baseURL.get(`/user/all/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,7 +32,7 @@ export const getAllUsers = async (token: string) => {
 
 export const followUser = async (id: string, friendId: string, token: string) => {
   try {
-    const response = await baseURL.patch(`/api/user?id=${id}&friendId=${friendId}`, {
+    const response = await baseURL.patch(`/user?id=${id}&friendId=${friendId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -52,7 +52,7 @@ export const useSearchUser = (prefix: any = 'roshan', token: string) => {
     sender = 'qwertyuiop'
   }
   return useQuery(['searchUser', prefix], async () => {
-    const response = await baseURL.get(`/api/user/search/${sender}`, {
+    const response = await baseURL.get(`/user/search/${sender}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -69,7 +69,7 @@ export const useUpdateProfile = () => {
 
 
     try {
-      const response = await baseURL.put(`/api/user/${id}`, values, {
+      const response = await baseURL.put(`/user/${id}`, values, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

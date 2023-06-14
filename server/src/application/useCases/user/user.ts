@@ -3,10 +3,19 @@ import AppError from '../../../utilities/appError';
 import { UserDbInterface } from '../../repositories/userDbRepositories';
 
 
-export const getUserDetails = async (repository: ReturnType<UserDbInterface>) => {
-    const users: any = await repository.getAllUsers()
-    return users;
-}
+export const getUserDetails = async (id: string, repository: ReturnType<UserDbInterface>) => {
+    // Get all users
+    const users: any[] = await repository.getAllUsers();
+  
+    // Get blocked users
+    const {blockedUsers}  = await repository.getUserById(id);
+  
+    // Filter out blocked users
+    const filtered = users.filter((user: any) => !blockedUsers.includes(user._id));
+  
+    return filtered;
+  };
+  
 
 export const userById =async (id:string, repository: ReturnType<UserDbInterface>) => {
     const user: any = await repository.getUserById(id)
@@ -58,4 +67,22 @@ export const updateProfileInfo = async (id: string, body: any,  repository: Retu
     if(!body || !id) return HttpStatus.NOT_FOUND
     const updateProfile: any = await repository.updateProfile(id, body);
     return updateProfile
+}
+
+export const userBlock = async(userId: string, blockId: string, repository: ReturnType<UserDbInterface>) => {
+
+    const { blockedUsers }= await repository.getUserById(userId);
+
+    // check user is already blocked
+    const isBlocked = blockedUsers.some((user: any) => user === blockId);
+
+    if(isBlocked) {
+        // user already blocked
+        const updateResult: any = await repository.unBlockUserByUser(userId, blockId);
+        return updateResult;
+    } else {
+        // user not blocked
+        const updateResult: any = await repository.blockUserByUser(userId, blockId);
+        return updateResult;
+    }
 }

@@ -1,9 +1,8 @@
-import baseURL from "../api";
-import { useQuery } from 'react-query';
+import baseURL from '../api';
 
 export const getPosts = async (token: string) => {
   try {
-    const response = await baseURL.get(`/api/post`, {
+    const response = await baseURL.get(`/post`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -23,7 +22,7 @@ export const getPosts = async (token: string) => {
 
 export const getPostById = async (id: string, token: string) => {
   try {
-    const response = await baseURL.get(`/api/post/post/${id}`, {
+    const response = await baseURL.get(`/post/post/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -37,7 +36,7 @@ export const getPostById = async (id: string, token: string) => {
 
 export const getPostByUser = async (id: string, token: string) => {
   try {
-    const response = await baseURL.get(`/api/post/userposts/${id}`, {
+    const response = await baseURL.get(`/post/userposts/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -55,7 +54,7 @@ export const getPostByUser = async (id: string, token: string) => {
 };
 export const deletePost = async (id: string, token: string) => {
   try {
-    const response = await baseURL.delete(`/api/post/${id}`, {
+    const response = await baseURL.delete(`/post/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -77,7 +76,7 @@ export const uploadPost = async (token: string, body: any) => {
 
   try {
     const response = await baseURL
-      .post(`/api/post`, body, {
+      .post(`/post`, body, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -93,7 +92,7 @@ export const uploadPost = async (token: string, body: any) => {
 
 export const likePost = (id: string, userId: string, token: string) => {
   baseURL
-    .patch(`/api/post/like?id=${id}&userId=${userId}`, null, {
+    .patch(`/post/like?id=${id}&userId=${userId}`, null, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -116,7 +115,7 @@ export const postComment = async (postId: string, userId: string, body: any, tok
       comment: body
     };
 
-    const response = await baseURL.patch(`/api/post/comment/${postId}/${userId}`, data, {
+    const response = await baseURL.patch(`/post/comment/${postId}/${userId}`, data, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -131,7 +130,7 @@ export const postComment = async (postId: string, userId: string, body: any, tok
 
 
 export const deleteComment = (postId: string, index: number, token: string) => {
-  baseURL.delete(`/api/post/delete_comment/${postId}/${index}`, {
+  baseURL.delete(`/post/delete_comment/${postId}/${index}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -150,7 +149,7 @@ export const editPost = (postId: string, description: any, token: string) => {
   } = {
     description
   };
-  baseURL.put(`/api/post/edit_post/${postId}`, data, {
+  baseURL.put(`/post/edit_post/${postId}`, data, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -165,7 +164,7 @@ export const editPost = (postId: string, description: any, token: string) => {
 export const useFollowers = async (userId: string, token: string) => {
 
   const response = await baseURL
-    .get(`/api/user/followers/${userId}`, {
+    .get(`/user/followers/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -177,7 +176,7 @@ export const useFollowers = async (userId: string, token: string) => {
 
 export const useFollowings = async (userId: string, token: string) => {
     const response = await baseURL
-      .get(`/api/user/followings/${userId}`, {
+      .get(`/user/followings/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -191,7 +190,7 @@ export const reportPost = async (userId: string, postId: string, reason: any, to
   } = {
     reason
   };
-  const { data } = await baseURL.post(`/api/post/report/${userId}/${postId}`, value, {
+  const { data } = await baseURL.post(`/post/report/${userId}/${postId}`, value, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -200,7 +199,7 @@ export const reportPost = async (userId: string, postId: string, reason: any, to
 }
 
 export const reportedUsers = async (postId: string, token: string) => {
-  const { data } = await baseURL.get(`/api/post/reporters/${postId}`, {
+  const { data } = await baseURL.get(`/post/reporters/${postId}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }

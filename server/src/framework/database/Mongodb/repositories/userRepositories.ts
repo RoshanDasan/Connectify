@@ -15,7 +15,8 @@ export const userRepositoryMongoDB = () => {
   };
 
   const getAllUsers = async () => {
-    const users: any = await User.find({ _id: { $ne: '646fa8515333e77cdec159c2' }, followers: { $nin: ['6471800e2ed680381cbae276', '6477705ef858f715f868093a'] } });
+    const users: any = await User.find();
+    // const users: any = await User.find({ _id: { $ne: '646fa8515333e77cdec159c2' }, followers: { $nin: ['6471800e2ed680381cbae276', '6477705ef858f715f868093a'] } });
 
     return users;
   }
@@ -133,6 +134,19 @@ export const userRepositoryMongoDB = () => {
     })
     return 'UnBlocked'
   }
+  const blockUserByUser = async (_id: string, blockId: string) => {
+    await User.findByIdAndUpdate({_id}, {
+      $push:{blockedUsers: blockId}
+    });
+    return 'Blocked';
+  }
+
+  const unBlockUserByUser = async (_id: string, blockId: string) => {
+    await User.findByIdAndUpdate({_id}, {
+      $pull:{blockedUsers: blockId}
+    });
+    return 'Unblocked';
+  }
 
   return {
     addUser,
@@ -148,7 +162,9 @@ export const userRepositoryMongoDB = () => {
     searchUser,
     updateProfile,
     blockUser,
-    unBlockUser
+    unBlockUser,
+    blockUserByUser,
+    unBlockUserByUser
   };
 }
 

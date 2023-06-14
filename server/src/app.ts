@@ -10,13 +10,14 @@ import { HttpStatus } from './types/httpstatuscodes'
 import path from 'path';
 import { Server } from 'socket.io';
 import socketConfig from './framework/websocket/websocket';
+import configKeys from './config';
 
 const app: Application = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: configKeys.CLIENT_URL,
         methods: ["GET", "POST"]
     }
 })

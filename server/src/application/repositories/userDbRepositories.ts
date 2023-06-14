@@ -64,6 +64,14 @@ export const userDbRepository = (repository: ReturnType<userRepositoryMongoDB>) 
         return await repository.unBlockUser(id);
     }
 
+    const blockUserByUser = async (userId: string, blockId: string) => {
+        return await repository.blockUserByUser(userId, blockId);
+    }
+
+    const unBlockUserByUser = async (userId: string, blockId: string) => {
+        return await repository.unBlockUserByUser(userId, blockId);
+    }
+
 
 
     return {
@@ -80,7 +88,9 @@ export const userDbRepository = (repository: ReturnType<userRepositoryMongoDB>) 
         searchUser,
         updateProfile,
         blockUser,
-        unBlockUser
+        unBlockUser,
+        blockUserByUser,
+        unBlockUserByUser
         
 
     };

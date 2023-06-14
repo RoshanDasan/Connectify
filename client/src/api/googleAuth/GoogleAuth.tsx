@@ -5,7 +5,7 @@ import { getStorage } from 'firebase/storage';
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC8mhLoRYtyrvj6nwZRrg-M0pDNEhB9pmg",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "connectify-f50e3.firebaseapp.com",
   projectId: "connectify-f50e3",
   storageBucket: "connectify-f50e3.appspot.com",

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Typography, ButtonBase, Skeleton, Avatar } from '@mui/material'
+import { Typography, ButtonBase, Skeleton } from '@mui/material'
 import Flex from '../../components/DisplayFlex'
 import Friend from '../../components/Friend'
 import { useSelector } from 'react-redux'
@@ -15,7 +15,7 @@ const FriensList = ({ onButtonClick }: any) => {
   const [isLoading, setIsLoading] = useState(true)
 
   const getUserDetails = async () => {
-    const details = await getAllUsers(token)
+    const details = await getAllUsers(token, userId)
     const userDetail = await getUser(userId, token)
     const excludedArray: any = details.filter((detail: any) => !userDetail.followers.includes(detail._id));
     setUsers(excludedArray)

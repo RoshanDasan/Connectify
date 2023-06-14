@@ -9,7 +9,7 @@ const userRouter = () => {
 
     const controllers: any = userControllers(userDbRepository,userRepositoryMongoDB);
 
-    router.get('/', controllers.getAllUsers)
+    router.get('/all/:id', controllers.getAllUsers)
 
     router.get('/:id', controllers.getUserById);
 
@@ -22,6 +22,8 @@ const userRouter = () => {
     router.get('/search/:prefix', controllers.searchUser)
 
     router.put('/:id',upload.single('file'), controllers.updateProfile)
+
+    router.patch('/:userId/:blockId', controllers.blockUser);
     
     return router;
 }

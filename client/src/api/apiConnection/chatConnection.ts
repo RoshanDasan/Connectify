@@ -3,7 +3,7 @@ import baseURL from "../api";
 export const getChat = async (userId: string, token: string) => {
     try {
 
-        const chats = await baseURL.get(`/api/chat/${userId}`,{
+        const chats = await baseURL.get(`/chat/${userId}`,{
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -18,7 +18,7 @@ export const getChat = async (userId: string, token: string) => {
 
 export const getMessages = async (chatId: string, token: string) => {
     try {
-        const response = await baseURL.get(`/api/message/${chatId}`,{
+        const response = await baseURL.get(`/message/${chatId}`,{
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -34,7 +34,7 @@ export const getMessages = async (chatId: string, token: string) => {
 export const sendMessage = async (data: any, token: string) => {
     try {
 
-        const response = await baseURL.post('/api/message', data, {
+        const response = await baseURL.post('/message', data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -49,7 +49,7 @@ export const sendMessage = async (data: any, token: string) => {
 export const createChat = async (senderId: string, recieverId: string, token: string) => {
     try {
 
-        const response = await baseURL.post(`/api/chat/${senderId}/${recieverId}`, {
+        const response = await baseURL.post(`/chat/${senderId}/${recieverId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -63,7 +63,7 @@ export const createChat = async (senderId: string, recieverId: string, token: st
 
 export const getSingleChat = async (firstId: string, secondId: string, token: string) => {
     try {
-        const response = await baseURL.get(`/api/chat/${firstId}/${secondId}`,{
+        const response = await baseURL.get(`/chat/${firstId}/${secondId}`,{
             headers: {
                 Authorization: `Bearer ${token}`
             }
