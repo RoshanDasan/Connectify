@@ -8,6 +8,7 @@ interface AuthState {
   admintoken: any;
   posts: any[];
   currentchat: any;
+
 }
 
 const initialState: AuthState = {
@@ -17,7 +18,8 @@ const initialState: AuthState = {
   admintoken: null,
   token: null,
   posts: [],
-  currentchat: null
+  currentchat: null,
+
 };
 
 export const authSlice = createSlice({
@@ -97,8 +99,43 @@ export const authSlice = createSlice({
     },
 
 
+    setBlockUser: (state, action: PayloadAction<{ blockUser: any }>) => {
+        state.user.blockingUsers.push(action.payload.blockUser);
+
+    },
+
+    setUnblockUser: (state: any, action: PayloadAction<{ unblockUser: any }>) => {
+      console.log('unbloving set');
+      
+      if(state.user){
+       const filterResult =  state.user.blockingUsers.filter((userId: any) => userId !== action.payload.unblockUser);
+       console.log(filterResult);
+       
+       state.user.blockingUsers = filterResult;
+      } else {
+        console.log('user not found');
+        
+      }
+    }
+
+
   }
 });
 
-export const { setMode, setLogin, setLogout, setUser, setFollower, setPosts, setPost, setUpdatePost, setAdminLogin, setAdminLogout,setUnfollower, setCurrentChat } = authSlice.actions;
+export const { 
+   setMode,
+   setLogin,
+   setLogout,
+   setUser,
+   setFollower,
+   setPosts,
+   setPost,
+   setUpdatePost,
+   setAdminLogin,
+   setAdminLogout,
+   setUnfollower,
+   setCurrentChat,
+   setBlockUser,
+   setUnblockUser
+} = authSlice.actions;
 export default authSlice.reducer;

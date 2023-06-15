@@ -9,7 +9,8 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
     const dbRepositoryUser = userDbRepository(userDbRepositoryService());
     // get all users list
     const getAllUsers = (0, express_async_handler_1.default)(async (req, res) => {
-        const users = await (0, user_1.getUserDetails)(dbRepositoryUser);
+        const { id } = req.params;
+        const users = await (0, user_1.getUserDetails)(id, dbRepositoryUser);
         res.json({
             status: 'Get users success',
             users
@@ -63,13 +64,21 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
     // update profile informations
     const updateProfile = (0, express_async_handler_1.default)(async (req, res) => {
         const { id } = req.params;
-        const { bio, gender, city, date } = req.body;
+        const { bio, gender, city, date, file } = req.body;
         const image = req?.file?.filename;
         console.log(req.body);
-        const updateResult = await (0, user_1.updateProfileInfo)(id, { image, bio, gender, city, date }, dbRepositoryUser);
+        const updateResult = await (0, user_1.updateProfileInfo)(id, { file, bio, gender, city, date }, dbRepositoryUser);
         res.json({
             status: 'Update success',
             data: updateResult
+        });
+    });
+    // block user by user
+    const blockUser = (0, express_async_handler_1.default)(async (req, res) => {
+        const { userId, blockId } = req.params;
+        const blockResult = await (0, user_1.userBlock)(userId, blockId, dbRepositoryUser);
+        res.json({
+            status: blockResult
         });
     });
     return {
@@ -79,7 +88,8 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
         insertFollowers,
         getAllUsers,
         searchUser,
-        updateProfile
+        updateProfile,
+        blockUser
     };
 };
 exports.default = userControllers;

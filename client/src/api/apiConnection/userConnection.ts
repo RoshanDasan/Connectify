@@ -86,5 +86,10 @@ export const useUpdateProfile = () => {
   return updateProfileMutation;
 };
 
+export const blockUserByUser = async (userId: string, blockId: string) => {
+  const response = await baseURL.patch(`/user/${userId}/${blockId}`);
+  return response.data;
+}
+
 
 

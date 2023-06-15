@@ -134,16 +134,22 @@ export const userRepositoryMongoDB = () => {
     })
     return 'UnBlocked'
   }
-  const blockUserByUser = async (_id: string, blockId: string) => {
-    await User.findByIdAndUpdate({_id}, {
-      $push:{blockedUsers: blockId}
+  const blockUserByUser = async (blockingUser: string, blockedUser: string) => {
+    await User.findByIdAndUpdate({ _id: blockedUser }, {
+      $push: { blockedUsers: blockingUser }
+    });
+    await User.findByIdAndUpdate({ _id: blockingUser }, {
+      $push: { blockingUsers: blockedUser }
     });
     return 'Blocked';
   }
 
-  const unBlockUserByUser = async (_id: string, blockId: string) => {
-    await User.findByIdAndUpdate({_id}, {
-      $pull:{blockedUsers: blockId}
+  const unBlockUserByUser = async (blockingUser: string, blockedUser: string) => {
+    await User.findByIdAndUpdate({ _id: blockedUser }, {
+      $pull: { blockedUsers: blockingUser }
+    });
+    await User.findByIdAndUpdate({ _id: blockingUser }, {
+      $pull: { blockingUsers: blockedUser }
     });
     return 'Unblocked';
   }

@@ -6,11 +6,11 @@ import Flex from '../../components/DisplayFlex';
 import Cards from '../../components/card';
 import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getUser, followUser } from '../../api/apiConnection/userConnection';
+import { getUser, followUser, blockUserByUser, } from '../../api/apiConnection/userConnection';
 import Navbar from '../Navbar/Navbar';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { useFollowers, useFollowings, getPostByUser } from '../../api/apiConnection/postConnection';
-import { setCurrentChat, setFollower, setUnfollower } from '../../state';
+import { setBlockUser, setCurrentChat, setFollower, setUnfollower, setUnblockUser } from '../../state';
 import { useDispatch } from 'react-redux';
 import { getSingleChat } from '../../api/apiConnection/chatConnection';
 import { createChat } from '../../api/apiConnection/chatConnection';
@@ -82,6 +82,7 @@ const Profile = () => {
   const [mainUser, setmainUser]: any = useState({});
   const [followButton, setFollowBotton] = useState('')
   const [type, setType] = useState('')
+  const [blockUserState, setBlockUserState] = useState('')
   const { id }: any = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -89,6 +90,7 @@ const Profile = () => {
   const token = useSelector((state: any) => state.token);
   const userId = useSelector((state: any) => state.user._id);
   const user = useSelector((state: any) => state.user);
+  const blockList = useSelector((state: any) => state.user.blockingUsers)
 
   const [openModal, setOpenModal]: any = useState(false);
 
@@ -140,10 +142,8 @@ const Profile = () => {
       unfollower: friendId
     }))
     if (type === 'followers') {
-      console.log('iff', type);
 
       const { followers }: any = await useFollowers(id, token);
-      console.log(followers, 'data');
 
       setFriendData(followers);
       setIsLoading(false)
@@ -151,7 +151,6 @@ const Profile = () => {
       console.log('else', type);
 
       const { followings }: any = await useFollowings(id, token);
-      console.log(followings, 'data');
 
       setFriendData(followings);
       setIsLoading(false)
@@ -167,18 +166,14 @@ const Profile = () => {
       followers: friendId
     }))
     if (type === 'followers') {
-      console.log('iff', type);
 
       const { followers }: any = await useFollowers(id, token);
-      console.log(followers, 'data');
 
       setFriendData(followers);
       setIsLoading(false)
     } else {
-      console.log('else', type);
 
       const { followings }: any = await useFollowings(id, token);
-      console.log(followings, 'data');
 
       setFriendData(followings);
       setIsLoading(false)
@@ -190,14 +185,13 @@ const Profile = () => {
   const handleFollowbutton = () => {
     if (id !== userId) {
       if (user.followers.includes(id)) {
-      setFollowBotton('unfollow')
+        setFollowBotton('unfollow')
 
       } else {
-      setFollowBotton('follow')
+        setFollowBotton('follow')
 
       }
     } else {
-      console.log('njn thammee');
 
       setFollowBotton('')
     }
@@ -205,26 +199,25 @@ const Profile = () => {
 
   const handlefollow = async () => {
 
-    const {data}: any = await followUser(userId, id, token)
-    if(followButton == 'follow'){
+    const { data }: any = await followUser(userId, id, token)
+    if (followButton == 'follow') {
       dispatch(setFollower({
         followers: id
       }))
-    }else{
+    } else {
       dispatch(
         setUnfollower({
-            unfollower: id
+          unfollower: id
         })
-    )
-      
+      )
+
     }
-    console.log(data);
-    if(data.status == 'follow'){
+    if (data.status == 'follow') {
       setFollowBotton('unfollow')
-    }else{
+    } else {
       setFollowBotton('follow')
     }
-    
+
   }
 
   useEffect(() => {
@@ -234,11 +227,21 @@ const Profile = () => {
 
   }, [id, clicked, followButton]);
 
+  useEffect(() => {
+    console.log(blockList,'[][][][');
+    
+    if (blockList.some((list: any) => list === id)) {
+      setBlockUserState('Blocked')
+    } else {
+      setBlockUserState('Unblocked')
+    }
+  }, [id, blockList])
+
 
   const handleMessage = async () => {
     try {
       const response = await createChat(userId, id, token);
-      const {chat} = await getSingleChat(userId, id, token);
+      const { chat } = await getSingleChat(userId, id, token);
       dispatch(setCurrentChat({ currentchat: chat[0] }));
       navigate('/chat')
       // Handle the response as needed
@@ -246,7 +249,30 @@ const Profile = () => {
       console.log(error);
     }
   };
-  
+
+  const handleBlock = async () => {
+    console.log('block');
+    const response = await blockUserByUser(userId, id)
+    console.log(response);
+    toast.success(response.state)
+    dispatch(setBlockUser({ blockUser: id }))
+
+  }
+
+  const handleUnblock = async () => {
+    console.log('unblock');
+    const response = await blockUserByUser(userId, id)
+    console.log(response);
+    
+    toast.success(response.state)
+    dispatch(setUnblockUser({ unblockUser: id }))
+
+
+
+  }
+
+
+
 
   return (
     <>
@@ -283,11 +309,40 @@ const Profile = () => {
             </Button>
           )}
 
+
+          {userId !== id && (
+            blockUserState === 'Blocked' ? (
+              <Button
+                style={{ margin: '0 2rem 8rem 2rem' }}
+                variant="contained"
+                sx={{ backgroundColor: 'lightgray' }}
+                className={classes.button}
+                onClick={() => handleUnblock()}
+              >
+                Unblock
+              </Button>
+
+            ) : (
+              <Button
+                style={{ margin: '0 2rem 8rem 2rem' }}
+                variant="contained"
+                sx={{ backgroundColor: 'lightgray' }}
+                className={classes.button}
+                onClick={() => handleBlock()}
+
+              >
+                Block
+              </Button>
+
+            )
+
+          )}
+
         </Flex>
         {userId !== id && (
           <Flex>
-            {}
-            <Button variant='outlined' sx={{ mr: 5, mb:2 }} onClick={handlefollow}>{followButton}</Button>
+            { }
+            <Button variant='outlined' sx={{ mr: 5, mb: 2 }} onClick={handlefollow}>{followButton}</Button>
 
 
             <Button variant='outlined' sx={{ ml: 5, mb: 2 }} onClick={handleMessage}>Message</Button>

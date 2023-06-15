@@ -8,9 +8,12 @@ const appError_1 = __importDefault(require("../../../utilities/appError"));
 const authServices_1 = require("../../services/authServices");
 const userAuthMiddleware = (req, res, next) => {
     let token = null;
+    console.log("Entered to middleware");
     if (req.headers.authorization && req.headers.authorization.startsWith(`Bearer `)) {
+        console.log('if ullil');
         token = req.headers.authorization.split(' ')[1];
     }
+    console.log(token, 'too');
     if (!token) {
         throw new appError_1.default("Token not found", httpstatuscodes_1.HttpStatus.UNAUTHORIZED);
     }

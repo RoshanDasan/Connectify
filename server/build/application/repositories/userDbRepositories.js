@@ -44,6 +44,12 @@ const userDbRepository = (repository) => {
     const unBlockUser = async (id) => {
         return await repository.unBlockUser(id);
     };
+    const blockUserByUser = async (userId, blockId) => {
+        return await repository.blockUserByUser(userId, blockId);
+    };
+    const unBlockUserByUser = async (userId, blockId) => {
+        return await repository.unBlockUserByUser(userId, blockId);
+    };
     return {
         addUser,
         getUserByEmail,
@@ -58,7 +64,9 @@ const userDbRepository = (repository) => {
         searchUser,
         updateProfile,
         blockUser,
-        unBlockUser
+        unBlockUser,
+        blockUserByUser,
+        unBlockUserByUser
     };
 };
 exports.userDbRepository = userDbRepository;

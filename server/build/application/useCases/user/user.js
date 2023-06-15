@@ -3,12 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProfileInfo = exports.searchUserByPrefix = exports.addFollowers = exports.followings = exports.followers = exports.userById = exports.getUserDetails = void 0;
+exports.userBlock = exports.updateProfileInfo = exports.searchUserByPrefix = exports.addFollowers = exports.followings = exports.followers = exports.userById = exports.getUserDetails = void 0;
 const httpstatuscodes_1 = require("../../../types/httpstatuscodes");
 const appError_1 = __importDefault(require("../../../utilities/appError"));
-const getUserDetails = async (repository) => {
+const getUserDetails = async (id, repository) => {
+    // Get all users
     const users = await repository.getAllUsers();
-    return users;
+    // Get blocked users
+    const { blockedUsers } = await repository.getUserById(id);
+    // Filter out blocked users
+    const filtered = users.filter((user) => !blockedUsers.includes(user._id));
+    return filtered;
 };
 exports.getUserDetails = getUserDetails;
 const userById = async (id, repository) => {
@@ -63,3 +68,19 @@ const updateProfileInfo = async (id, body, repository) => {
     return updateProfile;
 };
 exports.updateProfileInfo = updateProfileInfo;
+const userBlock = async (userId, blockId, repository) => {
+    const { blockedUsers } = await repository.getUserById(userId);
+    // check user is already blocked
+    const isBlocked = blockedUsers.some((user) => user === blockId);
+    if (isBlocked) {
+        // user already blocked
+        const updateResult = await repository.unBlockUserByUser(userId, blockId);
+        return updateResult;
+    }
+    else {
+        // user not blocked
+        const updateResult = await repository.blockUserByUser(userId, blockId);
+        return updateResult;
+    }
+};
+exports.userBlock = userBlock;

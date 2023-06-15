@@ -43,6 +43,7 @@ const userSchema = new Schema(
       default: false,
     },
     blockedUsers:[],
+    blockingUsers:[],
     followers: [],
     following: []
 

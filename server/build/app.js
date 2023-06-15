@@ -15,11 +15,12 @@ const httpstatuscodes_1 = require("./types/httpstatuscodes");
 const path_1 = __importDefault(require("path"));
 const socket_io_1 = require("socket.io");
 const websocket_1 = __importDefault(require("./framework/websocket/websocket"));
+const config_1 = __importDefault(require("./config"));
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: config_1.default.CLIENT_URL,
         methods: ["GET", "POST"]
     }
 });

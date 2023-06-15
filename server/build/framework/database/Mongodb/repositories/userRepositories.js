@@ -11,7 +11,8 @@ const userRepositoryMongoDB = () => {
         return await newUser.save();
     };
     const getAllUsers = async () => {
-        const users = await userModel_1.default.find({ _id: { $ne: '646fa8515333e77cdec159c2' }, followers: { $nin: ['6471800e2ed680381cbae276', '6477705ef858f715f868093a'] } });
+        const users = await userModel_1.default.find();
+        // const users: any = await User.find({ _id: { $ne: '646fa8515333e77cdec159c2' }, followers: { $nin: ['6471800e2ed680381cbae276', '6477705ef858f715f868093a'] } });
         return users;
     };
     const getUserByEmail = async (email) => {
@@ -70,10 +71,10 @@ const userRepositoryMongoDB = () => {
         return users;
     };
     const updateProfile = async (_id, data) => {
-        const { image, bio, gender, city, date } = data;
+        const { file, bio, gender, city, date } = data;
         const updateResult = await userModel_1.default.findByIdAndUpdate(_id, {
             $set: {
-                dp: image,
+                dp: file,
                 bio,
                 gender,
                 city,
@@ -94,6 +95,18 @@ const userRepositoryMongoDB = () => {
         });
         return 'UnBlocked';
     };
+    const blockUserByUser = async (_id, blockId) => {
+        await userModel_1.default.findByIdAndUpdate({ _id }, {
+            $push: { blockedUsers: blockId }
+        });
+        return 'Blocked';
+    };
+    const unBlockUserByUser = async (_id, blockId) => {
+        await userModel_1.default.findByIdAndUpdate({ _id }, {
+            $pull: { blockedUsers: blockId }
+        });
+        return 'Unblocked';
+    };
     return {
         addUser,
         getUserByEmail,
@@ -108,7 +121,9 @@ const userRepositoryMongoDB = () => {
         searchUser,
         updateProfile,
         blockUser,
-        unBlockUser
+        unBlockUser,
+        blockUserByUser,
+        unBlockUserByUser
     };
 };
 exports.userRepositoryMongoDB = userRepositoryMongoDB;

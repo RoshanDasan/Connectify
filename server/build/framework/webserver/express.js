@@ -8,9 +8,10 @@ const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const config_1 = __importDefault(require("../../config"));
 const expressConfig = (app) => {
     const corsEnable = {
-        origin: 'http://localhost:5173',
+        origin: config_1.default.CLIENT_URL,
         exposeHeaders: ['Cross-Origin-Opener-Policy', 'Cross-Origin-Resourse-Policy']
     };
     // express middlewares configuration 

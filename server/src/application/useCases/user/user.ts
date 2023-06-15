@@ -71,10 +71,10 @@ export const updateProfileInfo = async (id: string, body: any,  repository: Retu
 
 export const userBlock = async(userId: string, blockId: string, repository: ReturnType<UserDbInterface>) => {
 
-    const { blockedUsers }= await repository.getUserById(userId);
+    const { blockingUsers }= await repository.getUserById(userId);
 
     // check user is already blocked
-    const isBlocked = blockedUsers.some((user: any) => user === blockId);
+    const isBlocked = blockingUsers.some((user: any) => user === blockId);
 
     if(isBlocked) {
         // user already blocked

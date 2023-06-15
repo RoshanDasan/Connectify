@@ -3,12 +3,13 @@ import morgan from "morgan";
 import CORS from 'cors';
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import configKeys from "../../config";
 
 
 const expressConfig = (app: Application) => {
 
     const corsEnable = {
-        origin: 'http://localhost:5173',
+        origin: configKeys.CLIENT_URL,
         exposeHeaders: ['Cross-Origin-Opener-Policy', 'Cross-Origin-Resourse-Policy']
     };
 

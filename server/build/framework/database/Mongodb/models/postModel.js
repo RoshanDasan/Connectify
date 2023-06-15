@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-// schema for adding POST
 const postSchema = new mongoose_1.Schema({
     userId: {
         type: String,
@@ -22,6 +21,18 @@ const postSchema = new mongoose_1.Schema({
         default: new Date(),
     },
     image: String,
+    video: String,
+    location: {
+        type: {
+            type: String,
+            enum: ["Point"],
+            default: "Point",
+        },
+        coordinates: {
+            type: [Number],
+            default: [Math.random() * 180 - 90, Math.random() * 360 - 180],
+        },
+    },
 }, {
     timestamps: true,
 });

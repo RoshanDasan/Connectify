@@ -27,7 +27,8 @@ export const authServices = () => {
     const verifyToken = (token:string) => {
         if (configKeys.JWT_SECRET) {
             
-            return jwt.verify(token, configKeys.JWT_SECRET)
+            const isVerify =  jwt.verify(token, configKeys.JWT_SECRET)
+            return isVerify;
         }
     };
 
