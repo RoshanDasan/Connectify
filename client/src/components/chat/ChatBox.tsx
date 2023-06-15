@@ -112,7 +112,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, re
 
           <div className="chat-body">
             {messages.map((message: any, index: number) => (
-              <div ref={index === messages.length - 1 ? scroll : null} className={message.senderId === currentUser ? 'message own' : 'message'} key={message.createdAt}>
+              <div ref={index === messages.length - 1 ? scroll : null} className={message.senderId === currentUser ? 'message own' : 'message'} key={index}>
                 <span>{message.message}</span>
                 <span>{format(message.createdAt)}</span>
               </div>

@@ -55,7 +55,9 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
     // search user 
     const searchUser = (0, express_async_handler_1.default)(async (req, res) => {
         const { prefix } = req.params;
-        const users = await (0, user_1.searchUserByPrefix)(prefix, dbRepositoryUser);
+        const { type } = req.query;
+        console.log(type, 'par');
+        const users = await (0, user_1.searchUserByPrefix)(prefix, type, dbRepositoryUser);
         res.json({
             status: 'searched success',
             users

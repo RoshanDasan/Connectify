@@ -29,7 +29,8 @@ const authServices = () => {
     };
     const verifyToken = (token) => {
         if (config_1.default.JWT_SECRET) {
-            return jsonwebtoken_1.default.verify(token, config_1.default.JWT_SECRET);
+            const isVerify = jsonwebtoken_1.default.verify(token, config_1.default.JWT_SECRET);
+            return isVerify;
         }
     };
     return {

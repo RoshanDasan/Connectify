@@ -8,6 +8,7 @@ interface AuthState {
   admintoken: any;
   posts: any[];
   currentchat: any;
+  notifications: any[];
 
 }
 
@@ -19,6 +20,7 @@ const initialState: AuthState = {
   token: null,
   posts: [],
   currentchat: null,
+  notifications: []
 
 };
 
@@ -37,6 +39,7 @@ export const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.currentchat = null;
+      state.notifications = [];
     },
     setAdminLogin: (state, action: PayloadAction<{ admin: any; admintoken: any }>) => {
       state.admin = action.payload.admin;
@@ -67,8 +70,8 @@ export const authSlice = createSlice({
     },
 
 
-    setUnfollower:(state, action: PayloadAction<{unfollower: any}>) => {
-      if(state.user){
+    setUnfollower: (state, action: PayloadAction<{ unfollower: any }>) => {
+      if (state.user) {
         const filterData = state.user.followers.filter((follower: string) => follower !== action.payload.unfollower)
         state.user.followers = filterData
       }
@@ -83,7 +86,6 @@ export const authSlice = createSlice({
       state.currentchat = action.payload.currentchat;
     },
 
-
     setPost: (state, action: PayloadAction<{ post_id: string; post: any }>) => {
       const updatedPosts = state.posts.map((post) => {
         if (post._id === action.payload.post_id) return action.payload.post;
@@ -92,7 +94,6 @@ export const authSlice = createSlice({
       state.posts = updatedPosts;
     },
 
-
     setUpdatePost: (state, action) => {
 
       state.posts.push(action.payload.posts)
@@ -100,42 +101,60 @@ export const authSlice = createSlice({
 
 
     setBlockUser: (state, action: PayloadAction<{ blockUser: any }>) => {
-        state.user.blockingUsers.push(action.payload.blockUser);
+      state.user.blockingUsers.push(action.payload.blockUser);
 
     },
 
     setUnblockUser: (state: any, action: PayloadAction<{ unblockUser: any }>) => {
       console.log('unbloving set');
-      
-      if(state.user){
-       const filterResult =  state.user.blockingUsers.filter((userId: any) => userId !== action.payload.unblockUser);
-       console.log(filterResult);
-       
-       state.user.blockingUsers = filterResult;
+
+      if (state.user) {
+        const filterResult = state.user.blockingUsers.filter((userId: any) => userId !== action.payload.unblockUser);
+        console.log(filterResult);
+
+        state.user.blockingUsers = filterResult;
       } else {
         console.log('user not found');
-        
+
       }
+    },
+
+    setNotification: (state: any, action: PayloadAction<{ data: any }>) => {
+      if (state.notifications) state.notifications.push(action.payload.data);
+      else state.notifications = action.payload.data
+
+    },
+
+    unsetNotification: (state: any, action: PayloadAction<{ index: number }>) => {
+      state.notifications.splice(action.payload.index, 1)
+    },
+
+    unsetNotificationOpen: (state: any) => {
+      
+      state.notifications = [];
     }
 
 
   }
 });
 
-export const { 
-   setMode,
-   setLogin,
-   setLogout,
-   setUser,
-   setFollower,
-   setPosts,
-   setPost,
-   setUpdatePost,
-   setAdminLogin,
-   setAdminLogout,
-   setUnfollower,
-   setCurrentChat,
-   setBlockUser,
-   setUnblockUser
+export const {
+  setMode,
+  setLogin,
+  setLogout,
+  setUser,
+  setFollower,
+  setPosts,
+  setPost,
+  setUpdatePost,
+  setAdminLogin,
+  setAdminLogout,
+  setUnfollower,
+  setCurrentChat,
+  setBlockUser,
+  setUnblockUser,
+  setNotification,
+  unsetNotification,
+  unsetNotificationOpen
 } = authSlice.actions;
 export default authSlice.reducer;

@@ -54,10 +54,10 @@ const addFollowers = async (id, friendId, repository) => {
     }
 };
 exports.addFollowers = addFollowers;
-const searchUserByPrefix = async (prefix, repository) => {
+const searchUserByPrefix = async (prefix, type, repository) => {
     if (!prefix)
         return httpstatuscodes_1.HttpStatus.NOT_FOUND;
-    const searchedUsers = await repository.searchUser(prefix);
+    const searchedUsers = await repository.searchUser(prefix, type);
     return searchedUsers;
 };
 exports.searchUserByPrefix = searchUserByPrefix;
@@ -69,9 +69,9 @@ const updateProfileInfo = async (id, body, repository) => {
 };
 exports.updateProfileInfo = updateProfileInfo;
 const userBlock = async (userId, blockId, repository) => {
-    const { blockedUsers } = await repository.getUserById(userId);
+    const { blockingUsers } = await repository.getUserById(userId);
     // check user is already blocked
-    const isBlocked = blockedUsers.some((user) => user === blockId);
+    const isBlocked = blockingUsers.some((user) => user === blockId);
     if (isBlocked) {
         // user already blocked
         const updateResult = await repository.unBlockUserByUser(userId, blockId);

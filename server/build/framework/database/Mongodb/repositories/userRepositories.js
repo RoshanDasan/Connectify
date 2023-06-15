@@ -16,7 +16,7 @@ const userRepositoryMongoDB = () => {
         return users;
     };
     const getUserByEmail = async (email) => {
-        const user = await userModel_1.default.findOne({ email });
+        const user = await userModel_1.default.findOne({ email }).select('-password');
         return user;
     };
     const getUserByUserName = async (userName) => {
@@ -25,7 +25,7 @@ const userRepositoryMongoDB = () => {
     };
     const getUserById = async (id) => {
         try {
-            const user = await userModel_1.default.findOne({ _id: id });
+            const user = await userModel_1.default.findOne({ _id: id }).select('-password');
             return user;
         }
         catch (error) {
@@ -65,10 +65,22 @@ const userRepositoryMongoDB = () => {
         const friendDetails = await userModel_1.default.findOne({ _id: friendId });
         return friendDetails;
     };
-    const searchUser = async (prefix) => {
-        const regex = new RegExp(`^${prefix}`, 'i');
-        const users = await userModel_1.default.find({ userName: regex });
-        return users;
+    const searchUser = async (prefix, type) => {
+        if (type === 'userName') {
+            const regex = new RegExp(`^${prefix}`, 'i');
+            const users = await userModel_1.default.find({ userName: regex });
+            return users;
+        }
+        else if (type === 'gender') {
+            const regex = new RegExp(`^${prefix}`, 'i');
+            const users = await userModel_1.default.find({ gender: regex });
+            return users;
+        }
+        else {
+            const regex = new RegExp(`^${prefix}`, 'i');
+            const users = await userModel_1.default.find({ city: regex });
+            return users;
+        }
     };
     const updateProfile = async (_id, data) => {
         const { file, bio, gender, city, date } = data;
@@ -95,15 +107,21 @@ const userRepositoryMongoDB = () => {
         });
         return 'UnBlocked';
     };
-    const blockUserByUser = async (_id, blockId) => {
-        await userModel_1.default.findByIdAndUpdate({ _id }, {
-            $push: { blockedUsers: blockId }
+    const blockUserByUser = async (blockingUser, blockedUser) => {
+        await userModel_1.default.findByIdAndUpdate({ _id: blockedUser }, {
+            $push: { blockedUsers: blockingUser }
+        });
+        await userModel_1.default.findByIdAndUpdate({ _id: blockingUser }, {
+            $push: { blockingUsers: blockedUser }
         });
         return 'Blocked';
     };
-    const unBlockUserByUser = async (_id, blockId) => {
-        await userModel_1.default.findByIdAndUpdate({ _id }, {
-            $pull: { blockedUsers: blockId }
+    const unBlockUserByUser = async (blockingUser, blockedUser) => {
+        await userModel_1.default.findByIdAndUpdate({ _id: blockedUser }, {
+            $pull: { blockedUsers: blockingUser }
+        });
+        await userModel_1.default.findByIdAndUpdate({ _id: blockingUser }, {
+            $pull: { blockingUsers: blockedUser }
         });
         return 'Unblocked';
     };

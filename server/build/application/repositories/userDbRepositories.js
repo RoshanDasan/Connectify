@@ -32,8 +32,8 @@ const userDbRepository = (repository) => {
     const followFriend = async (id, friendId) => {
         return await repository.followFriend(id, friendId);
     };
-    const searchUser = async (prefix) => {
-        return await repository.searchUser(prefix);
+    const searchUser = async (prefix, type) => {
+        return await repository.searchUser(prefix, type);
     };
     const updateProfile = async (id, body) => {
         return await repository.updateProfile(id, body);

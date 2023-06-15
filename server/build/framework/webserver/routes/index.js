@@ -11,7 +11,7 @@ const chat_1 = __importDefault(require("./chat"));
 const message_1 = __importDefault(require("./message"));
 const authMiddleware_1 = __importDefault(require("../middlewares/authMiddleware"));
 const routes = (app) => {
-    app.use('/api/auth', authMiddleware_1.default, (0, auth_1.default)());
+    app.use('/api/auth', (0, auth_1.default)());
     app.use('/api/admin', authMiddleware_1.default, (0, adminAuth_1.default)());
     app.use('/api/user', authMiddleware_1.default, (0, user_1.default)());
     app.use('/api/post', authMiddleware_1.default, (0, post_1.default)());

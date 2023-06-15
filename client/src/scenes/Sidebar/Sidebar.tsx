@@ -107,21 +107,9 @@ const Sidebar = () => {
           </ListItem>
           <ListItem button className={classes.listItem}>
             <ListItemIcon>
-              <Explore />
-            </ListItemIcon>
-            <ListItemText primary="Explore" classes={{ primary: classes.listItemText }} />
-          </ListItem>
-          <ListItem button className={classes.listItem}>
-            <ListItemIcon>
               <SearchOutlined />
             </ListItemIcon>
             <ListItemText primary="Search" classes={{ primary: classes.listItemText }} onClick={toggleSearchDrawer} />
-          </ListItem>
-          <ListItem button className={classes.listItem}>
-            <ListItemIcon>
-              <Notifications />
-            </ListItemIcon>
-            <ListItemText primary="Notifications" classes={{ primary: classes.listItemText }} />
           </ListItem>
           <ListItem button className={classes.listItem} onClick={() => navigate('/chat')}>
             <ListItemIcon>
@@ -142,12 +130,7 @@ const Sidebar = () => {
         </List>
         <Divider />
         <List>
-          <ListItem button className={classes.listItem}>
-            <ListItemIcon>
-              <Settings />
-            </ListItemIcon>
-            <ListItemText primary="Settings" classes={{ primary: classes.listItemText }} />
-          </ListItem>
+
           <ListItem button className={classes.listItem} onClick={Logout}>
             <ListItemIcon>
               <ExitToApp />

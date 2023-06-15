@@ -22,7 +22,7 @@ export const userRepositoryMongoDB = () => {
   }
 
   const getUserByEmail = async (email: string) => {
-    const user: any = await User.findOne({ email });
+    const user: any = await User.findOne({ email }).select('-password');
     return user
   };
   const getUserByUserName = async (userName: string) => {
@@ -32,14 +32,13 @@ export const userRepositoryMongoDB = () => {
   };
   const getUserById = async (id: string) => {
     try {
-
-      const user: any = await User.findOne({ _id: id })
+      const user: any = await User.findOne({ _id: id }).select('-password');
       return user;
-
     } catch (error) {
-      throw error
+      throw error;
     }
   };
+  
   const getFollowers = async (_id: string) => {
     const user: any = await User.findOne({ _id });
     const followers: any[] = await Promise.all(

@@ -23,24 +23,32 @@ interface PostWidgetProps {
 }
 
 const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userName, image, video, likes, commentList, click, globalClick }: PostWidgetProps) => {
-  const [isLike, setIsLike] = useState(false);
   const [isComment, setIsComment] = useState(false);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const token: string = useSelector((state: any) => state.token);
   const user: any = useSelector((state: any) => state.user._id);
   const { name }: any = useSelector((state: any) => state.user);
-
+  const [isLike, setIsLike] = useState(likes.includes(user));
+  const [likecount, setLikecount] = useState(likes.length);
+  
   const handleLike = async (id: string, userId: string) => {
-    const liked = await likePost(id, userId, token);
-    setIsLike((prevState) => !prevState);
-    // click();
-    globalClick();
+    likePost(id, userId, token);
+  
+    if (isLike) {
+      console.log('unliked the post');
+      setLikecount((prevCount: any) => prevCount - 1);
+    } else {
+      console.log('liked the post');
+      setLikecount((prevCount: any) => prevCount + 1);
+    }
+  
+    setIsLike((prevIsLike) => !prevIsLike);
   };
 
   const submitHandle = async () => {
     if (comment && !comment.match(/^\s/)) {
-      const postCommentResult: any = await postComment(id, user, `${name} : ${comment}`, token);
+      await postComment(id, user, `${name} : ${comment}`, token);
       setComment('');
       const response: any = await getPostById(id, token);
       const { comments } = response.data.post;
@@ -58,16 +66,13 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
   };
 
   const handleDelete = async (index: number) => {
-    const deleteResponse: any = await deleteComment(id, index, token);
+    deleteComment(id, index, token);
     const response: any = await getPostById(id, token);
     const { comments } = response.data.post;
     setComments(comments);
     handleCommentView();
   };
 
-  useEffect(() => {
-    setIsLike((prevState) => !prevState);
-  }, [click]);
 
   const VideoPlayer = () => {
     const [muted, setMuted] = useState(true);
@@ -136,9 +141,10 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
         <Flex gap='1rem'>
           <Flex gap='0.3rem'>
             <IconButton onClick={() => handleLike(id, user)}>
-              {likes.includes(user) ? <FavoriteOutlined sx={{ color: 'red' }} /> : <FavoriteBorderOutlined />}
+              {isLike ? <FavoriteOutlined sx={{ color: 'red' }} /> : <FavoriteBorderOutlined />}
             </IconButton>
-            <Typography>{likes.length}</Typography>
+            <Typography>{likecount}</Typography>
+
           </Flex>
           <Flex gap='0.3rem'>
             <IconButton onClick={() => handleCommentView()}>

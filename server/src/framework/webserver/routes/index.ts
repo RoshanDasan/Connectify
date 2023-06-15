@@ -9,11 +9,11 @@ import userAuthMiddleware from '../middlewares/authMiddleware'
 
 const routes = (app: Application) => {
     app.use('/api/auth', authRouter());
-    app.use('/api/admin', userAuthMiddleware,adminauthRouter())
-    app.use('/api/user', userAuthMiddleware, userRouter());
-    app.use('/api/post', userAuthMiddleware, postRouter());
-    app.use('/api/chat', userAuthMiddleware, chatRouter());
-    app.use('/api/message', userAuthMiddleware, messageRouter());
+    app.use('/api/admin',  adminauthRouter())
+    app.use('/api/user',  userRouter());
+    app.use('/api/post',  postRouter());
+    app.use('/api/chat',  chatRouter());
+    app.use('/api/message',  messageRouter());
 }
 
 export default routes;

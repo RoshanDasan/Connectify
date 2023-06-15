@@ -87,27 +87,7 @@ const AdminSidebar = () => {
             </ListItemIcon>
             <ListItemText primary="Post" classes={{ primary: classes.listItemText }} />
           </ListItem>
-          {/* <ListItem button className={classes.listItem}>
-            <ListItemIcon>
-              <Notifications />
-            </ListItemIcon>
-            <ListItemText primary="Notifications" classes={{ primary: classes.listItemText }} />
-          </ListItem>
-          <ListItem button className={classes.listItem}>
-            <ListItemIcon>
-              <Message />
-            </ListItemIcon>
-            <ListItemText primary="Message" classes={{ primary: classes.listItemText }} />
-          </ListItem>
-          <ListItem
-            button
-            className={classes.listItem}
-          >
-            <ListItemIcon>
-              <Person />
-            </ListItemIcon>
-            <ListItemText primary="Profile" classes={{ primary: classes.listItemText }} />
-          </ListItem> */}
+
         </List>
         <Divider />
         <List>

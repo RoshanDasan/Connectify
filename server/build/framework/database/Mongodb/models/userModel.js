@@ -43,6 +43,7 @@ const userSchema = new mongoose_1.Schema({
         default: false,
     },
     blockedUsers: [],
+    blockingUsers: [],
     followers: [],
     following: []
 }, { timestamps: true });
