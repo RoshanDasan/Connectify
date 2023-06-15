@@ -44,22 +44,16 @@ export const followUser = async (id: string, friendId: string, token: string) =>
 }
 
 
-export const useSearchUser = (prefix: any = 'roshan', token: string) => {
-  let sender: any
-  if (prefix) {
-    sender = prefix
-  } else {
-    sender = 'qwertyuiop'
-  }
+
+export const useSearchUser = (prefix = 'roshan', type: any) => {
+  const sender = prefix || 'qwertyuiop';
+  
   return useQuery(['searchUser', prefix], async () => {
-    const response = await baseURL.get(`/user/search/${sender}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const response = await baseURL.get(`/user/search/${sender}`, { params: { type } });
     return response.data.users;
   });
 };
+
 
 
 export const useUpdateProfile = () => {

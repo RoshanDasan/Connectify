@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, TextField } from '@mui/material';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, TextField, Button } from '@mui/material';
 import { Home, Explore, Notifications, Person, Settings, ExitToApp, Message, SearchOutlined } from '@mui/icons-material';
 import { Skeleton } from '@mui/lab';
 import { setLogout } from '../../state';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useSearchUser } from '../../api/apiConnection/userConnection';
+import Flex from '../../components/DisplayFlex';
 
 const drawerWidth = 240;
 
@@ -52,8 +53,8 @@ const Sidebar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [searchByUser, setSearchByUser] = useState('userName')
   const userId = useSelector((state: any) => state.user._id);
-  const token = useSelector((state: any) => state.token);
   const userStatus = {
     user: true,
   };
@@ -72,10 +73,8 @@ const Sidebar = () => {
   };
 
 
-  var { data, isLoading }: any = useSearchUser(searchText, token);
 
-
-
+  var { data, isLoading }: any = useSearchUser(searchText, searchByUser);
 
   useEffect(() => {
     if (data) {
@@ -167,14 +166,22 @@ const Sidebar = () => {
         }}
       >
         <div className={classes.toolbar} />
-        <TextField
-          onKeyUp={handleInput}
-          className={classes.searchField}
-          label="Search"
-          variant="outlined"
-          size="small"
-          fullWidth
-        />
+        <Flex>
+          <Button variant={searchByUser==='userName'? 'outlined' : 'text'} onClick={() => setSearchByUser('userName')}>User</Button>
+          <Button variant={searchByUser==='gender'? 'outlined' : 'text'} onClick={() => setSearchByUser('gender')}>Gender</Button>
+          <Button variant={searchByUser==='city'? 'outlined' : 'text'} onClick={() => setSearchByUser('city')}>Location</Button>
+        </Flex>
+      
+          <TextField
+            onKeyUp={handleInput}
+            className={classes.searchField}
+            label="Search....."
+            variant="outlined"
+            size="small"
+            fullWidth
+          />
+
+
         {isLoading ? (
           <>
             <Skeleton sx={{ margin: '.2rem', width: '95%', height: '50px' }} />

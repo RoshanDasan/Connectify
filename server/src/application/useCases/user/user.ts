@@ -57,9 +57,10 @@ export const addFollowers = async (id: any, friendId: any, repository: ReturnTyp
     }
 }
 
-export const searchUserByPrefix = async (prefix: any, repository: ReturnType<UserDbInterface>) => {
+export const searchUserByPrefix = async (prefix: any, type: any, repository: ReturnType<UserDbInterface>) => {
     if(!prefix) return HttpStatus.NOT_FOUND
-    const searchedUsers: any = await repository.searchUser(prefix)
+    
+    const searchedUsers: any = await repository.searchUser(prefix, type)
     return searchedUsers
 }
 

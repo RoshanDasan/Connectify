@@ -228,7 +228,6 @@ const Profile = () => {
   }, [id, clicked, followButton]);
 
   useEffect(() => {
-    console.log(blockList,'[][][][');
     
     if (blockList.some((list: any) => list === id)) {
       setBlockUserState('Blocked')

@@ -92,12 +92,27 @@ export const userRepositoryMongoDB = () => {
     return friendDetails
   }
 
-  const searchUser = async (prefix: any) => {
+  const searchUser = async (prefix: any, type: any) => {
 
-    const regex = new RegExp(`^${prefix}`, 'i');
-    const users = await User.find({ userName: regex });
+    if (type === 'userName') {
+      const regex = new RegExp(`^${prefix}`, 'i');
+      const users = await User.find({ userName: regex });
 
-    return users
+      return users
+
+    } else if (type === 'gender') {
+      const regex = new RegExp(`^${prefix}`, 'i');
+      const users = await User.find({ gender: regex });
+      return users
+
+    } else {
+      const regex = new RegExp(`^${prefix}`, 'i');
+      const users = await User.find({ city: regex });
+
+      return users
+    }
+
+
   }
 
   const updateProfile = async (_id: string, data: {
