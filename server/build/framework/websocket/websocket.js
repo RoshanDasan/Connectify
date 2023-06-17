@@ -18,6 +18,13 @@ const socketConfig = (io) => {
             if (user)
                 io.to(user.socketId).emit("receive-message", data);
         });
+        socket.emit("me", socket.id);
+        socket.on("calluser", ({ userToCall, signalData, from, name }) => {
+            io.to(userToCall).emit("calluser", { signal: signalData, from, name });
+        });
+        socket.on("answercall", (data) => {
+            io.to(data.to).emit("callaccepted", data.signal);
+        });
         socket.on("disconnect", () => {
             activeUsers = activeUsers.filter((user) => user.socketId !== socket.id);
             console.log(`user disconnected: ${activeUsers}`);

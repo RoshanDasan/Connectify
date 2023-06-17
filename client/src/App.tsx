@@ -16,6 +16,9 @@ import EditProfile from './components/EditProfile';
 import AdminHome from './scenes/Home/AdminHome';
 import AdminPostControll from './admin-scenes/admin-post/AdminPostControll';
 import { getUser } from './api/apiConnection/userConnection';
+import VideoCall from './scenes/Videocall/VideoCall';
+import { ContextProvider } from './scenes/Videocall/SocketContext';
+
 
 export function App() {
   const mode = useSelector((state: any) => state.mode);
@@ -51,20 +54,18 @@ export function App() {
     if (sendMessage !== null) socket.current?.emit('send-message', sendMessage);
   }, [sendMessage]);
 
-
-
   // receive message from socket server
   useEffect(() => {
-    socket.current.on('receive-message', async ({senderId, message}: any) => {
+    socket.current.on('receive-message', async ({ senderId, message }: any) => {
       console.log(message);
-      const {userName} = await getUser(senderId, token)
-      
+      const { userName } = await getUser(senderId, token)
+
       dispatch(setNotification({
         data: `${userName} sended a message ${message}`
       }))
       // console.log('Received message:', data);
     });
-  },[userId]);
+  }, [userId]);
 
   if (isBlocked) {
     dispatch(setLogout());
@@ -78,24 +79,12 @@ export function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
 
+          {/* user routes */}
           <Routes>
             <Route path='/' element={isAuth ? <Home /> : <Auth />} />
             <Route
               path='/home'
               element={isAuth ? <Home /> : <Navigate to='/' />}
-            />
-            <Route path='/admin' element={isAdminAuth ? <AdminHome /> : <AdminLogin />} />
-            <Route
-              path='/admin/home'
-              element={isAdminAuth ? <AdminHome /> : <AdminLogin />}
-            />
-            <Route
-              path='/admin/user/control'
-              element={isAdminAuth ? <AdminHome /> : <AdminLogin />}
-            />
-            <Route
-              path='/admin/post/control'
-              element={isAdminAuth ? <AdminPostControll /> : <AdminLogin />}
             />
             <Route
               path='/profile/:id'
@@ -109,6 +98,27 @@ export function App() {
               path='/chat'
               element={isAuth ? <Chat /> : <Navigate to='/' />}
             />
+            <Route
+              path='/video_call'
+              element={isAuth ? <VideoCall /> : <Navigate to='/' />}
+            />
+
+
+            {/* admin routes */}
+            <Route path='/admin' element={isAdminAuth ? <AdminHome /> : <AdminLogin />} />
+            <Route
+              path='/admin/home'
+              element={isAdminAuth ? <AdminHome /> : <AdminLogin />}
+            />
+            <Route
+              path='/admin/user/control'
+              element={isAdminAuth ? <AdminHome /> : <AdminLogin />}
+            />
+            <Route
+              path='/admin/post/control'
+              element={isAdminAuth ? <AdminPostControll /> : <AdminLogin />}
+            />
+
           </Routes>
         </ThemeProvider>
       </Router>

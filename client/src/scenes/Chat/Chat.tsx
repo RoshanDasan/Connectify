@@ -21,6 +21,7 @@ const Chat = () => {
   const currentchatstate = useSelector((state: any) => state.currentchat);
   const dispatch = useDispatch();
 
+  
   const handleCurrentChat = (chat: any) => {
     console.log(chat);
     
@@ -28,12 +29,14 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    socket.current = io('http://localhost:5000');
+    socket.current = io(process.env.SERVER_URL);
     if (userId) {
       socket.current.emit('new-user-add', userId);
 
       socket.current.on('get-users', (users: any) => {
         setOnlineUsers(users);
+        console.log(users);
+        
       });
     }
 
@@ -77,7 +80,9 @@ const Chat = () => {
 
   const checkOnline = (chat: any) => {
     const chatMember = chat.members.find((member: any) => member !== userId);
+    
     const online = onlineUsers.find((user: any) => user.userId === chatMember);
+    console.log(online,'opo');
     return online ? true : false;
   };
 
@@ -113,6 +118,7 @@ const Chat = () => {
               currentUser={userId}
               setSendMessage={setSendMessage}
               receiveMessage={receiveMessage}
+              online={checkOnline(currentchatstate)}
             />
           </div>
         </div>

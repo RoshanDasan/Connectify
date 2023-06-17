@@ -3,11 +3,13 @@ import { getUser } from '../../api/apiConnection/userConnection';
 import { useSelector } from 'react-redux';
 import './chatBox.css';
 import Flex from '../DisplayFlex';
-import { Avatar, IconButton } from '@mui/material';
+import { Avatar, IconButton, Typography } from '@mui/material';
 import { getMessages, sendMessage } from '../../api/apiConnection/chatConnection';
 import { format } from 'timeago.js';
-import { Send, PhotoCamera } from '@mui/icons-material';
+import { Send, PhotoCamera, VideoCall } from '@mui/icons-material';
 import InputEmoji from 'react-input-emoji';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 interface ChatBoxProps {
   chat: any;
@@ -16,7 +18,7 @@ interface ChatBoxProps {
   receiveMessage: any;
 }
 
-const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, receiveMessage }) => {
+const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, receiveMessage, online }: any) => {
   const [userData, setUserData] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
@@ -24,6 +26,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, re
   const userId = useSelector((state: any) => state.user._id);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scroll = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (receiveMessage !== null && receiveMessage?.chatId === chat?._id) {
@@ -92,21 +95,40 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, re
         <>
           <div className="chat-header">
             <div className="follower">
-              <Flex sx={{ justifyContent: 'flex-start' }}>
-                {userData?.dp ? (
-                  <div className="profile-picture">
-                    <Avatar alt={userData.userName} src={`http://localhost:5000/uploads/${userData.dp}`} sx={{ m: '10px' }} />
-                  </div>
-                ) : (
-                  <Avatar alt={userData?.userName} sx={{ m: '10px' }} />
-                )}
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span className="name" style={{ fontSize: '0.8rem', fontStyle: 'initial' }}>
-                    {userData?.userName}
-                  </span>
-                  
-                </div>
+              <Flex>
+                <Flex sx={{ justifyContent: 'flex-start' }}>
+                  {userData?.dp ? (
+                    <div className="profile-picture">
+                      <Avatar alt={userData.userName} src={userData.dp} sx={{ m: '10px' }} />
+                    </div>
+                  ) : (
+                    <Avatar alt={userData?.userName} sx={{ m: '10px' }} />
+                  )}
+
+
+                  <Flex flexDirection={'column'}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="name" style={{ fontSize: '0.8rem', fontStyle: 'initial' }}>
+                        {userData?.userName}
+                      </span>
+
+                    </div>
+                    {online ? (
+                      <Typography>Online</Typography>
+                    ) : (
+                      <Typography>Offline</Typography>
+                    )}
+
+                  </Flex>
+
+                </Flex>
+
+                <IconButton onClick={() => online? navigate('/video_call'): toast.error('user not available')}>
+                  <VideoCall />
+                </IconButton>
+
               </Flex>
+
             </div>
           </div>
 
@@ -134,6 +156,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, re
       ) : (
         <div style={{ textAlign: 'center', marginTop: '50px', fontSize: '1.5rem', color: '#888' }}>Tap to chat</div>
       )}
+      <ToastContainer position='bottom-left'/>
     </div>
   );
 };
