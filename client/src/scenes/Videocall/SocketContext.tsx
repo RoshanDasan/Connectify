@@ -52,7 +52,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [callEnded, setCallEnded] = useState(false);
   const [name, setName] = useState('');
 
-  const myvideo = useRef<HTMLVideoElement>(null);
+  const myvideo: any = useRef<HTMLVideoElement>(null);
   const userVideo = useRef<HTMLVideoElement>(null);
   const connectionRef = useRef<Peer.Instance | null>(null);
 

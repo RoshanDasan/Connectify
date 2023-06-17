@@ -79,10 +79,9 @@ const Chat = () => {
   }, [userId, token]);
 
   const checkOnline = (chat: any) => {
-    const chatMember = chat.members.find((member: any) => member !== userId);
+    const chatMember = chat?.members.find((member: any) => member !== userId);
     
-    const online = onlineUsers.find((user: any) => user.userId === chatMember);
-    console.log(online,'opo');
+    const online = onlineUsers?.find((user: any) => user.userId === chatMember);
     return online ? true : false;
   };
 

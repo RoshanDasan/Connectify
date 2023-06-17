@@ -11,8 +11,7 @@ let activeUsers: User[] = [];
 
 const socketConfig = (io: Server<DefaultEventsMap, any>) => {
   io.on("connection", (socket: Socket<DefaultEventsMap, any>) => {
-    console.log(socket.id);
-    console.log('--------------------------------------------');
+   
     
 
     socket.on("new-user-add", (newUserId: string) => {
