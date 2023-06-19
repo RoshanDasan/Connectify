@@ -122,8 +122,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, re
                   </Flex>
 
                 </Flex>
+                {/*  
+                <IconButton onClick={() => online? navigate('/chat/video_call'): toast.error('user not available')}>
+                  <VideoCall />
+                </IconButton> */}
 
-                <IconButton onClick={() => online? navigate('/video_call'): toast.error('user not available')}>
+                <IconButton onClick={() => navigate('/chat/video_call')}>
                   <VideoCall />
                 </IconButton>
 
@@ -156,7 +160,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, re
       ) : (
         <div style={{ textAlign: 'center', marginTop: '50px', fontSize: '1.5rem', color: '#888' }}>Tap to chat</div>
       )}
-      <ToastContainer position='bottom-left'/>
+      <ToastContainer position='bottom-left' />
     </div>
   );
 };

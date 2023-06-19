@@ -15,6 +15,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme: any) => ({
   root: {
     display: 'flex',
+    
   },
   drawer: {
     width: drawerWidth,
@@ -89,13 +90,14 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} >
       <Drawer
         className={classes.drawer}
         variant="permanent"
         classes={{
           paper: classes.drawerPaper,
         }}
+       
       >
         <div className={classes.toolbar} />
         <List>

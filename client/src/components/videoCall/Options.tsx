@@ -1,83 +1,108 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import copyToClipBoard from 'copy-to-clipboard';
 import { SocketContext } from '../../scenes/Videocall/SocketContext';
 import { Button, Container, Grid, Paper, TextField, Typography } from '@mui/material';
 import { Phone, PhoneDisabled } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import Flex from '../DisplayFlex';
+import { getUser } from '../../api/apiConnection/userConnection';
 
-const useStyles = makeStyles((theme: any) => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    gridContainer: {
-        width: '100%',
-        [theme.breakpoints.down('xs')]: {
-            flexDirection: 'column',
-        },
-    },
-    container: {
-        width: '600px',
-        margin: '35px 0',
-        padding: 0,
-        [theme.breakpoints.down('xs')]: {
-            width: '80%',
-        },
-    },
-    margin: {
-        marginTop: 20,
-    },
-    padding: {
-        padding: 20,
-    },
-    paper: {
-        padding: '10px 20px',
-        border: '2px solid black',
-    },
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: '20px',
+  },
+  buttonContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '20px',
+  },
 }));
 
-const Options = ({ children }: any) => {
-    const { me, callAccepted, name, setName, callEnded, leaveCall, callUser } = useContext(SocketContext);
-    const [idToCall, setIdToCall] = useState('')
-    const classes = useStyles();
-    return (
-        <Container className={classes.container}>
-            <Paper elevation={10} className={classes.paper}>
-                <form className={classes.root} noValidate autoComplete='off'>
-                    <Grid container className={classes.gridContainer}>
-                        <Grid item xs={12} md={6} className={classes.padding}>
-                            <Typography gutterBottom variant='h6'>Account info</Typography>
-                            <TextField label='Name' value={name} onChange={(e) => setName(e.target.value)} />
-                            <Typography>{me}</Typography>
-                        </Grid>
-                        <Grid item xs={12} md={6} className={classes.padding}>
-                            <Typography gutterBottom variant='h6'>Make a call</Typography>
-                            <TextField label='Id to call' value={idToCall} onChange={(e) => setIdToCall(e.target.value)} />
-                            {callAccepted && !callEnded ? (
-                                <Button variant='contained' color='secondary' fullWidth startIcon={<PhoneDisabled fontSize='large' />}
-                                    onClick={leaveCall}
-                                    className={classes.margin}
-                                >
-                                    Hang up
-                                </Button>
-                            ) : (
-                                <Button variant='contained' color='primary' fullWidth startIcon={<Phone fontSize='large' />}
-                                    onClick={() => callUser(idToCall)}
-                                    className={classes.margin}
-                                >
-                                    call
-                                </Button>
+const Options = ({ children }: { children: React.ReactNode }) => {
+  const {
+    callAccepted,
+    name,
+    setName,
+    setMe,
+    callEnded,
+    leaveCall,
+    callUser,
+    activeForCall,
+    userToCall,
+    setUserToCall
+  } = useContext(SocketContext);
 
-                            )}
-                        </Grid>
-                    </Grid>
-                </form>
-                {children}
-            </Paper>
+  const members = useSelector((state: any) => state.currentchat.members);
 
+  const userId = useSelector((state: any) => state.user._id);
+  const token = useSelector((state: any) => state.token);
 
-        </Container>
-    )
-}
+  const classes = useStyles();
 
-export default Options
+  useEffect(() => {
+    const member = members.filter((user: string) => user !== userId);
+    getName(member).then((responseName) => {
+      setName(responseName);
+      activeForCall.forEach((user: any) => {
+        if (user.userId === member[0]) {
+          setUserToCall(user.socketId)
+        }
+        if(userId === user.userId){
+          setMe(user.socketId)
+        }
+      });
+    });
+  }, [activeForCall, members, name, setName, userId]);
+
+  const handleCallButtonClick = () => {
+    // location.reload()
+    if (userToCall.length) {
+      callUser(userToCall);
+    } else {
+      toast.error('User not available to call');
+    }
+  };
+
+  const getName = async (userId: string) => {
+    const response = await getUser(userId, token);
+    return response.userName;
+  };
+
+  return (
+    <div className={classes.root}>
+      {callAccepted && !callEnded ? (
+        <Button
+          variant='contained'
+          color='secondary'
+          fullWidth
+          startIcon={<PhoneDisabled fontSize='large' />}
+          onClick={leaveCall}
+        >
+          Hang up
+        </Button>
+      ) : (
+        <div className={classes.buttonContainer}>
+          <Button
+            variant='contained'
+            color='primary'
+            startIcon={<Phone fontSize='large' />}
+            onClick={handleCallButtonClick}
+          >
+            Call {name}
+          </Button>
+        </div>
+      )}
+
+      {/* Render children if necessary */}
+      {children}
+      <ToastContainer position='bottom-left' />
+    </div>
+  );
+};
+
+export default Options;

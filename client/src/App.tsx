@@ -91,6 +91,7 @@ export function App() {
               element={isAuth ? <Profile /> : <Navigate to='/' />}
             />
             <Route
+            
               path='/accounts/edit/:id'
               element={isAuth ? <EditProfile /> : <Navigate to='/' />}
             />
@@ -99,7 +100,7 @@ export function App() {
               element={isAuth ? <Chat /> : <Navigate to='/' />}
             />
             <Route
-              path='/video_call'
+              path='/chat/video_call'
               element={isAuth ? <VideoCall /> : <Navigate to='/' />}
             />
 

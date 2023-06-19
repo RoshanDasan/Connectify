@@ -7,17 +7,14 @@ interface User {
 }
 
 let activeUsers: User[] = [];
-
+let activeVideoCall: User[] = [];
 
 const socketConfig = (io: Server<DefaultEventsMap, any>) => {
   io.on("connection", (socket: Socket<DefaultEventsMap, any>) => {
-   
-    
-
     socket.on("new-user-add", (newUserId: string) => {
       if (!activeUsers.some((user) => user.userId === newUserId)) {
         activeUsers.push({ userId: newUserId, socketId: socket.id });
-        console.log(`new user connected: ${ newUserId} ,${ socket.id }`);
+        console.log(`new user connected: ${newUserId}, ${socket.id}`);
       }
       io.emit("get-users", activeUsers);
     });
@@ -29,22 +26,34 @@ const socketConfig = (io: Server<DefaultEventsMap, any>) => {
       if (user) io.to(user.socketId).emit("receive-message", data);
     });
 
-    socket.emit("me", socket.id)
-
-
+    socket.on("me", (userId) => {
+      if (!activeVideoCall.some((user: User) => user.userId === userId)) {
+        activeVideoCall.push({ userId, socketId: socket.id });
+      }
+      socket.emit("activeforcall", activeVideoCall);
+    });
 
     socket.on("calluser", ({ userToCall, signalData, from, name }) => {
-      io.to(userToCall).emit("calluser", { signal:signalData, from, name });
+      io.to(userToCall).emit("calluser", { signal: signalData, from, name });
     });
 
     socket.on("answercall", (data) => {
-      io.to(data.to).emit("callaccepted", data.signal)
-    })
+      io.to(data.to).emit("callaccepted", data.signal);
+    });
+
+    socket.on("callend", (userToCall) => {
+      io.to(userToCall).emit("callingcut", "call ended");
+    });
 
     socket.on("disconnect", () => {
       activeUsers = activeUsers.filter((user) => user.socketId !== socket.id);
-      console.log(`user disconnected: ${activeUsers}`);
+      console.log(`user disconnected: ${socket.id}`);
       io.emit("get-users", activeUsers);
+
+      activeVideoCall = activeVideoCall.filter(
+        (user) => user.socketId !== socket.id
+      );
+      io.emit("activeforcall", activeVideoCall);
     });
   });
 };
