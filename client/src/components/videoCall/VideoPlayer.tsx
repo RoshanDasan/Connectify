@@ -3,7 +3,7 @@ import { Grid, Paper, Typography } from '@mui/material';
 import { SocketContext } from '../../scenes/Videocall/SocketContext';
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   video: {
     width: '550px',
     [theme.breakpoints.down('xs')]: {
@@ -26,20 +26,10 @@ const useStyles = makeStyles((theme) => ({
 const VideoPlayer = () => {
   const classes = useStyles();
   const { name, callAccepted, myVideo, userVideo, callEnded, stream, call } = useContext(SocketContext);
-  console.log(stream,'stream');
-  console.log(userVideo,'calstream');
-  
-  const userVideoRef = useRef(null);
-  const myVideoRef = useRef(null);
 
-  useEffect(() => {
-    if (stream && myVideoRef.current) {
-      myVideoRef.current.srcObject = stream;
-    }
-    if (callAccepted && !callEnded && call.stream && userVideoRef.current) {
-      userVideoRef.current.srcObject = userVideo;
-    }
-  }, [stream, callAccepted, callEnded, call]);
+console.log(myVideo,'my');
+console.log(userVideo,'user');
+
 
   return (
     <Grid container className={classes.gridContainer}>
@@ -48,17 +38,17 @@ const VideoPlayer = () => {
         <Paper className={classes.paper}>
           <Grid item xs={12} md={6}>
             <Typography variant="h5">{name || 'Name'}</Typography>
-            <video playsInline muted ref={myVideoRef} autoPlay className={classes.video} />
+            <video playsInline muted ref={myVideo} autoPlay className={classes.video} />
           </Grid>
         </Paper>
       )}
 
       {/* Receiver video */}
-      {callAccepted && !callEnded && call.stream && (
+      {callAccepted && !callEnded &&  (
         <Paper className={classes.paper}>
           <Grid item xs={12} md={6}>
             <Typography variant="h5">{call.name || 'Name'}</Typography>
-            <video playsInline ref={userVideoRef} autoPlay className={classes.video} />
+            <video playsInline ref={userVideo} autoPlay className={classes.video} />
           </Grid>
         </Paper>
       )}

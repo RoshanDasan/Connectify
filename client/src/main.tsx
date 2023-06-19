@@ -38,7 +38,7 @@ ReactDOM.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistStore(store)}>
         <QueryClientProvider client={queryClient}>
-            <ErrorBoundary>
+            <ErrorBoundary fallback="Error detected">
           <ContextProvider>
               <App />
           </ContextProvider>

@@ -57,7 +57,7 @@ const Options = ({ children }: { children: React.ReactNode }) => {
         }
       });
     });
-  }, [activeForCall, members, name, setName, userId]);
+  }, [activeForCall, members, name, setName, userId, callUser]);
 
   const handleCallButtonClick = () => {
     // location.reload()

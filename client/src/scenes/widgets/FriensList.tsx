@@ -18,7 +18,12 @@ const FriensList = ({ onButtonClick }: any) => {
     const details = await getAllUsers(token, userId)
     const userDetail = await getUser(userId, token)
     const excludedArray: any = details.filter((detail: any) => !userDetail.followers.includes(detail._id));
-    setUsers(excludedArray)
+    if(!listFriend) {
+      const limited = excludedArray.slice(0,5)
+      setUsers(limited)
+    } else {
+      setUsers(excludedArray)
+    }
     setIsLoading(false)
   }
   const handleshowFreind = () => {
@@ -27,7 +32,7 @@ const FriensList = ({ onButtonClick }: any) => {
 
   useEffect(() => {
     getUserDetails()
-  }, [clicked, onButtonClick])
+  }, [clicked, onButtonClick, listFriend])
 
 
 

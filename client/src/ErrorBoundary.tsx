@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function ErrorBoundary({ children }: any) {
+function ErrorBoundaryComponent({ children }: any) {
   const [hasError, setHasError] = useState(false);
   const [error, setError] = useState(null);
   const [errorInfo, setErrorInfo] = useState(null);
@@ -33,4 +33,4 @@ function ErrorBoundary({ children }: any) {
   return children;
 }
 
-export default ErrorBoundary;
+export default ErrorBoundaryComponent;
