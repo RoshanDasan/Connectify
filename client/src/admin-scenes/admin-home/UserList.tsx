@@ -113,7 +113,7 @@ export default function UserList() {
 
 
   const getAllUserList = async () => {
-    const response: any = await getAllUsers(token)
+    const response: any = await getAllUsers(token, 'undefined')
 
     setUsers(response);
   };
@@ -195,6 +195,7 @@ export default function UserList() {
                       sx={{ width: '3rem', height: '3rem' }}
                       alt={row.userName}
                       src={row.dp}
+                      
                     />
                   </div>
                 ) : (

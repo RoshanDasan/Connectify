@@ -31,6 +31,7 @@ console.log(myVideo,'my');
 console.log(userVideo,'user');
 
 
+
   return (
     <Grid container className={classes.gridContainer}>
       {/* My own video */}
@@ -41,6 +42,7 @@ console.log(userVideo,'user');
             <video playsInline muted ref={myVideo} autoPlay className={classes.video} />
           </Grid>
         </Paper>
+        
       )}
 
       {/* Receiver video */}

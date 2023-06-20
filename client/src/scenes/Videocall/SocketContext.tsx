@@ -149,7 +149,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
 
     socket.emit("callend", userToCall);
 
-    socket.on("callingcut", (message) => {
+    socket.on("callingcut", (_message) => {
       setCallEnded(true);
     });
 

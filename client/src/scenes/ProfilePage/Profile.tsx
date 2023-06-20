@@ -381,8 +381,8 @@ const Profile = () => {
           aria-labelledby="modal-title"
           aria-describedby="modal-description"
         >
-          <div className={classes.modalContent}>
-            <Typography variant='h2' textAlign='center'>
+          <div className={classes.modalContent} style={{ maxHeight: '500px', overflowY: 'scroll' }}>
+            <Typography variant='h2' textAlign='center' >
               {type === 'followers' ? 'Followers' : 'Following'}
             </Typography>
             <Divider />

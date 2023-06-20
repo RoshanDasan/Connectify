@@ -16,7 +16,7 @@ export const getUser = async (userId: string, token: string) => {
   }
 };
 
-export const getAllUsers = async (token: string, userId: string) => {
+export const getAllUsers = async (token: string, userId: any ) => {
   try {
     const response = await baseURL.get(`/user/all/${userId}`, {
       headers: {

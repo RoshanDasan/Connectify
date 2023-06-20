@@ -93,7 +93,7 @@ export default function Cards({ id, userId, image,click, borderView}: any) {
             <CardActionArea >
               <CardMedia
                 component="img"
-
+                loading="lazy"
                 image={image}
                 alt=""
               />

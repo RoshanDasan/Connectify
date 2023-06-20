@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
-import { ChatBubbleOutlineOutlined, FavoriteOutlined, FavoriteBorderOutlined, DeleteOutlined, Send, Speaker, VolumeUp, VolumeOff, VolumeMute, VolumeOffRounded, VolumeOffOutlined, VolumeUpOutlined } from "@mui/icons-material";
+import React, { useState } from 'react';
+import { ChatBubbleOutlineOutlined, FavoriteOutlined, FavoriteBorderOutlined, DeleteOutlined, Send, VolumeOffOutlined, VolumeUpOutlined } from "@mui/icons-material";
 import { Box, CircularProgress, Divider, IconButton, TextField, Typography } from "@mui/material";
 import Flex from "../../components/DisplayFlex";
 import PostHeader from '../../components/PostHeader';
 import WidgetWraper from "../../components/WidgetWraper";
 import { useSelector } from 'react-redux';
 import { likePost } from '../../api/apiConnection/postConnection';
-import React from 'react';
 import { postComment, getPostById, deleteComment } from '../../api/apiConnection/postConnection';
 
 interface PostWidgetProps {
@@ -22,7 +21,7 @@ interface PostWidgetProps {
   globalClick: any;
 }
 
-const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userName, image, video, likes, commentList, click, globalClick }: PostWidgetProps) => {
+const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userName, image, video, likes, commentList, globalClick }: PostWidgetProps) => {
   const [isComment, setIsComment] = useState(false);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
@@ -131,6 +130,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
           src={image}
           alt="img"
           width='100%'
+          loading='lazy'
           style={{ borderRadius: '0.75rem', marginTop: '0.75rem' }}
         />
       )}

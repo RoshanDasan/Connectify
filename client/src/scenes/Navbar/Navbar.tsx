@@ -101,9 +101,6 @@ const Navbar: React.FC = () => {
                 </Tooltip>
               )}
             </IconButton>
-            <Tooltip title='Chat' placement='bottom'>
-              <Message sx={{ fontSize: '25px' }} />
-            </Tooltip>
             {/* notifications */}
             <PopupState variant="popper" popupId="demo-popup-popper">
               {(popupState) => (

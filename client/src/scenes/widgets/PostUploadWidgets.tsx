@@ -27,23 +27,26 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { storage } from '../../api/googleAuth/GoogleAuth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { v4 } from 'uuid'
+import { v4 } from 'uuid';
 
-const PostUploadWidget = ({ onButtonClick }: any) => {
-  const [isImage, setIsImage]: any = useState(false);
-  const [dp, setDp]: any = useState('');
-  const [image, setImage]: any = useState(null);
-  const [post, setPost]: any = useState('');
-  const [valid, setValid]: any = useState(true);
-  const [isUploading, setIsUploading]: any = useState(false);
-  const [progress, setProgress]: any = React.useState(0);
-  const [crop, setCrop]: any = useState({ aspect: 16 / 9 });
-  const [croppedImage, setCroppedImage]: any = useState(null);
+interface Props {
+  onButtonClick: () => void;
+}
+
+const PostUploadWidget: React.FC<Props> = ({ onButtonClick }) => {
+  const [isImage, setIsImage] = useState(false);
+  const [dp, setDp] = useState('');
+  const [image, setImage] = useState<File | null>(null);
+  const [post, setPost] = useState('');
+  const [valid, setValid] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [crop, setCrop] = useState<ReactCrop.Crop>({ aspect: 16 / 9 });
+  const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const { _id, userName } = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
   const mode = useSelector((state: any) => state.mode);
   const dispatch = useDispatch();
-
 
   useEffect(() => {
     const getUserData = async () => {
@@ -56,63 +59,61 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
   const handlePost = async () => {
     setIsUploading(true);
     setTimeout(() => {
-      setIsUploading(false)
+      setIsUploading(false);
     }, 4000);
-
 
     const formData = new FormData();
     formData.append('userId', _id);
     formData.append('userName', userName);
     formData.append('description', post);
-   if (image) {
-  const imageRef = ref(storage, `posts/${image.name + v4()}`);
-  
-  // Check if the image file is a video by checking the file extension
-  const isVideo = image.name.toLowerCase().endsWith('.mp4');
+    if (image) {
+      const imageRef = ref(storage, `posts/${image.name + v4()}`);
 
-  if (isVideo) {
-    // Upload the video file
-    await uploadBytes(imageRef, image);
+      // Check if the image file is a video by checking the file extension
+      const isVideo = image.name.toLowerCase().endsWith('.mp4');
 
-    // Get the download URL of the uploaded video
-    const videoUrl = await getDownloadURL(imageRef);
+      if (isVideo) {
+        // Upload the video file
+        await uploadBytes(imageRef, image);
 
-    formData.append('video', videoUrl);
-    formData.append('videoPath', image.name);
-  } else {
-    // Upload the image file (assuming it's not a video)
-    await uploadBytes(imageRef, image);
+        // Get the download URL of the uploaded video
+        const videoUrl = await getDownloadURL(imageRef);
 
-    // Get the download URL of the uploaded image
-    const imageUrl = await getDownloadURL(imageRef);
+        formData.append('video', videoUrl);
+        formData.append('videoPath', image.name);
+      } else {
+        // Upload the image file (assuming it's not a video)
+        await uploadBytes(imageRef, image);
 
-    formData.append('image', imageUrl);
-    formData.append('picturePath', image.name);
-  }
-}
+        // Get the download URL of the uploaded image
+        const imageUrl = await getDownloadURL(imageRef);
 
+        formData.append('image', imageUrl);
+        formData.append('picturePath', image.name);
+      }
+    }
 
     const upload = await uploadPost(token, formData);
 
     dispatch(setUpdatePost({ posts: upload.newPost }));
     setImage(null);
     setPost('');
-    setIsUploading(false)
+    setIsUploading(false);
     onButtonClick();
   };
 
-  const handleInput = (e: any) => {
-    setPost(e.target.value)
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPost(e.target.value);
     if (/^\s*$/.test(e.target.value)) {
-      setValid(true)
+      setValid(true);
     } else {
-      setValid(false)
+      setValid(false);
     }
-  }
+  };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
-      setProgress((oldProgress: any) => {
+      setProgress((oldProgress) => {
         if (oldProgress === 100) {
           return 0;
         }
@@ -126,7 +127,8 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
     };
   }, []);
 
-  const handleImageCrop = (imageDataUrl: any) => {
+  const handleImageCrop = (imageDataUrl: string) => {
+
     setCroppedImage(imageDataUrl);
   };
 
@@ -145,7 +147,7 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
           <>
             <InputBase
               placeholder="Enter your thoughts"
-              onChange={(e) => handleInput(e)}
+              onChange={handleInput}
               value={post}
               sx={{
                 width: '100%',
@@ -170,7 +172,7 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
           <>
             <InputBase
               placeholder="Enter your thoughts"
-              onChange={(e) => handleInput(e)}
+              onChange={handleInput}
               value={post}
               sx={{
                 width: '100%',
@@ -198,10 +200,15 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
         <Box border="1px solid black" borderRadius="5px" mt="1rem" p="1rem">
           {!croppedImage && (
             <Dropzone
-              multiple={false}
-              onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+              multiple={true}
+              onDrop={(acceptedFiles) => {
+                console.log(acceptedFiles[0], 'img');
+
+                setImage(acceptedFiles[0])
+              }
+              }
             >
-              {({ getRootProps, getInputProps }: any) => (
+              {({ getRootProps, getInputProps }) => (
                 <Flex>
                   <Box
                     {...getRootProps()}
@@ -232,52 +239,102 @@ const PostUploadWidget = ({ onButtonClick }: any) => {
             </Dropzone>
           )}
 
-          {image && !croppedImage && (
-            <ReactCrop
-              src={URL.createObjectURL(image)}
-              crop={crop}
-              onChange={(newCrop: any) => setCrop(newCrop)}
-              onComplete={(cropData) => {
-                const canvas = document.createElement('canvas');
-                const imageElement = document.createElement('img');
-                imageElement.src = URL.createObjectURL(image);
-                imageElement.onload = () => {
-                  canvas.width = cropData.width;
-                  canvas.height = cropData.height;
-                  const ctx: any = canvas.getContext('2d');
-                  ctx.drawImage(
-                    imageElement,
-                    cropData.x,
-                    cropData.y,
-                    cropData.width,
-                    cropData.height,
-                    0,
-                    0,
-                    cropData.width,
-                    cropData.height
-                  );
-                  const imageDataUrl = canvas.toDataURL('image/jpeg');
-                  handleImageCrop(imageDataUrl);
-                };
-              }}
-            />
+          {image && !croppedImage && !image.name.toLowerCase().endsWith('.mp4') && (
+            <>
+            <img src={URL.createObjectURL(image)} alt="" width={100}/>
+              <ReactCrop
+                src={URL.createObjectURL(image)}
+                onImageLoaded={(image: { naturalHeight: any; naturalWidth: any; }) => {
+                  const aspectRatio = 16 / 9;
+                  const height = image.naturalHeight;
+                  const width = image.naturalWidth;
+                  const cropHeight = width / aspectRatio;
+
+                  if (cropHeight < height) {
+                    setCrop((prevCrop: any) => ({
+                      ...prevCrop,
+                      unit: '%',
+                      width: 100,
+                      height: (cropHeight / height) * 100,
+                      aspect: aspectRatio,
+                    }));
+                  } else {
+                    const cropWidth = height * aspectRatio;
+                    setCrop((prevCrop: any) => ({
+                      ...prevCrop,
+                      unit: '%',
+                      width: (cropWidth / width) * 100,
+                      height: 100,
+                      aspect: aspectRatio,
+                    }));
+                  }
+                }}
+                crop={crop}
+                onChange={(newCrop) => setCrop(newCrop)}
+                onComplete={(crop) => {
+                  if (!image) return;
+                  const imageObj = new Image();
+                  imageObj.src = URL.createObjectURL(image);
+                  const canvas = document.createElement('canvas');
+                  const scaleX = imageObj.naturalWidth / imageObj.width;
+                  const scaleY = imageObj.naturalHeight / imageObj.height;
+                  canvas.width = crop.width!;
+                  canvas.height = crop.height!;
+                  const ctx = canvas.getContext('2d');
+
+                  if (ctx) {
+                    ctx.drawImage(
+                      imageObj,
+                      crop.x! * scaleX,
+                      crop.y! * scaleY,
+                      crop.width! * scaleX,
+                      crop.height! * scaleY,
+                      0,
+                      0,
+                      crop.width!,
+                      crop.height!
+                    );
+
+                    const reader = new FileReader();
+                    canvas.toBlob((blob) => {
+                      if (blob) {
+                        reader.readAsDataURL(blob);
+                        reader.onloadend = () => {
+                          handleImageCrop(reader.result as string);
+                        };
+                      }
+                    });
+                  }
+                }}
+              />
+            </>
+
           )}
 
           {croppedImage && (
-            <Box mt="1rem">
-              <img src={croppedImage} alt="Cropped" />
+            <Box>
+              <img
+                src={croppedImage}
+                alt="Cropped"
+                style={{ maxWidth: '100%' }}
+              />
+              <IconButton
+                onClick={() => {
+                  setCroppedImage(null);
+                  setImage(null);
+                }}
+                sx={{ position: 'absolute', top: '1rem', right: '1rem' }}
+              >
+                <DeleteOutlined fontSize="small" />
+              </IconButton>
             </Box>
           )}
         </Box>
       )}
 
-      <Divider sx={{ margin: '1.25rem 0' }} />
-
-      {isUploading && (
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress color="info" variant="determinate" value={progress} />
-        </Box>
-      )}
+      {isUploading && <LinearProgress variant="determinate" value={progress} />}
+      {!valid && <Typography variant="body2">Please enter a post</Typography>}
+      <Divider sx={{ mt: '1rem' }} />
     </WidgetWraper>
   );
 };

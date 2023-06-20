@@ -7,13 +7,19 @@ export const getUserDetails = async (id: string, repository: ReturnType<UserDbIn
     // Get all users
     const users: any[] = await repository.getAllUsers();
   
-    // Get blocked users
+    if(id !== 'undefined'){
+
+     // Get blocked users
     const {blockedUsers}  = await repository.getUserById(id);
   
     // Filter out blocked users
     const filtered = users.filter((user: any) => !blockedUsers.includes(user._id));
   
     return filtered;
+    } else {
+        return users
+    }
+
   };
   
 
