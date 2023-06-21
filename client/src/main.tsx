@@ -8,10 +8,11 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
 import App from './App';
-import ErrorBoundary from './ErrorBoundary';
+import { ErrorFallback } from './ErrorBoundary';
 import { ContextProvider } from './scenes/Videocall/SocketContext';
 import authReducer from './state';
 import './index.css';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const persistConfig = {
   key: 'root',
@@ -38,11 +39,11 @@ ReactDOM.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistStore(store)}>
         <QueryClientProvider client={queryClient}>
-            <ErrorBoundary fallback="Error detected">
-          <ContextProvider>
+          <ErrorBoundary fallbackRender={ErrorFallback}>
+            <ContextProvider>
               <App />
-          </ContextProvider>
-            </ErrorBoundary>
+            </ContextProvider>
+          </ErrorBoundary>
         </QueryClientProvider>
       </PersistGate>
     </Provider>

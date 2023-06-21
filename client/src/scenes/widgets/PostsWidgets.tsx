@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '../../state';
 import PostWidgetLoop from './PostWidgetLoop';
 import { getPosts } from '../../api/apiConnection/postConnection';
-import { Box, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 
 
 

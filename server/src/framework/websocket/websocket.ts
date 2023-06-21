@@ -23,7 +23,11 @@ const socketConfig = (io: Server<DefaultEventsMap, any>) => {
       const { receiverId } = data;
       const user = activeUsers.find((user) => user.userId === receiverId);
       console.log(`sending message to ${receiverId}`);
-      if (user) io.to(user.socketId).emit("receive-message", data);
+      if (user) {
+        io.to(user.socketId).emit("notification", data)
+        io.to(user.socketId).emit("receive-message", data)
+      }
+      
     });
 
     socket.on("me", (userId) => {

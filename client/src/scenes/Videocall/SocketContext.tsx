@@ -99,6 +99,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
       socket.disconnect();
     };
   }, [userId]);
+  
 
   const answerCall = () => {
     setCallAccepted(true);

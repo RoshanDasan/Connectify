@@ -88,12 +88,14 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const token = useSelector((state: any) => state.token);
-  const userId = useSelector((state: any) => state.user._id);
+  const { _id: userId, followers, following } = useSelector((state: any) => state.user);
   const user = useSelector((state: any) => state.user);
   const blockList = useSelector((state: any) => state.user.blockingUsers)
 
   const [openModal, setOpenModal]: any = useState(false);
 
+  console.log(userId, following, followers,'][');
+  
   const handleOpenModal = async (type: any) => {
 
     setOpenModal(true);

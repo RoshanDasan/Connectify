@@ -1,36 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Box, styled } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import ErrorIcon from '@mui/icons-material/Error';
+import Button from '@mui/material/Button';
+const FallbackContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '20px',
+  backgroundColor: '#f8d7da',
+  color: '#721c24',
+  borderRadius: '4px',
+  minHeight: '300px', // Increase the height as desired
+  marginTop:"200px",
 
-function ErrorBoundaryComponent({ children }: any) {
-  const [hasError, setHasError] = useState(false);
-  const [error, setError] = useState(null);
-  const [errorInfo, setErrorInfo] = useState(null);
 
-  useEffect(() => {
-    const handleErrors: any = (error: any, errorInfo: any) => {
-      setHasError(true);
-      setError(error);
-      setErrorInfo(errorInfo);
-        console.log(error);
-        
-    };
+}));
 
-    window.addEventListener('error', handleErrors);
-    return () => {
-      window.removeEventListener('error', handleErrors);
-    };
-  }, []);
+export const ErrorFallback = ({ error, resetErrorBoundary }: any) => {
 
-  if (hasError) {
-    // You can render a fallback UI here
-    return (
-      <div>
-        <h1>Something went wrong.</h1>
-        <p>Please try again later.</p>
-      </div>
-    );
-  }
-
-  return children;
-}
-
-export default ErrorBoundaryComponent;
+  return (
+   
+    <FallbackContainer>
+      <ErrorIcon fontSize="large" color="error" />
+      <h2>Oops! Something went wrong.</h2>
+      <p>{error.message}</p>
+      <Button variant="contained" onClick={resetErrorBoundary}>
+        Reset
+      </Button>
+    </FallbackContainer>
+  
+  );
+};

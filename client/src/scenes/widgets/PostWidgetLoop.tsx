@@ -52,6 +52,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
       const response: any = await getPostById(id, token);
       const { comments } = response.data.post;
       setComments(comments);
+      globalClick()
     } else {
       console.log('no comments');
     }
@@ -62,6 +63,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
     const { comments } = response.data.post;
     setComments(comments);
     setIsComment((prevState) => !prevState);
+    globalClick()
   };
 
   const handleDelete = async (index: number) => {
@@ -70,6 +72,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
     const { comments } = response.data.post;
     setComments(comments);
     handleCommentView();
+    globalClick()
   };
 
 

@@ -6,36 +6,37 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { io } from 'socket.io-client';
 import { setLogout, setNotification } from './state';
-import Auth from './scenes/Auth/Auth';
-import Home from './scenes/Home/Home';
-import AdminLogin from './admin-scenes/admin-auth/AdminLogin';
 import { themeSettings } from './theme';
-import AdminHome from './scenes/Home/AdminHome';
-import AdminPostControll from './admin-scenes/admin-post/AdminPostControll';
 import { getUser } from './api/apiConnection/userConnection';
 import LoadingSkeleton from './components/skeleton/LoadingSkeleton';
-import ErrorBoundaryComponent from './ErrorBoundary';
-import { ErrorBoundary } from 'react-error-boundary'
 
+// user Lazy components
+const AuthLazy = lazy(() => import('./scenes/Auth/Auth'))
 const HomeLazy = lazy(() => import('./scenes/Home/Home'));
 const ProfileLazy = lazy(() => import('./scenes/ProfilePage/Profile'));
 const ProfileEditLazy = lazy(() => import('./components/EditProfile'));
 const ChatLazy = lazy(() => import('./scenes/Chat/Chat'));
 const VideoCallLazy = lazy(() => import('./scenes/Videocall/VideoCall'));
 
+// admin lazy components
+const AdminLoginLazy = lazy(() => import('./admin-scenes/admin-auth/AdminLogin'));
+const AdminHomeLazy = lazy(() => import('./scenes/Home/AdminHome'));
+const AdminPostLazy = lazy(() => import('./admin-scenes/admin-post/AdminPostControll'))
+
+
 function App() {
-  const mode = useSelector((state : any) => state.mode);
-  const isAuth = useSelector((state : any) => state.user);
-  const token = useSelector((state : any) => state.token);
-  const isBlocked = useSelector((state : any) => state.user?.isBlock);
-  const isAdminAuth = useSelector((state : any) => state.admintoken);
-  const userId = useSelector((state : any) => state.user?._id);
+  const mode = useSelector((state: any) => state?.mode);
+  const token = useSelector((state: any) => state?.token);
+  const isBlock = useSelector((state: any) => state?.user?.isBlock);
+  const isAdminAuth = useSelector((state: any) => state?.admintoken);
+  const userId = useSelector((state: any) => state?.user?._id);
+
   const socket: any = useRef(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
     socket.current = io('http://localhost:5000');
-    if (userId) {
+    if (token) {
       socket.current.emit('new-user-add', userId);
     }
 
@@ -44,10 +45,10 @@ function App() {
         socket.current.disconnect();
       }
     };
-  }, [userId]);
+  }, [token]);
 
   useEffect(() => {
-    socket.current.on('receive-message', async ({ senderId, message }: any) => {
+    socket.current.on('notification', async ({ senderId, message }: any) => {
       console.log(message);
       const { userName } = await getUser(senderId, token);
 
@@ -59,7 +60,7 @@ function App() {
     });
   }, [userId]);
 
-  if (isBlocked) {
+  if (isBlock) {
     dispatch(setLogout());
   }
 
@@ -70,14 +71,21 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Routes>
-          <Route path="/" element={isAuth ? <Home /> : <Auth />} />
+
+          <Route path="/"
+            element={
+              <Suspense fallback={<LoadingSkeleton />}>
+                {token ? <HomeLazy /> : <AuthLazy />}
+              </Suspense>
+            }
+          />
+
           <Route
             path="/home"
             element={
               <Suspense fallback={<LoadingSkeleton />}>
-                <ErrorBoundary fallback={ErrorBoundaryComponent} onReset={() => console.log('hsomething went wrong')}>
-                  <HomeLazy />
-                </ErrorBoundary>
+                {token ? <HomeLazy /> : <AuthLazy />}
+
               </Suspense>
             }
           />
@@ -85,9 +93,7 @@ function App() {
             path="/profile/:id"
             element={
               <Suspense fallback={<LoadingSkeleton />}>
-                <ErrorBoundary fallback={ErrorBoundaryComponent} onReset={() => console.log('something went wrong')}>
-                  <ProfileLazy />
-                </ErrorBoundary>
+                {token ? <ProfileLazy /> : <AuthLazy />}
               </Suspense>
             }
           />
@@ -95,9 +101,7 @@ function App() {
             path="/accounts/edit/:id"
             element={
               <Suspense fallback={<LoadingSkeleton />}>
-                <ErrorBoundary fallback={ErrorBoundaryComponent} onReset={() => console.log('something went wrong')}>
-                  <ProfileEditLazy />
-                </ErrorBoundary>
+                {token ? <ProfileEditLazy /> : <AuthLazy />}
               </Suspense>
             }
           />
@@ -105,9 +109,7 @@ function App() {
             path="/chat"
             element={
               <Suspense fallback={<LoadingSkeleton />}>
-                <ErrorBoundary fallback={ErrorBoundaryComponent} onReset={() => console.log('something went wrong')}>
-                  <ChatLazy />
-                </ErrorBoundary>
+                {token ? <ChatLazy /> : <AuthLazy />}
               </Suspense>
             }
           />
@@ -115,25 +117,43 @@ function App() {
             path="/chat/video_call"
             element={
               <Suspense fallback={<LoadingSkeleton />}>
-                <ErrorBoundary fallback={ErrorBoundaryComponent} onReset={() => console.log('something went wrong')}>
-                  <VideoCallLazy />
-                </ErrorBoundary>
+                {token ? <VideoCallLazy /> : <AuthLazy />}
+
               </Suspense>
             }
           />
-          <Route path="/admin" element={isAdminAuth ? <AdminHome /> : <AdminLogin />} />
+
+          {/* admin routes */}
+          <Route path="/admin" element={
+            <Suspense fallback={<LoadingSkeleton />}>
+              {isAdminAuth ? <AdminHomeLazy /> : <AdminLoginLazy />}
+            </Suspense>
+            } />
 
           <Route
             path="/admin/home"
-            element={isAdminAuth ? <AdminHome /> : <AdminLogin />}
+            element={
+              <Suspense fallback={<LoadingSkeleton />}>
+                {isAdminAuth ? <AdminHomeLazy /> : <AdminLoginLazy />}
+              </Suspense>
+            }
           />
           <Route
             path="/admin/user/control"
-            element={isAdminAuth ? <AdminHome /> : <AdminLogin />}
+            element={
+              <Suspense fallback={<LoadingSkeleton />}>
+                {isAdminAuth ? <AdminHomeLazy /> : <AdminLoginLazy />}
+              </Suspense>
+            }
           />
           <Route
             path="/admin/post/control"
-            element={isAdminAuth ? <AdminPostControll /> : <AdminLogin />}
+            element={
+              
+              <Suspense  fallback={<LoadingSkeleton />}>
+                {isAdminAuth ? <AdminPostLazy /> : <AdminLoginLazy />}
+              </Suspense>
+            }
           />
         </Routes>
       </ThemeProvider>

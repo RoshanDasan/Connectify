@@ -55,12 +55,15 @@ const Chat = () => {
   // receive message from socket server
   useEffect(() => {
     socket.current?.on('receive-message', (data: any) => {
+      console.log('recivee');
+      
       setReceiveMessage(data);
       console.log('Received message:', data);
     });
   }, []);
 
   useEffect(() => {
+
     dispatch(unsetNotificationOpen())
   },[notification])
 
