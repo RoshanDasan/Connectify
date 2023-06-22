@@ -7,16 +7,16 @@ import {
   Container,
   Grid,
   Avatar,
+  Alert,
 } from '@mui/material';
 import * as React from 'react';
 import Sidebar from '../scenes/Sidebar/Sidebar';
 import Navbar from '../scenes/Navbar/Navbar';
 import { useParams } from 'react-router-dom';
-import { getUser, useUpdateProfile } from '../api/apiConnection/userConnection'; // assuming these imports are correct
+import { getUser, useUpdateProfile } from '../api/apiConnection/userConnection';
 import { useSelector } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -40,7 +40,7 @@ const EditProfile: React.FC = () => {
   const [user, setUser] = useState<any>({});
   const [click, setClick] = useState(false);
   const [disable, setDisable] = useState(true);
-  const navigate = useNavigate();
+  const [alert, setAlert] = useState('')
 
   const getDetails = async () => {
     const userDetails: any = await getUser(id, token);
@@ -52,11 +52,22 @@ const EditProfile: React.FC = () => {
   }, [click]);
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setFormValues((prevValues) => ({
-        ...prevValues,
-        file: acceptedFiles[0], // Store the selected file in the form values
-      }));
+    accept: 'image/*',
+    maxSize: 1048576,
+    onDrop: (acceptedFiles, rejectedFiles) => {
+      if (rejectedFiles.length > 0) setAlert('Maximum file size exceeded')
+      if (acceptedFiles.length > 0) {
+        if (acceptedFiles[0]?.name?.endsWith('jpg') || acceptedFiles[0]?.name?.endsWith('png')) {
+          setFormValues((prevValues) => ({
+            ...prevValues,
+            file: acceptedFiles[0], // Store the selected file in the form values
+          }));
+          setAlert('')
+        }else{
+          setAlert('Select a valid image')
+        }
+      }
+
     },
   });
   const [formValues, setFormValues] = useState<FormValues>({
@@ -121,7 +132,8 @@ const EditProfile: React.FC = () => {
 
     updateProfileMutation.mutate({ id, values: formData, token });
     setClick(!click);
-    toast.success('profile updated');
+    // toast.success('profile updated');
+    setAlert('success')
   };
 
   return (
@@ -129,6 +141,12 @@ const EditProfile: React.FC = () => {
       <Navbar />
       <Container maxWidth="sm">
         <Sidebar />
+        {alert.length > 0 && alert !== 'success' &&
+          <Alert severity="error">{alert}</Alert>
+        }
+        {
+          alert === 'success' &&  <Alert severity="success">Profile updated</Alert>
+        }
         <Typography variant="h3" sx={{ paddingTop: '3rem', textAlign: 'left' }}>
           Edit Profile
         </Typography>

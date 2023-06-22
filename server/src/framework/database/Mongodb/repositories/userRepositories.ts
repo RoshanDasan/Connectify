@@ -38,7 +38,7 @@ export const userRepositoryMongoDB = () => {
       throw error;
     }
   };
-  
+
   const getFollowers = async (_id: string) => {
     const user: any = await User.findOne({ _id });
     const followers: any[] = await Promise.all(
@@ -67,6 +67,27 @@ export const userRepositoryMongoDB = () => {
     const isUserExist: any = await user.followers.find((user: any) => user === friendId)
 
     return isUserExist;
+  }
+
+
+  const sendRequest = async (id: string, userName: string, friendName: string, friendId: string) => {
+    await User.updateOne({ _id: friendId }, {
+      $push: { requests: { id, userName } }
+    })
+    await User.updateOne({ _id: id }, {
+      $push: { requested: { id: friendId, userName: friendName } }
+    })
+    return;
+  }
+
+  const cancelRequest = async (id: string, friendId: string) => {
+    await User.updateOne({ _id: friendId }, {
+      $pull: { requests: { id } }
+    })
+    await User.updateOne({ _id: id }, {
+      $pull: { requested: { id: friendId } }
+    })
+    return;
   }
 
   const unfollowFriend = async (_id: string, friendId: string) => {
@@ -176,6 +197,8 @@ export const userRepositoryMongoDB = () => {
     getFollowers,
     getFollowings,
     findFriend,
+    sendRequest,
+    cancelRequest,
     unfollowFriend,
     followFriend,
     getAllUsers,

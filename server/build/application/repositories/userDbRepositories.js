@@ -26,6 +26,12 @@ const userDbRepository = (repository) => {
     const findFriend = async (id, friendId) => {
         return await repository.findFriend(id, friendId);
     };
+    const sendRequest = async (id, userName, friendId) => {
+        return await repository.sendRequest(id, userName, friendId);
+    };
+    const cancelRequest = async (id, friendId) => {
+        return await repository.cancelRequest(id, friendId);
+    };
     const unfollowFriend = async (id, friendId) => {
         return await repository.unfollowFriend(id, friendId);
     };
@@ -57,6 +63,8 @@ const userDbRepository = (repository) => {
         getUserById,
         getFollowers,
         getFollowings,
+        sendRequest,
+        cancelRequest,
         findFriend,
         unfollowFriend,
         followFriend,

@@ -51,6 +51,16 @@ const userRepositoryMongoDB = () => {
         const isUserExist = await user.followers.find((user) => user === friendId);
         return isUserExist;
     };
+    const sendRequest = async (id, userName, friendId) => {
+        return await userModel_1.default.updateOne({ _id: friendId }, {
+            $push: { requests: { id, userName } }
+        });
+    };
+    const cancelRequest = async (id, friendId) => {
+        return await userModel_1.default.updateOne({ _id: friendId }, {
+            $push: { requests: { id } }
+        });
+    };
     const unfollowFriend = async (_id, friendId) => {
         // remove friend from user follower list
         await userModel_1.default.findByIdAndUpdate({ _id }, { $pull: { followers: friendId } });
@@ -133,6 +143,8 @@ const userRepositoryMongoDB = () => {
         getFollowers,
         getFollowings,
         findFriend,
+        sendRequest,
+        cancelRequest,
         unfollowFriend,
         followFriend,
         getAllUsers,

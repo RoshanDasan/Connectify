@@ -45,7 +45,9 @@ const userSchema = new Schema(
     blockedUsers:[],
     blockingUsers:[],
     followers: [],
-    following: []
+    following: [],
+    requests:[],
+    requested:[]
 
   },
   { timestamps: true }

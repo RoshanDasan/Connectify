@@ -43,6 +43,14 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
             followings: followingList
         });
     });
+    // send friend request to user
+    const sendRequest = (0, express_async_handler_1.default)(async (req, res) => {
+        const { id, friendId } = req.params;
+        const response = await (0, user_1.requestFriend)(id, friendId, dbRepositoryUser);
+        res.json({
+            status: response
+        });
+    });
     // insert followers to user
     const insertFollowers = (0, express_async_handler_1.default)(async (req, res) => {
         const { id, friendId } = req.query;
@@ -85,6 +93,7 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
     });
     return {
         getUserById,
+        sendRequest,
         getFollowersList,
         getFollowingsList,
         insertFollowers,

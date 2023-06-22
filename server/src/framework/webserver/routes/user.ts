@@ -13,11 +13,15 @@ const userRouter = () => {
 
     router.get('/:id', controllers.getUserById);
 
+    router.patch('/request/:id/:friendId', controllers.sendRequest)
+
     router.get('/followers/:id', controllers.getFollowersList);
 
     router.get('/followings/:id', controllers.getFollowingsList);
 
-    router.patch('/', controllers.insertFollowers)
+    router.patch('/', controllers.unfollowUser)
+
+    router.patch('/request/friend/:id/:friendId', controllers.responseFriendRequest)
 
     router.get('/search/:prefix', controllers.searchUser)
 

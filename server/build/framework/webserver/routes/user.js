@@ -13,6 +13,7 @@ const userRouter = () => {
     const controllers = (0, userControllers_1.default)(userDbRepositories_1.userDbRepository, userRepositories_1.userRepositoryMongoDB);
     router.get('/all/:id', controllers.getAllUsers);
     router.get('/:id', controllers.getUserById);
+    router.patch('/request/:id/:friendId', controllers.sendRequest);
     router.get('/followers/:id', controllers.getFollowersList);
     router.get('/followings/:id', controllers.getFollowingsList);
     router.patch('/', controllers.insertFollowers);
