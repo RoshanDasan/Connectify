@@ -128,6 +128,23 @@ export const postComment = async (postId: string, userId: string, body: any, tok
   }
 };
 
+export const useReplyComment = async(postId: string, userId: string, comment: string, reply: string) => {
+  try {
+    const data: {
+      comment: any;
+      reply: any
+    } = {
+      comment,
+      reply
+    };
+    const response = await baseURL.patch(`/post/comment/reply/${postId}/${userId}`, data)
+    return response.data;
+    
+  } catch (error) {
+    throw error
+  }
+}
+
 
 export const deleteComment = (postId: string, index: number, token: string) => {
   baseURL.delete(`/post/delete_comment/${postId}/${index}`, {

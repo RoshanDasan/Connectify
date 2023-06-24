@@ -70,12 +70,12 @@ export const userRepositoryMongoDB = () => {
   }
 
 
-  const sendRequest = async (id: string, userName: string, friendName: string, friendId: string) => {
+  const sendRequest = async (id: string, userName: string, friendName: string, dp: any, friendDp: string, friendId: string) => {
     await User.updateOne({ _id: friendId }, {
-      $push: { requests: { id, userName } }
+      $push: { requests: { id, userName, dp } }
     })
     await User.updateOne({ _id: id }, {
-      $push: { requested: { id: friendId, userName: friendName } }
+      $push: { requested: { id: friendId, userName: friendName, dp: friendDp } }
     })
     return;
   }
@@ -109,6 +109,7 @@ export const userRepositoryMongoDB = () => {
       { $push: { following: _id } })
     const friendDetails: any = await User.findOne({ _id: friendId });
 
+    
     return friendDetails
   }
 

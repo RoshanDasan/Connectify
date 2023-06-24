@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { ChatBubbleOutlineOutlined, FavoriteOutlined, FavoriteBorderOutlined, DeleteOutlined, Send, VolumeOffOutlined, VolumeUpOutlined } from "@mui/icons-material";
-import { Box, CircularProgress, Divider, IconButton, TextField, Typography } from "@mui/material";
+import { ChatBubbleOutlineOutlined, FavoriteOutlined, FavoriteBorderOutlined, DeleteOutlined, Send, VolumeOffOutlined, VolumeUpOutlined, ClosedCaptionOff, RollerShadesClosed } from "@mui/icons-material";
+import { Box, Button, CircularProgress, Divider, IconButton, TextField, Typography } from "@mui/material";
 import Flex from "../../components/DisplayFlex";
 import PostHeader from '../../components/PostHeader';
 import WidgetWraper from "../../components/WidgetWraper";
 import { useSelector } from 'react-redux';
-import { likePost } from '../../api/apiConnection/postConnection';
+import { likePost, useReplyComment } from '../../api/apiConnection/postConnection';
 import { postComment, getPostById, deleteComment } from '../../api/apiConnection/postConnection';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface PostWidgetProps {
   id: string;
@@ -25,15 +26,16 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
   const [isComment, setIsComment] = useState(false);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
+  const [reply, setReply]: any = useState({})
   const token: string = useSelector((state: any) => state.token);
   const user: any = useSelector((state: any) => state.user._id);
   const { name }: any = useSelector((state: any) => state.user);
   const [isLike, setIsLike] = useState(likes.includes(user));
   const [likecount, setLikecount] = useState(likes.length);
-  
+
   const handleLike = async (id: string, userId: string) => {
     likePost(id, userId, token);
-  
+
     if (isLike) {
       console.log('unliked the post');
       setLikecount((prevCount: any) => prevCount - 1);
@@ -41,18 +43,27 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
       console.log('liked the post');
       setLikecount((prevCount: any) => prevCount + 1);
     }
-  
+
     setIsLike((prevIsLike) => !prevIsLike);
   };
 
   const submitHandle = async () => {
     if (comment && !comment.match(/^\s/)) {
-      await postComment(id, user, `${name} : ${comment}`, token);
-      setComment('');
-      const response: any = await getPostById(id, token);
-      const { comments } = response.data.post;
-      setComments(comments);
+      if (reply.userId) {
+        console.log(reply.comment, 'replyyy');
+        const response = await useReplyComment(id, reply.userId, reply.comment, comment)
+        console.log(response, 'res');
+        setReply({})
+
+      } else {
+        await postComment(id, user, `${name} : ${comment}`, token);
+        const response: any = await getPostById(id, token);
+        const { comments } = response.data.post;
+        setComments(comments);
+      }
       globalClick()
+      setComment('');
+
     } else {
       console.log('no comments');
     }
@@ -74,6 +85,13 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
     handleCommentView();
     globalClick()
   };
+  const replyComment = (comment: any, userId: string) => {
+    const splitted = comment.split(':')
+    const name = splitted[0].slice(0, splitted[0].length - 1)
+    setReply({ name: `@${name}`, userId, comment })
+
+
+  }
 
 
   const VideoPlayer = () => {
@@ -82,6 +100,8 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
     const toggleMute = () => {
       setMuted((prevState) => !prevState);
     };
+
+
 
     return (
       <div style={{ position: 'relative' }}>
@@ -175,15 +195,19 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
                       pl: "1rem",
                       // Add Instagram-like typography styles here
                     }}
+                    color={'black'}
                   >
                     {comment}
                   </Typography>
-                  {userId == user && (
-                    <IconButton size="small" onClick={() => handleDelete(index)}>
-                      {/* Use an Instagram-like delete button icon */}
-                      <DeleteOutlined />
-                    </IconButton>
-                  )}
+                  <div>
+                    <Button variant='text' sx={{ color: 'black' }} onClick={() => replyComment(comment, userId)}>Reply</Button>
+                    {userId == user && (
+                      <IconButton size="small" onClick={() => handleDelete(index)}>
+                        <DeleteOutlined />
+                      </IconButton>
+                    )}
+                  </div>
+
                 </Flex>
               </Box>
               <Divider />
@@ -195,12 +219,19 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
             <TextField
               variant="outlined"
               fullWidth
-              label="Add a comment..."
+              label={reply.name ? reply.name : 'Add a comment'}
               size="small"
+
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-            // Add Instagram-like input field styles here
+
             />
+            {reply.name && <IconButton onClick={() => setReply({})}>
+              <CloseIcon />
+            </IconButton>}
+
+
+
             <IconButton onClick={submitHandle}>
               <Send />
             </IconButton>

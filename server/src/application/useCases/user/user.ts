@@ -43,8 +43,8 @@ export const followings = async (id: string, repository: ReturnType<UserDbInterf
 }
 
 export const requestFriend = async (id: string, friendId: string, repository: ReturnType<UserDbInterface>) => {
-    const { userName } = await repository.getUserById(id);
-    const { requests, userName: friendName } = await repository.getUserById(friendId);
+    const { userName, dp } = await repository.getUserById(id);
+    const { requests, userName: friendName, dp: friendDp } = await repository.getUserById(friendId);
 
     // check user is already in request list
     const isRequested = requests.find((request: any) => request.id === id);
@@ -53,18 +53,20 @@ export const requestFriend = async (id: string, friendId: string, repository: Re
         await repository.cancelRequest(id, friendId);
         return 'Request canceled';
     } else {
-        await repository.sendRequest(id, userName, friendName, friendId);
+        await repository.sendRequest(id, userName, friendName, dp, friendDp, friendId);
         return 'Request sended';
     }
 
 }
 
-export const requestFriendResponse = async (id: string, friendId: string, response: string, repository: ReturnType<UserDbInterface>) => {
+export const requestFriendResponse = async (id: string, friendId: string, { response }: any, repository: ReturnType<UserDbInterface>) => {
     if (response === 'accept') {
+
         await repository.followFriend(friendId, id);
         await repository.cancelRequest(friendId, id);
         return 'Request accepted'
     } else {
+
         await repository.cancelRequest(friendId, id);
         return 'Request rejected'
     }

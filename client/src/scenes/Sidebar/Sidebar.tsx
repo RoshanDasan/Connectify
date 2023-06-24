@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, TextField, Button } from '@mui/material';
-import { Home, Explore, Notifications, Person, Settings, ExitToApp, Message, SearchOutlined } from '@mui/icons-material';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, TextField, Button, Typography, Badge } from '@mui/material';
+import { Home, Explore, Notifications, Person, Settings, ExitToApp, Message, SearchOutlined, PersonAdd } from '@mui/icons-material';
 import { Skeleton } from '@mui/lab';
 import { setLogout } from '../../state';
 import { useNavigate } from 'react-router-dom';
@@ -9,13 +9,14 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useSearchUser } from '../../api/apiConnection/userConnection';
 import Flex from '../../components/DisplayFlex';
+import NotificationComponent from '../../components/NotificationComponent';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
     display: 'flex',
-    
+
   },
   drawer: {
     width: drawerWidth,
@@ -35,12 +36,13 @@ const useStyles = makeStyles((theme: any) => ({
     fontWeight: theme.typography.fontWeightBold,
   },
   searchDrawer: {
-    width: 240,
+    width: 300,
     flexShrink: 0,
     marginLeft: 'auto',
   },
   searchDrawerPaper: {
-    width: 240,
+    width: 350,
+    padding: 20,
     backgroundColor: theme.palette.background.default,
   },
   searchField: {
@@ -55,7 +57,8 @@ const Sidebar = () => {
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchByUser, setSearchByUser] = useState('userName')
-  const userId = useSelector((state: any) => state.user._id);
+  const [notificationsOpen, setNotificationOpen] = useState(false)
+  const { _id: userId, requests } = useSelector((state: any) => state.user);
   const userStatus = {
     user: true,
   };
@@ -67,6 +70,9 @@ const Sidebar = () => {
 
   const toggleSearchDrawer = () => {
     setSearchOpen(!searchOpen);
+  };
+  const toggleNotificationDrawer = () => {
+    setNotificationOpen(!notificationsOpen);
   };
 
   const handleInput = (e: any) => {
@@ -97,7 +103,7 @@ const Sidebar = () => {
         classes={{
           paper: classes.drawerPaper,
         }}
-       
+
       >
         <div className={classes.toolbar} />
         <List>
@@ -118,6 +124,19 @@ const Sidebar = () => {
               <Message />
             </ListItemIcon>
             <ListItemText primary="Message" classes={{ primary: classes.listItemText }} />
+          </ListItem>
+          <ListItem button className={classes.listItem} >
+            <ListItemIcon>
+              {requests.length ? (
+                <Badge color="info" badgeContent={requests.length}>
+                  <PersonAdd sx={{ fontSize: '25px' }} />
+                </Badge>
+              ) : (
+                <PersonAdd sx={{ fontSize: '25px' }}  />
+
+              )}
+            </ListItemIcon>
+            <ListItemText primary="Requests" classes={{ primary: classes.listItemText }} onClick={toggleNotificationDrawer} />
           </ListItem>
           <ListItem
             button
@@ -141,6 +160,8 @@ const Sidebar = () => {
           </ListItem>
         </List>
       </Drawer>
+
+      {/* drawer for searching */}
       <Drawer
         className={classes.searchDrawer}
         anchor="left"
@@ -150,21 +171,22 @@ const Sidebar = () => {
           paper: classes.searchDrawerPaper,
         }}
       >
+        <Typography variant='h3'>Search</Typography>
         <div className={classes.toolbar} />
         <Flex>
-          <Button variant={searchByUser==='userName'? 'outlined' : 'text'} onClick={() => setSearchByUser('userName')}>User</Button>
-          <Button variant={searchByUser==='gender'? 'outlined' : 'text'} onClick={() => setSearchByUser('gender')}>Gender</Button>
-          <Button variant={searchByUser==='city'? 'outlined' : 'text'} onClick={() => setSearchByUser('city')}>Location</Button>
+          <Button variant={searchByUser === 'userName' ? 'outlined' : 'text'} onClick={() => setSearchByUser('userName')}>User</Button>
+          <Button variant={searchByUser === 'gender' ? 'outlined' : 'text'} onClick={() => setSearchByUser('gender')}>Gender</Button>
+          <Button variant={searchByUser === 'city' ? 'outlined' : 'text'} onClick={() => setSearchByUser('city')}>Location</Button>
         </Flex>
-      
-          <TextField
-            onKeyUp={handleInput}
-            className={classes.searchField}
-            label="Search....."
-            variant="outlined"
-            size="small"
-            fullWidth
-          />
+
+        <TextField
+          onKeyUp={handleInput}
+          className={classes.searchField}
+          label="Search....."
+          variant="outlined"
+          size="small"
+          fullWidth
+        />
 
 
         {isLoading ? (
@@ -187,6 +209,23 @@ const Sidebar = () => {
           )
         )}
 
+      </Drawer>
+
+      {/* drawer for notifications */}
+
+      <Drawer
+        className={classes.searchDrawer}
+        anchor="left"
+        open={notificationsOpen}
+        onClose={toggleNotificationDrawer}
+        classes={{
+          paper: classes.searchDrawerPaper,
+        }}
+
+      >
+        <Typography variant='h3'>Notifications</Typography>
+        <div className={classes.toolbar} />
+        <NotificationComponent />
       </Drawer>
     </div>
   );

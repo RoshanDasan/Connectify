@@ -60,6 +60,21 @@ export const authSlice = createSlice({
       }
     },
 
+    setSendRequest: (state, action: PayloadAction<{ id: string, userName: string }>) => {
+      if (state.user) {
+        state.user.requested.push(action.payload)
+      }
+    },
+
+    setCancelRequest: (state, action: PayloadAction<{ id: string}>) => {
+      if(state.user){
+        const filtered = state.user.requested.filter((users: any) => {users.id !== action.payload.id})
+        state.user.requested = filtered
+      }
+    
+    },
+    
+
 
     setFollower: (state, action: PayloadAction<{ followers: any }>) => {
       if (state.user) {
@@ -130,8 +145,13 @@ export const authSlice = createSlice({
     },
 
     unsetNotificationOpen: (state: any) => {
-      
+
       state.notifications = [];
+    },
+
+    setRequests:(state: any, action:PayloadAction<{id: string}>) => {
+      const filtered = state.user.requests.filter(({id}: any) => id !== action.payload.id)
+      state.user.requests = filtered
     }
 
 
@@ -146,6 +166,7 @@ export const {
   setFollower,
   setPosts,
   setPost,
+  setSendRequest,
   setUpdatePost,
   setAdminLogin,
   setAdminLogout,
@@ -155,6 +176,7 @@ export const {
   setUnblockUser,
   setNotification,
   unsetNotification,
-  unsetNotificationOpen
+  unsetNotificationOpen,
+  setRequests
 } = authSlice.actions;
 export default authSlice.reducer;

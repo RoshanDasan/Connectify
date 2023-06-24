@@ -83,6 +83,15 @@ export const insertComment = async (postId: string, userId: string, comment: str
   return commentResult;
 }
 
+// reply a comment
+export const replyComment = async (postId: string, userId: string, comment: string, reply: string, repositories: ReturnType<postDbInterfaceType>) => {
+  const commentResult = await repositories.replyComment(postId,userId, comment, reply);
+  if (!commentResult) {
+    throw new AppError('Reply failed', HttpStatus.BAD_REQUEST)
+  }
+  return 'Reply succcess';
+}
+
 // delete a particulat comment using index number
 export const deleteComment = async (postId: string, index: string, repositories: ReturnType<postDbInterfaceType>) => {
   const { comments } = await repositories.getPostById(postId);
@@ -93,7 +102,7 @@ export const deleteComment = async (postId: string, index: string, repositories:
 
 
 // edit post 
-export const postEdit = async (postId: string, body: any,  repositories: ReturnType<postDbInterfaceType>) => {
+export const postEdit = async (postId: string, body: any, repositories: ReturnType<postDbInterfaceType>) => {
   const commentResult = await repositories.editPost(postId, body);
 
   return commentResult;
@@ -105,7 +114,7 @@ export const postReport = async (userId: string, postId: string, reason: any, re
   return response;
 }
 
-export const getReportedUsers = async(postId: string, repositories: ReturnType<postDbInterfaceType>) => {
+export const getReportedUsers = async (postId: string, repositories: ReturnType<postDbInterfaceType>) => {
   const users = await repositories.getReportedUsers(postId)
   return users;
 }

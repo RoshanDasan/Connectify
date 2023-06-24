@@ -43,8 +43,8 @@ export const userDbRepository = (repository: ReturnType<userRepositoryMongoDB>) 
         return await repository.findFriend(id, friendId);
     }
 
-    const sendRequest = async (id: string, userName: string, friendName: string,  friendId: string) => {
-        return await repository.sendRequest(id, userName, friendName, friendId);
+    const sendRequest = async (id: string, userName: string, friendName: string, dp: any, friendDp: string,  friendId: string) => {
+        return await repository.sendRequest(id, userName, friendName,dp, friendDp,  friendId);
     }
 
     const cancelRequest = async (id: string, friendId: string) => {

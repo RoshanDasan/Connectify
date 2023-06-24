@@ -42,9 +42,9 @@ export const postDbInterface: any = (repositories: ReturnType<postRepositoryType
         return insertResult
     }
 
-    const pushComment = async(postId: string, comments: any) => {
-        const updateResult = await repositories.pushComment(postId, comments);
-        return updateResult;
+    const replyComment = async(postId: string,userId: string, comment: string, reply: string) => {
+        const response = await repositories.replyComment(postId,userId, comment, reply);
+        return response
     }
 
     const editPost = async(postId: string, body: any) => {
@@ -71,7 +71,7 @@ export const postDbInterface: any = (repositories: ReturnType<postRepositoryType
         dislikePost,
         likePost,
         insertComment,
-        pushComment,
+        replyComment,
         editPost,
         reportPost,
         getReportedUsers

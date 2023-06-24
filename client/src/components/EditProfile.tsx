@@ -53,11 +53,14 @@ const EditProfile: React.FC = () => {
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
-    maxSize: 1048576,
+    // maxSize: 15048576
+    
     onDrop: (acceptedFiles, rejectedFiles) => {
+      console.log(acceptedFiles, rejectedFiles);
+      
       if (rejectedFiles.length > 0) setAlert('Maximum file size exceeded')
       if (acceptedFiles.length > 0) {
-        if (acceptedFiles[0]?.name?.endsWith('jpg') || acceptedFiles[0]?.name?.endsWith('png')) {
+        if (acceptedFiles[0]?.type?.startsWith('image')) {
           setFormValues((prevValues) => ({
             ...prevValues,
             file: acceptedFiles[0], // Store the selected file in the form values

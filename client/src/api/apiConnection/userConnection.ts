@@ -16,7 +16,7 @@ export const getUser = async (userId: string, token: string) => {
   }
 };
 
-export const getAllUsers = async (token: string, userId: any ) => {
+export const getAllUsers = async (token: string, userId: any) => {
   try {
     const response = await baseURL.get(`/user/all/${userId}`, {
       headers: {
@@ -43,17 +43,37 @@ export const followUser = async (id: string, friendId: string, token: string) =>
   }
 }
 
+export const sendRequest = async (id: string, friendId: string) => {
+  try {
+    const { data } = await baseURL.patch(`/user/request/${id}/${friendId}`)
+    return data.status;
+  } catch (error) {
+    console.error(error);
+    throw error
+  }
+}
 
+export const requestResponse = async (id: string, friendId: string, response: string) => {
+  try {
+
+    const { data } = await baseURL.patch(`/user/request/friend/${id}/${friendId}`, { response: { response } });
+    return data.status;
+
+  } catch (error) {
+    console.error(error);
+    throw error
+
+  }
+}
 
 export const useSearchUser = (prefix = 'roshan', type: any) => {
   const sender = prefix || 'qwertyuiop';
-  
+
   return useQuery(['searchUser', prefix], async () => {
     const response = await baseURL.get(`/user/search/${sender}`, { params: { type } });
     return response.data.users;
   });
 };
-
 
 
 export const useUpdateProfile = () => {

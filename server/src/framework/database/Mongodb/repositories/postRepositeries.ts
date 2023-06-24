@@ -27,72 +27,77 @@ export const postRepositoryMongoDb = () => {
     }
 
     const getPostById = async (_id: string) => {
-        const posts =  await Post.findById({ _id: new ObjectId(_id) })
-        
+        const posts = await Post.findById({ _id: new ObjectId(_id) })
+
         return posts;
     }
 
     const deletePost = async (_id: string) => {
-        
-        const deletedData =  await Post.findByIdAndDelete({ _id: new ObjectId(_id)  })
+
+        const deletedData = await Post.findByIdAndDelete({ _id: new ObjectId(_id) })
 
         return deletedData
     }
 
     const dislikePost = async (_id: string, userId: string) => {
         await Post.findByIdAndUpdate({ _id },
-            {$pull:{likes: userId}})
+            { $pull: { likes: userId } })
     }
 
     const likePost = async (_id: string, userId: string) => {
-        
+
         await Post.findByIdAndUpdate({ _id },
-            { $push: {likes: userId}})
+            { $push: { likes: userId } })
     }
+
     const insertComment = async (postId: string, userId: string, comment: string) => {
-        const updateResult = await Post.findByIdAndUpdate({_id: postId},{
-            $push:{comments:{userId, comment}}
+        const updateResult = await Post.findByIdAndUpdate({ _id: postId }, {
+            $push: { comments: { userId, comment, reply: [] } }
         });
-        
-        return updateResult;
-    }
-
-    const pushComment = async (postId: string, comments: any) => {
-        const updateResult = await Post.findByIdAndUpdate({_id: postId},{
-            $set: {comments}
-        })
 
         return updateResult;
     }
+
+    const replyComment = async (_id: string, userId: string, comment: string, reply: string) => {
+        const updateResult = await Post.updateOne(
+            { _id, "comments.comment": comment },
+            {
+                $push: {
+                    "comments.$.reply": { userId, reply }
+                }
+            }
+        );
+
+        return updateResult;
+    };
+
+
 
     const editPost = async (_id: string, description: any) => {
-        const updateResult = await Post.findByIdAndUpdate({_id},{
-            $set:{description}
+        const updateResult = await Post.findByIdAndUpdate({ _id }, {
+            $set: { description }
         })
         return updateResult
     }
 
     const reportPost = async (userId: string, postId: string, reason: any) => {
-        const repostResponse = await Post.findByIdAndUpdate({_id: postId},{
-            $push:{reports:{userId, reason}}
+        const repostResponse = await Post.findByIdAndUpdate({ _id: postId }, {
+            $push: { reports: { userId, reason } }
         })
         return repostResponse;
     }
 
-    const getReportedUsers = async(postId: string) => {
-        const  postDetails : any = await Post.findOne({_id: postId});
-        
+    const getReportedUsers = async (postId: string) => {
+        const postDetails: any = await Post.findOne({ _id: postId });
+
         const users: any = await Promise.all(
-            postDetails.reports.map(async ({userId}: any) => {
-                return await User.findOne({_id: userId})
-           })
+            postDetails.reports.map(async ({ userId }: any) => {
+                return await User.findOne({ _id: userId })
+            })
         )
         return users;
 
     }
-
-
-
 
     return {
         getAllPost,
@@ -103,11 +108,11 @@ export const postRepositoryMongoDb = () => {
         dislikePost,
         likePost,
         insertComment,
-        pushComment,
+        replyComment,
         editPost,
         reportPost,
         getReportedUsers
-        
+
     }
 }
 

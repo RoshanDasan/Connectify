@@ -6,7 +6,7 @@ import Flex from '../../components/DisplayFlex';
 import Cards from '../../components/card';
 import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getUser, followUser, blockUserByUser, } from '../../api/apiConnection/userConnection';
+import { getUser, followUser, blockUserByUser, sendRequest, } from '../../api/apiConnection/userConnection';
 import Navbar from '../Navbar/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import { useFollowers, useFollowings, getPostByUser } from '../../api/apiConnection/postConnection';
@@ -71,6 +71,8 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 const Profile = () => {
+  const { _id: userId, followers, following, requested } = useSelector((state: any) => state.user);
+  const { id }: any = useParams();
   const classes = useStyles();
   const theme: any = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
@@ -83,19 +85,19 @@ const Profile = () => {
   const [followButton, setFollowBotton] = useState('')
   const [type, setType] = useState('')
   const [blockUserState, setBlockUserState] = useState('')
-  const { id }: any = useParams();
+  const [isRequested, setIsRequested] = useState(requested.some((user: any) => user.id === id))
+  const [isFriend, setIsFriend] = useState(followers.some((user: any) => user === id))
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const token = useSelector((state: any) => state.token);
-  const { _id: userId, followers, following } = useSelector((state: any) => state.user);
   const user = useSelector((state: any) => state.user);
   const blockList = useSelector((state: any) => state.user.blockingUsers)
 
   const [openModal, setOpenModal]: any = useState(false);
 
-  console.log(userId, following, followers,'][');
-  
+  console.log(userId, following, followers, '][');
+
   const handleOpenModal = async (type: any) => {
 
     setOpenModal(true);
@@ -199,26 +201,20 @@ const Profile = () => {
     }
   }
 
-  const handlefollow = async () => {
+  const sendFriendRequest = async () => {
+    await sendRequest(userId, id)
+    setIsRequested(true)
+  }
 
-    const { data }: any = await followUser(userId, id, token)
-    if (followButton == 'follow') {
-      dispatch(setFollower({
-        followers: id
-      }))
-    } else {
-      dispatch(
-        setUnfollower({
-          unfollower: id
-        })
-      )
+  const cancelFriendRequest = async () => {
+    await sendRequest(userId, id)
+    setIsRequested(false)
+  }
 
-    }
-    if (data.status == 'follow') {
-      setFollowBotton('unfollow')
-    } else {
-      setFollowBotton('follow')
-    }
+  const unfollow = async () => {
+    await followUser(userId, id, token)
+    setIsFriend(false)
+    setIsRequested(false)
 
   }
 
@@ -230,7 +226,7 @@ const Profile = () => {
   }, [id, clicked, followButton]);
 
   useEffect(() => {
-    
+
     if (blockList.some((list: any) => list === id)) {
       setBlockUserState('Blocked')
     } else {
@@ -264,7 +260,7 @@ const Profile = () => {
     console.log('unblock');
     const response = await blockUserByUser(userId, id)
     console.log(response);
-    
+
     toast.success(response.state)
     dispatch(setUnblockUser({ unblockUser: id }))
 
@@ -310,7 +306,6 @@ const Profile = () => {
             </Button>
           )}
 
-
           {userId !== id && (
             blockUserState === 'Blocked' ? (
               <Button
@@ -342,13 +337,19 @@ const Profile = () => {
         </Flex>
         {userId !== id && (
           <Flex>
-            { }
-            <Button variant='outlined' sx={{ mr: 5, mb: 2 }} onClick={handlefollow}>{followButton}</Button>
-
-
-            <Button variant='outlined' sx={{ ml: 5, mb: 2 }} onClick={handleMessage}>Message</Button>
+            {isFriend ? (
+              <Button variant='outlined' color='info' sx={{ mr: 5, mb: 2 }} onClick={unfollow}>Unfollow</Button>
+            ) : (
+              isRequested && !isFriend ? (
+                <Button variant='text' color='info' sx={{ mr: 5, mb: 2 }} onClick={cancelFriendRequest}>Requested</Button>
+              ) : (
+                <Button variant='outlined' color='info' sx={{ mr: 5, mb: 2 }} onClick={sendFriendRequest}>Follow</Button>
+              )
+            )}
+            <Button variant='outlined' color='info' sx={{ ml: 5, mb: 2 }} onClick={handleMessage}>Message</Button>
           </Flex>
         )}
+
         <Typography>{userDetails.bio}</Typography>
 
         <Typography variant="h5" m={2} className={classes.username}>
@@ -396,7 +397,7 @@ const Profile = () => {
               </>
 
             ) : (
-              friendsData.map((friend: any) => (
+              friendsData?.map((friend: any) => (
                 <Flex mt={3}>
                   <div style={{ display: 'flex' }}>
                     {friend.dp ? (
@@ -437,7 +438,7 @@ const Profile = () => {
           width={isMobile ? '100%' : '60rem'}
           sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}
         >
-          {userPosts.map(({ _id, userId, description, userName, image, likes, comments }, index) =>
+          {userPosts?.map(({ _id, userId, description, userName, image, likes, comments }, index) =>
             image ? (
               <Flex key={index} sx={{ m: isMobile ? '2rem .2rem .2rem .2rem' : '5rem .2rem .2rem .2rem' }}>
                 <Cards
