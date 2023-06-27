@@ -34,31 +34,25 @@ function App() {
   const socket: any = useRef(null);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    socket.current = io('http://localhost:5000');
-    if (token) {
-      socket.current.emit('new-user-add', userId);
-    }
+  // useEffect(() => {
+  //   socket.current = io('http://localhost:5000');
+  //   if (token) {
+  //     socket.current.emit('new-user-add', userId);
+  //   }
+  // }, [token]);
 
-    return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-      }
-    };
-  }, [token]);
+  // useEffect(() => {
+  //   socket.current.on('notification', async ({ senderId, message }: any) => {
+  //     console.log(message);
+  //     const { userName } = await getUser(senderId, token);
 
-  useEffect(() => {
-    socket.current.on('notification', async ({ senderId, message }: any) => {
-      console.log(message);
-      const { userName } = await getUser(senderId, token);
-
-      dispatch(
-        setNotification({
-          data: `${userName} sent a message: ${message}`,
-        })
-      );
-    });
-  }, [userId]);
+  //     dispatch(
+  //       setNotification({
+  //         data: `${userName} sent a message: ${message}`,
+  //       })
+  //     );
+  //   });
+  // }, [userId]);
 
   if (isBlock) {
     dispatch(setLogout());

@@ -6,11 +6,11 @@ import Flex from '../../components/DisplayFlex';
 import Cards from '../../components/card';
 import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getUser, followUser, blockUserByUser, sendRequest, } from '../../api/apiConnection/userConnection';
+import { getUser, followUser, blockUserByUser, sendRequest } from '../../api/apiConnection/userConnection';
 import Navbar from '../Navbar/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import { useFollowers, useFollowings, getPostByUser } from '../../api/apiConnection/postConnection';
-import { setBlockUser, setCurrentChat, setFollower, setUnfollower, setUnblockUser } from '../../state';
+import { setBlockUser, setCurrentChat, setSendRequest, removeSendRequest, setUnfollower, setUnblockUser } from '../../state';
 import { useDispatch } from 'react-redux';
 import { getSingleChat } from '../../api/apiConnection/chatConnection';
 import { createChat } from '../../api/apiConnection/chatConnection';
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 const Profile = () => {
-  const { _id: userId, followers, following, requested } = useSelector((state: any) => state.user);
+  const { _id: userId, followers, requested } = useSelector((state: any) => state.user);
   const { id }: any = useParams();
   const classes = useStyles();
   const theme: any = useTheme();
@@ -96,7 +96,6 @@ const Profile = () => {
 
   const [openModal, setOpenModal]: any = useState(false);
 
-  console.log(userId, following, followers, '][');
 
   const handleOpenModal = async (type: any) => {
 
@@ -140,8 +139,7 @@ const Profile = () => {
   };
 
   const setUnfollow = async (friendId: string) => {
-    const response = await followUser(userId, friendId, token)
-    console.log(response);
+    await followUser(userId, friendId, token)
     dispatch(setUnfollower({
       unfollower: friendId
     }))
@@ -152,7 +150,6 @@ const Profile = () => {
       setFriendData(followers);
       setIsLoading(false)
     } else {
-      console.log('else', type);
 
       const { followings }: any = await useFollowings(id, token);
 
@@ -163,28 +160,8 @@ const Profile = () => {
 
 
   }
-  const setFollow = async (friendId: string) => {
-    const response = await followUser(userId, friendId, token)
-    console.log(response);
-    dispatch(setFollower({
-      followers: friendId
-    }))
-    if (type === 'followers') {
+  console.log(requested, 'req');
 
-      const { followers }: any = await useFollowers(id, token);
-
-      setFriendData(followers);
-      setIsLoading(false)
-    } else {
-
-      const { followings }: any = await useFollowings(id, token);
-
-      setFriendData(followings);
-      setIsLoading(false)
-
-    }
-
-  }
 
   const handleFollowbutton = () => {
     if (id !== userId) {
@@ -237,7 +214,7 @@ const Profile = () => {
 
   const handleMessage = async () => {
     try {
-      const response = await createChat(userId, id, token);
+      await createChat(userId, id, token);
       const { chat } = await getSingleChat(userId, id, token);
       dispatch(setCurrentChat({ currentchat: chat[0] }));
       navigate('/chat')
@@ -248,24 +225,27 @@ const Profile = () => {
   };
 
   const handleBlock = async () => {
-    console.log('block');
     const response = await blockUserByUser(userId, id)
-    console.log(response);
     toast.success(response.state)
     dispatch(setBlockUser({ blockUser: id }))
 
   }
 
   const handleUnblock = async () => {
-    console.log('unblock');
     const response = await blockUserByUser(userId, id)
-    console.log(response);
 
     toast.success(response.state)
     dispatch(setUnblockUser({ unblockUser: id }))
+  }
 
+  const handleSendRequest = async (friendId: string) => {
+    await sendRequest(userId, friendId)
+    dispatch(removeSendRequest({ id: friendId }))
+  }
 
-
+  const handleRemoveRequest = async (friendId: string, userName: string, dp: string) => {
+    await sendRequest(userId, friendId)
+    dispatch(setSendRequest({ id: friendId, userName, dp }))
   }
 
 
@@ -397,38 +377,63 @@ const Profile = () => {
               </>
 
             ) : (
-              friendsData?.map((friend: any) => (
-                <Flex mt={3}>
-                  <div style={{ display: 'flex' }}>
-                    {friend.dp ? (
-                      <div className="profile-picture">
-                        <Avatar alt={friend.userName} src={friend.dp} />
+              <>
+                {friendsData.length === 0 && <Typography>No friends</Typography>}
+                {
+                  friendsData?.map((friend: any, index: number) => (
+                    <Flex mt={3} key={index}>
+
+                      <div style={{ display: 'flex' }}>
+                        {friend.dp ? (
+                          <div className="profile-picture">
+                            <Avatar alt={friend.userName} src={friend.dp} />
+                          </div>
+                        ) : (
+                          <Avatar alt={friend.userName} />
+                        )}
+                        <div style={{ paddingLeft: '15px' }}>
+                          <Typography variant="h6" key={friend.id}>{friend.userName}</Typography>
+                          <Typography>{friend.name}</Typography>
+                        </div>
                       </div>
-                    ) : (
-                      <Avatar alt={friend.userName} />
-                    )}
-                    <div style={{ paddingLeft: '15px' }}>
-                      <Typography variant='h6' key={friend.id}>{friend.userName}</Typography>
-                      <Typography>{friend.name}</Typography>
-                    </div>
-                  </div>
-                  {mainUser.followers.includes(friend._id) ? (
-                    <Button
-                      sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
-                      onClick={() => setUnfollow(friend._id)}
-                    >
-                      Remove
-                    </Button>
-                  ) : (
-                    <Button
-                      sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
-                      onClick={() => setFollow(friend._id)}
-                    >
-                      Follow
-                    </Button>
-                  )}
-                </Flex>
-              ))
+                      {friend._id !== userId ? (
+                        
+                          mainUser.followers.includes(friend._id) ? (
+                            <Button
+                              sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
+                              onClick={() => setUnfollow(friend.id)}
+                            >
+                              Remove
+                            </Button>
+                          ) : (
+                            requested.some((request: any) => request.id === friend._id) ? (
+                              <Button
+                                sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
+                                onClick={() => handleSendRequest(friend._id)}
+                              >
+                                Requested
+                              </Button>
+                            ) : (
+                              <Button
+                                sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
+                                onClick={() => handleRemoveRequest(friend._id, friend.userName, friend.dp)}
+                              >
+                                Request
+                              </Button>
+                            )
+                          )
+                        
+                      ):(
+                        <Button sx={{color:'black'}} onClick={() => navigate(`/profile/${userId}`)}>view</Button>
+                      )}
+
+                    </Flex>
+                  ))
+                }
+              </>
+
+
+
             )}
           </div>
         </Modal>

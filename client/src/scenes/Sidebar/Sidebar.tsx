@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, TextField, Button, Typography, Badge } from '@mui/material';
-import { Home, Explore, Notifications, Person, Settings, ExitToApp, Message, SearchOutlined, PersonAdd } from '@mui/icons-material';
+import { Home, Person, ExitToApp, Message, SearchOutlined, PersonAdd } from '@mui/icons-material';
 import { Skeleton } from '@mui/lab';
 import { setLogout } from '../../state';
 import { useNavigate } from 'react-router-dom';
@@ -132,7 +132,7 @@ const Sidebar = () => {
                   <PersonAdd sx={{ fontSize: '25px' }} />
                 </Badge>
               ) : (
-                <PersonAdd sx={{ fontSize: '25px' }}  />
+                <PersonAdd sx={{ fontSize: '25px' }} />
 
               )}
             </ListItemIcon>

@@ -32,15 +32,14 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
   const { name }: any = useSelector((state: any) => state.user);
   const [isLike, setIsLike] = useState(likes.includes(user));
   const [likecount, setLikecount] = useState(likes.length);
+  const [showReplyComment, setShowReplyComment] = useState({ status: false, index: -1 })
 
   const handleLike = async (id: string, userId: string) => {
     likePost(id, userId, token);
 
     if (isLike) {
-      console.log('unliked the post');
       setLikecount((prevCount: any) => prevCount - 1);
     } else {
-      console.log('liked the post');
       setLikecount((prevCount: any) => prevCount + 1);
     }
 
@@ -50,9 +49,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
   const submitHandle = async () => {
     if (comment && !comment.match(/^\s/)) {
       if (reply.userId) {
-        console.log(reply.comment, 'replyyy');
         const response = await useReplyComment(id, reply.userId, reply.comment, comment)
-        console.log(response, 'res');
         setReply({})
 
       } else {
@@ -65,7 +62,6 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
       setComment('');
 
     } else {
-      console.log('no comments');
     }
   };
 
@@ -89,19 +85,13 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
     const splitted = comment.split(':')
     const name = splitted[0].slice(0, splitted[0].length - 1)
     setReply({ name: `@${name}`, userId, comment })
-
-
   }
-
 
   const VideoPlayer = () => {
     const [muted, setMuted] = useState(true);
-
     const toggleMute = () => {
       setMuted((prevState) => !prevState);
     };
-
-
 
     return (
       <div style={{ position: 'relative' }}>
@@ -180,39 +170,64 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
 
       {isComment && (
         <Box mt="0.5rem" bgcolor="#f5f5f5" borderRadius="8px" padding="1rem">
-          {comments.map(({ comment, userId }: any, index) => (
+          {comments.map(({ comment, userId, reply }: any, index) => (
             <React.Fragment key={index}>
               <Box>
                 <Divider />
                 <Flex alignItems="center">
                   {/* Add user avatar or profile picture here */}
-                  <Typography
-                    sx={{
-                      "&:hover": {
-                        cursor: "pointer",
-                      },
-                      m: "0.5rem 0",
-                      pl: "1rem",
-                      // Add Instagram-like typography styles here
-                    }}
-                    color={'black'}
-                  >
-                    {comment}
-                  </Typography>
                   <div>
-                    <Button variant='text' sx={{ color: 'black' }} onClick={() => replyComment(comment, userId)}>Reply</Button>
-                    {userId == user && (
+                    <Typography
+                      sx={{
+                        "&:hover": {
+                          cursor: "pointer",
+                        },
+                        m: "0.5rem 0",
+                        pl: "1rem",
+                        // Add Instagram-like typography styles here
+                      }}
+                      color="black"
+                    >
+                      {comment}
+                    </Typography>
+                    <p
+                      onClick={() =>
+                        setShowReplyComment((prevState: any) => ({
+                          ...prevState,
+                          [index]: !prevState[index],
+                        }))
+                      }
+                      style={{ cursor: 'pointer' }}
+                    >
+                      Reply comments
+                    </p>
+                    {showReplyComment[index] && (
+                      reply.map((replies: any, replyIndex: number) => (
+                        <p key={replyIndex}>{replies.reply}</p>
+                      ))
+                    )}
+                  </div>
+                  <div>
+                    <Button
+                      variant="text"
+                      sx={{ color: "black" }}
+                      onClick={() => replyComment(comment, userId)}
+                    >
+                      Reply
+                    </Button>
+                    {userId === user && (
                       <IconButton size="small" onClick={() => handleDelete(index)}>
                         <DeleteOutlined />
                       </IconButton>
                     )}
                   </div>
-
                 </Flex>
               </Box>
               <Divider />
             </React.Fragment>
           ))}
+
+
 
           <Box display="flex" alignItems="center" mt="0.5rem">
             {/* Add user avatar or profile picture here */}

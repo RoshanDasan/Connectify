@@ -5,7 +5,7 @@ import { getChat } from '../../api/apiConnection/chatConnection';
 import ChatList from '../../components/chat/ChatList';
 import ChatBox from '../../components/chat/ChatBox';
 import { io, Socket } from 'socket.io-client';
-import { setCurrentChat, unsetNotificationOpen } from '../../state';
+import { setCurrentChat, setVideocallfalse, unsetNotificationOpen } from '../../state';
 import Navbar from '../Navbar/Navbar';
 
 
@@ -79,7 +79,7 @@ const Chat = () => {
     if (userId) {
       getChatList();
     }
-  }, [userId, token]);
+  }, [currentchatstate]);
 
   const checkOnline = (chat: any) => {
     const chatMember = chat?.members.find((member: any) => member !== userId);

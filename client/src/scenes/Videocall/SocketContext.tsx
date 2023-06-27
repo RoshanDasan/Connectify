@@ -2,7 +2,9 @@ import React, { useState, useRef, useEffect, createContext, ReactNode } from "re
 import { io, Socket } from "socket.io-client";
 import { SignalData } from 'simple-peer';
 import Peer from 'simple-peer/simplepeer.min.js';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "../../api/apiConnection/userConnection";
+import { setNotification } from "../../state";
 
 interface Call {
   isReceiveCall: boolean;
@@ -58,25 +60,31 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [name, setName] = useState('');
   const [activeForCall, setActiveForCall] = useState<any[]>([]);
   const userId = useSelector((state: any) => state.user?._id);
+  const token = useSelector((state: any) => state.token);
+  const isVideo = useSelector((state: any) => state.videoCall)
   const [userToCall, setUserToCall] = useState('')
+  const dispatch = useDispatch()
 
   const myVideo = useRef<HTMLVideoElement>(null);
   const userVideo = useRef<HTMLVideoElement>(null);
   const connectionRef = useRef<Peer.Instance | null>(null);
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then((currentStream) => {
-        console.log(currentStream, 'stream');
+    if (isVideo) {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then((currentStream) => {
+          console.log(currentStream, 'stream');
 
-        if (myVideo.current) {
-          myVideo.current.srcObject = currentStream;
-        }
-        setStream(currentStream);
-      })
-      .catch((error) => {
-        console.error("Error accessing media devices:", error);
-      });
+          if (myVideo.current) {
+            myVideo.current.srcObject = currentStream;
+          }
+          setStream(currentStream);
+        })
+        .catch((error) => {
+          console.error("Error accessing media devices:", error);
+        });
+    }
+
 
     socket.on("calluser", ({ from, name: callerName, signal }: Call) => {
       setCall({ isReceiveCall: true, from, name: callerName, signal });
@@ -85,7 +93,9 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       socket.off("calluser");
     };
-  }, [userId, name]);
+  }, [userId, name, isVideo]);
+
+
 
   useEffect(() => {
     if (userId) {
@@ -99,7 +109,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
       socket.disconnect();
     };
   }, [userId]);
-  
+
 
   const answerCall = () => {
     setCallAccepted(true);
@@ -110,7 +120,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     });
 
     peer.on("stream", (currentStream: MediaStream) => {
-      
+
       if (userVideo.current) {
         userVideo.current.srcObject = currentStream;
       }

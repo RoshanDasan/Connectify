@@ -54,11 +54,11 @@ const EditProfile: React.FC = () => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
     // maxSize: 15048576
-    
+
     onDrop: (acceptedFiles, rejectedFiles) => {
       console.log(acceptedFiles, rejectedFiles);
-      
-      if (rejectedFiles.length > 0) setAlert('Maximum file size exceeded')
+
+      if (rejectedFiles.length > 0) {setAlert('Maximum file size exceeded'); setDisable(true)}
       if (acceptedFiles.length > 0) {
         if (acceptedFiles[0]?.type?.startsWith('image')) {
           setFormValues((prevValues) => ({
@@ -66,7 +66,8 @@ const EditProfile: React.FC = () => {
             file: acceptedFiles[0], // Store the selected file in the form values
           }));
           setAlert('')
-        }else{
+        } else {
+          setDisable(true)
           setAlert('Select a valid image')
         }
       }
@@ -148,7 +149,7 @@ const EditProfile: React.FC = () => {
           <Alert severity="error">{alert}</Alert>
         }
         {
-          alert === 'success' &&  <Alert severity="success">Profile updated</Alert>
+          alert === 'success' && <Alert severity="success">Profile updated</Alert>
         }
         <Typography variant="h3" sx={{ paddingTop: '3rem', textAlign: 'left' }}>
           Edit Profile
@@ -239,10 +240,15 @@ const EditProfile: React.FC = () => {
                   <Box sx={{ width: '70%' }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer components={['DatePicker']}>
-                        <DatePicker label="Basic date picker" onChange={handleDateChange} />
+                        <DatePicker
+                          label="Basic date picker"
+                          onChange={handleDateChange}
+                          disableFuture // Add the disableFuture prop to prevent future dates from being selected
+                        />
                       </DemoContainer>
                     </LocalizationProvider>
                   </Box>
+
                 </Box>
               </Grid>
 

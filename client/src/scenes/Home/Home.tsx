@@ -11,7 +11,7 @@ import PostsWidgets from '../widgets/PostsWidgets';
 import FriensList from '../widgets/FriensList';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../state';
+import { setUser, setVideocallfalse } from '../../state';
 import { getUser } from '../../api/apiConnection/userConnection';
 
 
@@ -47,6 +47,7 @@ const Home = () => {
 
   useEffect(() => {
     initialHandle()
+    dispatch(setVideocallfalse())
   }, [])
 
   const handleButtonClick = () => {
