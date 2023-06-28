@@ -27,6 +27,8 @@ const postRouter = () => {
     router.patch('/like', controller.postLikeUpdate);
     // push comment in post
     router.patch('/comment/:postId/:userId', controller.commentPost);
+    // reply comment
+    router.patch('/comment/reply/:postId/:userId', controller.commentReply);
     // delete comment in post
     router.delete('/delete_comment/:postId/:index', controller.commentDelete);
     // report post

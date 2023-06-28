@@ -10,7 +10,7 @@ import { getUser, followUser, blockUserByUser, sendRequest } from '../../api/api
 import Navbar from '../Navbar/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import { useFollowers, useFollowings, getPostByUser } from '../../api/apiConnection/postConnection';
-import { setBlockUser, setCurrentChat, setSendRequest, removeSendRequest, setUnfollower, setUnblockUser } from '../../state';
+import { setBlockUser, setCurrentChat, setSendRequest, removeSendRequest, setUnfollower, setUnblockUser, setFollower } from '../../state';
 import { useDispatch } from 'react-redux';
 import { getSingleChat } from '../../api/apiConnection/chatConnection';
 import { createChat } from '../../api/apiConnection/chatConnection';
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 const Profile = () => {
-  const { _id: userId, followers, requested } = useSelector((state: any) => state.user);
+  const { _id: userId, followers, requested, following } = useSelector((state: any) => state.user);
   const { id }: any = useParams();
   const classes = useStyles();
   const theme: any = useTheme();
@@ -96,6 +96,7 @@ const Profile = () => {
 
   const [openModal, setOpenModal]: any = useState(false);
 
+console.log(followers,'fo');
 
   const handleOpenModal = async (type: any) => {
 
@@ -345,13 +346,13 @@ const Profile = () => {
           </div>
           <div className={classes.stat} onClick={() => handleOpenModal('followers')}>
             <Typography variant="subtitle1" className={classes.statNumber}>
-              {userDetails.followers ? userDetails.followers.length : 0}
+              {followers ? followers.length : 0}
             </Typography>
             <Typography variant="body2">Followers</Typography>
           </div>
           <div className={classes.stat} onClick={() => handleOpenModal('following')}>
             <Typography variant="subtitle1" className={classes.statNumber}>
-              {userDetails.following ? userDetails.following.length : 0}
+              {following ? following.length : 0}
             </Typography>
             <Typography variant="body2">Following</Typography>
           </div>
@@ -401,7 +402,7 @@ const Profile = () => {
                           mainUser.followers.includes(friend._id) ? (
                             <Button
                               sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
-                              onClick={() => setUnfollow(friend.id)}
+                              onClick={() => setUnfollow(friend._id)}
                             >
                               Remove
                             </Button>

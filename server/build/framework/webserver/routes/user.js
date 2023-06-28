@@ -16,7 +16,8 @@ const userRouter = () => {
     router.patch('/request/:id/:friendId', controllers.sendRequest);
     router.get('/followers/:id', controllers.getFollowersList);
     router.get('/followings/:id', controllers.getFollowingsList);
-    router.patch('/', controllers.insertFollowers);
+    router.patch('/', controllers.unfollowUser);
+    router.patch('/request/friend/:id/:friendId', controllers.responseFriendRequest);
     router.get('/search/:prefix', controllers.searchUser);
     router.put('/:id', multerServices_1.upload.single('file'), controllers.updateProfile);
     router.patch('/:userId/:blockId', controllers.blockUser);

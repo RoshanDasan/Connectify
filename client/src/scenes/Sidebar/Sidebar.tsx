@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme: any) => ({
 
 const Sidebar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [startSearch, setStartSearch] = useState(false)
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchByUser, setSearchByUser] = useState('userName')
@@ -80,8 +81,9 @@ const Sidebar = () => {
   };
 
 
+  
+    var { data, isLoading }: any = useSearchUser(searchText, searchByUser);
 
-  var { data, isLoading }: any = useSearchUser(searchText, searchByUser);
 
   useEffect(() => {
     if (data) {

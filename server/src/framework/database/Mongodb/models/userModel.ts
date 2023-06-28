@@ -35,9 +35,6 @@ const userSchema = new Schema(
     city:{
       type: String
     },
-    DOB:{
-      type: String
-    },
     isBlock: {
       type: Boolean,
       default: false,

@@ -51,15 +51,23 @@ const userRepositoryMongoDB = () => {
         const isUserExist = await user.followers.find((user) => user === friendId);
         return isUserExist;
     };
-    const sendRequest = async (id, userName, friendId) => {
-        return await userModel_1.default.updateOne({ _id: friendId }, {
-            $push: { requests: { id, userName } }
+    const sendRequest = async (id, userName, friendName, dp, friendDp, friendId) => {
+        await userModel_1.default.updateOne({ _id: friendId }, {
+            $push: { requests: { id, userName, dp } }
         });
+        await userModel_1.default.updateOne({ _id: id }, {
+            $push: { requested: { id: friendId, userName: friendName, dp: friendDp } }
+        });
+        return;
     };
     const cancelRequest = async (id, friendId) => {
-        return await userModel_1.default.updateOne({ _id: friendId }, {
-            $push: { requests: { id } }
+        await userModel_1.default.updateOne({ _id: friendId }, {
+            $pull: { requests: { id } }
         });
+        await userModel_1.default.updateOne({ _id: id }, {
+            $pull: { requested: { id: friendId } }
+        });
+        return;
     };
     const unfollowFriend = async (_id, friendId) => {
         // remove friend from user follower list
@@ -93,14 +101,14 @@ const userRepositoryMongoDB = () => {
         }
     };
     const updateProfile = async (_id, data) => {
-        const { file, bio, gender, city, date } = data;
+        const { userName, file, bio, gender, city } = data;
         const updateResult = await userModel_1.default.findByIdAndUpdate(_id, {
             $set: {
+                userName,
                 dp: file,
                 bio,
                 gender,
                 city,
-                DOB: date
             }
         }, { new: true });
         return updateResult;

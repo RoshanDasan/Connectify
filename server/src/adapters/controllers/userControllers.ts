@@ -56,7 +56,7 @@ const userControllers = (
 
     // send friend request to user
     const sendRequest = asyncHandler(async (req: Request, res: Response) => {
-        const {id, friendId} = req.params;
+        const { id, friendId } = req.params;
         const response = await requestFriend(id, friendId, dbRepositoryUser);
         res.json({
             status: response
@@ -64,8 +64,8 @@ const userControllers = (
     })
 
     // accept or reject request
-    const responseFriendRequest = asyncHandler(async(req: Request, res: Response) => {
-        const {id, friendId} = req.params;
+    const responseFriendRequest = asyncHandler(async (req: Request, res: Response) => {
+        const { id, friendId } = req.params;
         const { response } = req.body;
         const status = await requestFriendResponse(id, friendId, response, dbRepositoryUser)
         res.json({
@@ -101,12 +101,9 @@ const userControllers = (
     // update profile informations
     const updateProfile = asyncHandler(async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { bio, gender, city, date, file } = req.body;
-        const image: any = req?.file?.filename;
-        console.log(req.body);
+        const { userName, bio, gender, city, file } = req.body;
 
-
-        const updateResult = await updateProfileInfo(id, { file, bio, gender, city, date }, dbRepositoryUser);
+        const updateResult = await updateProfileInfo(id, { userName, file, bio, gender, city }, dbRepositoryUser);
         res.json({
             status: 'Update success',
             data: updateResult

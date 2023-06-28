@@ -51,10 +51,19 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
             status: response
         });
     });
+    // accept or reject request
+    const responseFriendRequest = (0, express_async_handler_1.default)(async (req, res) => {
+        const { id, friendId } = req.params;
+        const { response } = req.body;
+        const status = await (0, user_1.requestFriendResponse)(id, friendId, response, dbRepositoryUser);
+        res.json({
+            status
+        });
+    });
     // insert followers to user
-    const insertFollowers = (0, express_async_handler_1.default)(async (req, res) => {
+    const unfollowUser = (0, express_async_handler_1.default)(async (req, res) => {
         const { id, friendId } = req.query;
-        const { status, friend } = await (0, user_1.addFollowers)(id, friendId, dbRepositoryUser);
+        const { status, friend } = await (0, user_1.unfollow)(id, friendId, dbRepositoryUser);
         res.json({
             status,
             friend
@@ -74,10 +83,8 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
     // update profile informations
     const updateProfile = (0, express_async_handler_1.default)(async (req, res) => {
         const { id } = req.params;
-        const { bio, gender, city, date, file } = req.body;
-        const image = req?.file?.filename;
-        console.log(req.body);
-        const updateResult = await (0, user_1.updateProfileInfo)(id, { file, bio, gender, city, date }, dbRepositoryUser);
+        const { userName, bio, gender, city, file } = req.body;
+        const updateResult = await (0, user_1.updateProfileInfo)(id, { userName, file, bio, gender, city }, dbRepositoryUser);
         res.json({
             status: 'Update success',
             data: updateResult
@@ -94,9 +101,10 @@ const userControllers = (userDbRepository, userDbRepositoryService) => {
     return {
         getUserById,
         sendRequest,
+        responseFriendRequest,
         getFollowersList,
         getFollowingsList,
-        insertFollowers,
+        unfollowUser,
         getAllUsers,
         searchUser,
         updateProfile,

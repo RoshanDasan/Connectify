@@ -63,6 +63,14 @@ const postControllers = (postDbInterface, postRepositoryType) => {
             comment: updateResult
         });
     });
+    const commentReply = (0, express_async_handler_1.default)(async (req, res) => {
+        const { userId, postId } = req.params;
+        const { comment, reply } = req.body;
+        const updateResult = await (0, post_1.replyComment)(postId, userId, comment, reply, dbRepositoriesPost);
+        res.json({
+            status: updateResult
+        });
+    });
     const commentDelete = (0, express_async_handler_1.default)(async (req, res) => {
         const { postId, index } = req.params;
         const deleteResult = await (0, post_1.deleteComment)(postId, index, dbRepositoriesPost);
@@ -105,6 +113,7 @@ const postControllers = (postDbInterface, postRepositoryType) => {
         deletePost,
         postLikeUpdate,
         commentPost,
+        commentReply,
         commentDelete,
         editPost,
         reportPost,

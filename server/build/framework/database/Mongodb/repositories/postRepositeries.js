@@ -35,13 +35,15 @@ const postRepositoryMongoDb = () => {
     };
     const insertComment = async (postId, userId, comment) => {
         const updateResult = await postModel_1.default.findByIdAndUpdate({ _id: postId }, {
-            $push: { comments: { userId, comment } }
+            $push: { comments: { userId, comment, reply: [] } }
         });
         return updateResult;
     };
-    const pushComment = async (postId, comments) => {
-        const updateResult = await postModel_1.default.findByIdAndUpdate({ _id: postId }, {
-            $set: { comments }
+    const replyComment = async (_id, userId, comment, reply) => {
+        const updateResult = await postModel_1.default.updateOne({ _id, "comments.comment": comment }, {
+            $push: {
+                "comments.$.reply": { userId, reply }
+            }
         });
         return updateResult;
     };
@@ -73,7 +75,7 @@ const postRepositoryMongoDb = () => {
         dislikePost,
         likePost,
         insertComment,
-        pushComment,
+        replyComment,
         editPost,
         reportPost,
         getReportedUsers

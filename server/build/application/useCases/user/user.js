@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userBlock = exports.updateProfileInfo = exports.searchUserByPrefix = exports.addFollowers = exports.requestFriend = exports.followings = exports.followers = exports.userById = exports.getUserDetails = void 0;
+exports.userBlock = exports.updateProfileInfo = exports.searchUserByPrefix = exports.unfollow = exports.requestFriendResponse = exports.requestFriend = exports.followings = exports.followers = exports.userById = exports.getUserDetails = void 0;
 const httpstatuscodes_1 = require("../../../types/httpstatuscodes");
 const appError_1 = __importDefault(require("../../../utilities/appError"));
 const getUserDetails = async (id, repository) => {
@@ -40,8 +40,8 @@ const followings = async (id, repository) => {
 };
 exports.followings = followings;
 const requestFriend = async (id, friendId, repository) => {
-    const { userName } = await repository.getUserById(id);
-    const { requests } = await repository.getUserById(friendId);
+    const { userName, dp } = await repository.getUserById(id);
+    const { requests, userName: friendName, dp: friendDp } = await repository.getUserById(friendId);
     // check user is already in request list
     const isRequested = requests.find((request) => request.id === id);
     if (isRequested) {
@@ -49,31 +49,32 @@ const requestFriend = async (id, friendId, repository) => {
         return 'Request canceled';
     }
     else {
-        await repository.sendRequest(id, userName, friendId);
+        await repository.sendRequest(id, userName, friendName, dp, friendDp, friendId);
         return 'Request sended';
     }
 };
 exports.requestFriend = requestFriend;
-const addFollowers = async (id, friendId, repository) => {
-    // find user already a friend or not
-    const isFriend = await repository.findFriend(id, friendId);
-    if (isFriend) {
-        // this friend is already a follower
-        const friend = await repository.unfollowFriend(id, friendId);
-        return {
-            status: 'unfollow',
-            friend
-        };
+const requestFriendResponse = async (id, friendId, { response }, repository) => {
+    if (response === 'accept') {
+        await repository.followFriend(friendId, id);
+        await repository.cancelRequest(friendId, id);
+        return 'Request accepted';
     }
     else {
-        const friend = await repository.followFriend(id, friendId);
-        return {
-            status: 'follow',
-            friend
-        };
+        await repository.cancelRequest(friendId, id);
+        return 'Request rejected';
     }
 };
-exports.addFollowers = addFollowers;
+exports.requestFriendResponse = requestFriendResponse;
+const unfollow = async (id, friendId, repository) => {
+    // this friend is already a follower
+    const friend = await repository.unfollowFriend(id, friendId);
+    return {
+        status: 'unfollow',
+        friend
+    };
+};
+exports.unfollow = unfollow;
 const searchUserByPrefix = async (prefix, type, repository) => {
     if (!prefix)
         return httpstatuscodes_1.HttpStatus.NOT_FOUND;

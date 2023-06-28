@@ -109,7 +109,7 @@ export const userRepositoryMongoDB = () => {
       { $push: { following: _id } })
     const friendDetails: any = await User.findOne({ _id: friendId });
 
-    
+
     return friendDetails
   }
 
@@ -137,21 +137,21 @@ export const userRepositoryMongoDB = () => {
   }
 
   const updateProfile = async (_id: string, data: {
+    userName: string,
     file: string,
     bio: string,
     gender: string,
-    date: string,
     city: string
   }) => {
-    const { file, bio, gender, city, date } = data;
+    const { userName, file, bio, gender, city } = data;
 
     const updateResult = await User.findByIdAndUpdate(_id, {
       $set: {
+        userName,
         dp: file,
         bio,
         gender,
         city,
-        DOB: date
       }
     }, { new: true });
 

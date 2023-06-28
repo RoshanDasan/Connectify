@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery, Badge, Alert } from '@mui/material';
-import { Message, DarkMode, LightMode, Notifications, Help, Menu, Close } from '@mui/icons-material';
+import { Box, IconButton, InputBase, Typography, Select, MenuItem, FormControl, useTheme, useMediaQuery, Badge } from '@mui/material';
+import { Message, DarkMode, LightMode, Notifications, Menu, Close } from '@mui/icons-material';
 import Tooltip from '@mui/material/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMode, setLogout } from '../../state';

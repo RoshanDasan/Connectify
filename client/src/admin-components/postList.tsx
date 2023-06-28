@@ -113,7 +113,7 @@ const Transition = React.forwardRef(function Transition(
 
 export default function PostList({ content }: PostListProps) {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageOptions[0]);
+  const [rowsPerPage, setRowsPerPage]: any = React.useState(rowsPerPageOptions[0]);
   const [posts, setPosts] = React.useState<any[]>([]);
   const token = useSelector((state: any) => state.token);
   const [currentPost, setCurrentPost]: any = React.useState('')

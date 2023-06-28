@@ -8,6 +8,9 @@ import {
   Grid,
   Avatar,
   Alert,
+  Tooltip,
+  IconButton,
+  InputAdornment,
 } from '@mui/material';
 import * as React from 'react';
 import Sidebar from '../scenes/Sidebar/Sidebar';
@@ -24,12 +27,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { storage } from '../api/googleAuth/GoogleAuth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid'
+import { CloseOutlined, Delete, DeleteForever } from '@mui/icons-material';
 
 type FormValues = {
+  userName: string;
   bio: string;
   gender: string;
   city: string;
-  date: any;
   file?: any; // Optional property to store the selected file
 };
 
@@ -41,6 +45,7 @@ const EditProfile: React.FC = () => {
   const [click, setClick] = useState(false);
   const [disable, setDisable] = useState(true);
   const [alert, setAlert] = useState('')
+  const [updateUsername, setUpdateUsername] = useState(false)
 
   const getDetails = async () => {
     const userDetails: any = await getUser(id, token);
@@ -51,14 +56,14 @@ const EditProfile: React.FC = () => {
     getDetails();
   }, [click]);
 
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
     // maxSize: 15048576
 
     onDrop: (acceptedFiles, rejectedFiles) => {
       console.log(acceptedFiles, rejectedFiles);
 
-      if (rejectedFiles.length > 0) {setAlert('Maximum file size exceeded'); setDisable(true)}
+      if (rejectedFiles.length > 0) { setAlert('Maximum file size exceeded'); setDisable(true) }
       if (acceptedFiles.length > 0) {
         if (acceptedFiles[0]?.type?.startsWith('image')) {
           setFormValues((prevValues) => ({
@@ -75,11 +80,11 @@ const EditProfile: React.FC = () => {
     },
   });
   const [formValues, setFormValues] = useState<FormValues>({
+    userName: '',
     file: '',
     bio: '',
     gender: '',
     city: '',
-    date: '',
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,14 +94,12 @@ const EditProfile: React.FC = () => {
   };
 
 
-  const handleDateChange = (date: any) => {
-    setDisable(false);
-    setFormValues((prevValues) => ({ ...prevValues, date: new Date(date) }));
-  };
 
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    console.log(formValues, 'form value');
+
 
 
     const formData = new FormData();
@@ -110,6 +113,12 @@ const EditProfile: React.FC = () => {
 
       formData.append('file', imageUrl);
       formData.append('picturePath', formValues.file.name);
+    }
+
+    if (formValues.userName.trim() === '') {
+      formData.append('userName', user.userName);
+    } else {
+      formData.append('userName', formValues.userName);
     }
 
     if (formValues.bio.trim() === '') {
@@ -129,10 +138,6 @@ const EditProfile: React.FC = () => {
     } else {
       formData.append('city', formValues.city);
     }
-
-    const formattedDate = formValues.date ? formValues.date.toDateString() : '';
-    formData.append('date', formattedDate);
-
 
     updateProfileMutation.mutate({ id, values: formData, token });
     setClick(!click);
@@ -170,19 +175,51 @@ const EditProfile: React.FC = () => {
                 </Box>
               </Grid>
               <Grid item xs={9}>
-                <Typography margin={3} variant="h5">
-                  {user.userName}
-                </Typography>
                 <div {...getRootProps({ className: 'dropzone' })}>
                   <input {...getInputProps()} />
                   <p style={{ cursor: 'pointer', color: 'blue', marginLeft: '20px' }} onClick={() => setDisable(false)}>
                     Upload profile picture
                   </p>
                 </div>
+                {!updateUsername && (
+                  <Tooltip title="update" arrow >
+                    <Button sx={{ color: 'black', marginLeft: '25px' }} onClick={() => setUpdateUsername(!updateUsername)}>{user.userName}</Button>
+                  </Tooltip>
+                )}
+
+
               </Grid>
             </Grid>
 
             <Grid container spacing={3}>
+              {updateUsername && (
+                <Grid item xs={12}>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ width: '30%' }}>
+                      <Typography variant="subtitle1">userName</Typography>
+                    </Box>
+                    <Box sx={{ width: '70%' }}>
+                      <TextField
+                        name="userName"
+                        fullWidth
+                        multiline
+                        defaultValue={user.userName}
+                        onChange={handleChange}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="start">
+                              <IconButton onClick={() => setUpdateUsername(!updateUsername)}>
+                                <CloseOutlined />
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                </Grid>
+              )}
+
               <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Box sx={{ width: '30%' }}>
@@ -232,25 +269,7 @@ const EditProfile: React.FC = () => {
                   </Box>
                 </Box>
               </Grid>
-              <Grid item xs={12}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Box sx={{ width: '30%' }}>
-                    <Typography variant="subtitle1">DOB</Typography>
-                  </Box>
-                  <Box sx={{ width: '70%' }}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={['DatePicker']}>
-                        <DatePicker
-                          label="Basic date picker"
-                          onChange={handleDateChange}
-                          disableFuture // Add the disableFuture prop to prevent future dates from being selected
-                        />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                  </Box>
-
-                </Box>
-              </Grid>
+             
 
               <Grid item xs={12}>
                 <Button

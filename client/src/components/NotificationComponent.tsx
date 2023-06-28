@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { requestResponse } from '../api/apiConnection/userConnection';
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
-import { setRequests } from '../state';
+import { setRequests, setFollower } from '../state';
 
 const NotificationComponent = () => {
   const [click, setClick] = useState(false);
@@ -22,6 +22,7 @@ const NotificationComponent = () => {
     setClick(true);
     dispatch(setRequests({ id: friendId }));
     toast.success(response);
+    dispatch(setFollower({ followers: friendId }))
   }
 
   const rejectRequest = async (id: string, friendId: string, type: string) => {
@@ -47,7 +48,7 @@ const NotificationComponent = () => {
           <div style={{ width: 130 }}>
             <Typography variant='h6'>{`${userName} started following you`}</Typography>
           </div>
-          <Button variant='contained' color='info' onClick={() => acceptRequest(_id, id, 'accept')}>Follow</Button>
+          <Button variant='contained' color='info' onClick={() => acceptRequest(_id, id, 'accept')}>accept</Button>
           <IconButton onClick={() => rejectRequest(_id, id, 'reject')}>
             <CloseIcon />
           </IconButton>
