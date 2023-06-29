@@ -1,15 +1,14 @@
-import express, { Application, NextFunction } from "express";
+import express, { Application} from "express";
 import morgan from "morgan";
 import CORS from 'cors';
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-import configKeys from "../../config";
 
 
 const expressConfig = (app: Application) => {
 
     const corsEnable = {
-        origin: configKeys.CLIENT_URL,
+        origin: "*",
         exposeHeaders: ['Cross-Origin-Opener-Policy', 'Cross-Origin-Resourse-Policy']
     };
 
