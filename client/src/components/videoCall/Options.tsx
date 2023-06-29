@@ -1,15 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect} from 'react';
 import { makeStyles } from '@mui/styles';
-import copyToClipBoard from 'copy-to-clipboard';
 import { SocketContext } from '../../scenes/Videocall/SocketContext';
-import { Button, Container, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import { Phone, PhoneDisabled } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
-import Flex from '../DisplayFlex';
 import { getUser } from '../../api/apiConnection/userConnection';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: 'flex',
     flexDirection: 'column',

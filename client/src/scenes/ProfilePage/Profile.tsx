@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles, useTheme } from '@mui/styles';
 import { Avatar, Typography, Button, Modal, useMediaQuery, Divider, Skeleton } from '@mui/material';
 import Sidebar from '../Sidebar/Sidebar';
@@ -10,7 +10,7 @@ import { getUser, followUser, blockUserByUser, sendRequest } from '../../api/api
 import Navbar from '../Navbar/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import { useFollowers, useFollowings, getPostByUser } from '../../api/apiConnection/postConnection';
-import { setBlockUser, setCurrentChat, setSendRequest, removeSendRequest, setUnfollower, setUnblockUser, setFollower } from '../../state';
+import { setBlockUser, setCurrentChat, setSendRequest, removeSendRequest, setUnfollower, setUnblockUser} from '../../state';
 import { useDispatch } from 'react-redux';
 import { getSingleChat } from '../../api/apiConnection/chatConnection';
 import { createChat } from '../../api/apiConnection/chatConnection';

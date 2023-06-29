@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { SocketContext } from '../../scenes/Videocall/SocketContext';
 import { Button } from '@mui/material';
 

@@ -21,7 +21,6 @@ const options = [
   'Umbriel',
 ];
 
-const ITEM_HEIGHT = 48;
 
 export default function Dropdown() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

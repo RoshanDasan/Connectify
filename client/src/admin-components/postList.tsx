@@ -165,7 +165,7 @@ export default function PostList({ content }: PostListProps) {
   // Calculate the number of empty rows
   const emptyRows = Math.max(0, rowsPerPage - slicedRows.length);
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const handleChangePage: any = ( newPage: number) => {
     setPage(newPage);
   };
 

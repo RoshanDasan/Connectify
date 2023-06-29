@@ -5,7 +5,6 @@ import { getUser } from '../../api/apiConnection/userConnection';
 import {
   Box,
   Typography,
-  Divider,
   useTheme,
   Tooltip,
   Avatar,
@@ -21,7 +20,7 @@ interface UserWidgetProps {
   data: any;
 }
 
-const UserWidget: React.FC<UserWidgetProps> = ({ userId, picturePath, data }) => {
+const UserWidget: React.FC<UserWidgetProps> = ({ userId, data }) => {
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const pellet = useTheme();

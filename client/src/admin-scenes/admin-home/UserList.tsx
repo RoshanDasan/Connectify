@@ -102,10 +102,10 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function UserList() {
-  const [users, setUsers] = React.useState<any[]>([]);
+  const [users, setUsers]: any = React.useState<any[]>([]);
   const token = useSelector((state: any) => state.admintoken);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageOptions[0]);
+  const [rowsPerPage, setRowsPerPage]: any = React.useState(rowsPerPageOptions[0]);
   const [currentUser, setCurrentUser]: any = React.useState({})
   const [open, setOpen] = React.useState(false);
   const [click, setClick] = React.useState(false)
@@ -139,12 +139,12 @@ export default function UserList() {
 
 
   // Slice the rows based on the current page and rowsPerPage
-  const slicedRows = users ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const slicedRows = users ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : users?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   // Calculate the number of empty rows
   const emptyRows = Math.max(0, rowsPerPage - slicedRows?.length);
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const handleChangePage: any = ( newPage: number) => {
     setPage(newPage);
   };
 

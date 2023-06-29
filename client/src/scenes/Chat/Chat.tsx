@@ -5,7 +5,7 @@ import { getChat } from '../../api/apiConnection/chatConnection';
 import ChatList from '../../components/chat/ChatList';
 import ChatBox from '../../components/chat/ChatBox';
 import { io, Socket } from 'socket.io-client';
-import { setCurrentChat, setVideocallfalse, unsetNotificationOpen } from '../../state';
+import { setCurrentChat, unsetNotificationOpen } from '../../state';
 import Navbar from '../Navbar/Navbar';
 
 
@@ -18,25 +18,25 @@ const Chat = () => {
   const token = useSelector((state: any) => state.token);
   const notification = useSelector((state: any) => state.notifications)
   const socket = useRef<Socket | null>(null);
-  const currentchatstate = useSelector((state: any) => state.currentchat);
+  const currentchatstate: any = useSelector((state: any) => state.currentchat);
   const dispatch = useDispatch();
 
-  
+
   const handleCurrentChat = (chat: any) => {
     console.log(chat);
-    
+
     dispatch(setCurrentChat({ currentchat: chat }));
   };
 
   useEffect(() => {
-    socket.current = io(process.env.SERVER_URL);
+    socket.current = io(process.env.SERVER_URL || 'localhost://5000');
     if (userId) {
       socket.current.emit('new-user-add', userId);
 
       socket.current.on('get-users', (users: any) => {
         setOnlineUsers(users);
         console.log(users);
-        
+
       });
     }
 
@@ -56,7 +56,7 @@ const Chat = () => {
   useEffect(() => {
     socket.current?.on('receive-message', (data: any) => {
       console.log('recivee');
-      
+
       setReceiveMessage(data);
       console.log('Received message:', data);
     });
@@ -65,7 +65,7 @@ const Chat = () => {
   useEffect(() => {
 
     dispatch(unsetNotificationOpen())
-  },[notification])
+  }, [notification])
 
   useEffect(() => {
     const getChatList = async () => {
@@ -83,7 +83,7 @@ const Chat = () => {
 
   const checkOnline = (chat: any) => {
     const chatMember = chat?.members.find((member: any) => member !== userId);
-    
+
     const online = onlineUsers?.find((user: any) => user.userId === chatMember);
     return online ? true : false;
   };

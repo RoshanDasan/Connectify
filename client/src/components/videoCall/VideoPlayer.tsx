@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import  { useContext } from 'react';
 import { Grid, Paper, Typography } from '@mui/material';
 import { SocketContext } from '../../scenes/Videocall/SocketContext';
 import { makeStyles } from '@mui/styles';

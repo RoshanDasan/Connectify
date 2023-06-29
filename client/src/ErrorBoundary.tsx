@@ -1,9 +1,7 @@
-import React from 'react';
-import { Box, styled } from '@mui/material';
-import Alert from '@mui/material/Alert';
+import {styled } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
 import Button from '@mui/material/Button';
-const FallbackContainer = styled('div')(({ theme }) => ({
+const FallbackContainer = styled('div')(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',

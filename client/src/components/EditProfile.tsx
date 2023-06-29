@@ -19,15 +19,11 @@ import { useParams } from 'react-router-dom';
 import { getUser, useUpdateProfile } from '../api/apiConnection/userConnection';
 import { useSelector } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
-import { ToastContainer, toast } from 'react-toastify';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { ToastContainer } from 'react-toastify';
 import { storage } from '../api/googleAuth/GoogleAuth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid'
-import { CloseOutlined, Delete, DeleteForever } from '@mui/icons-material';
+import { CloseOutlined } from '@mui/icons-material';
 
 type FormValues = {
   userName: string;
@@ -57,7 +53,7 @@ const EditProfile: React.FC = () => {
   }, [click]);
 
   const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
+    // accept: 'image/*',
     // maxSize: 15048576
 
     onDrop: (acceptedFiles, rejectedFiles) => {
@@ -269,7 +265,7 @@ const EditProfile: React.FC = () => {
                   </Box>
                 </Box>
               </Grid>
-             
+
 
               <Grid item xs={12}>
                 <Button

@@ -58,7 +58,7 @@ export default function Cards({ id, userId, image,click, borderView}: any) {
     // You can make an API request to update the image or handle it as per your requirements
     // Once the image is updated, you can close the modal and update the UI accordingly
     console.log(editData);
-    const editResponse = editPost(id, editData, token)
+    editPost(id, editData, token)
     toast.success('Your post was updated')
     setOpenModal(false);
     setEditMode(false);

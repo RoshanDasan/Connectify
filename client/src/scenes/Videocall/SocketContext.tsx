@@ -2,9 +2,8 @@ import React, { useState, useRef, useEffect, createContext, ReactNode } from "re
 import { io, Socket } from "socket.io-client";
 import { SignalData } from 'simple-peer';
 import Peer from 'simple-peer/simplepeer.min.js';
-import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../../api/apiConnection/userConnection";
-import { setNotification } from "../../state";
+import { useSelector } from "react-redux";
+
 
 interface Call {
   isReceiveCall: boolean;
@@ -49,7 +48,7 @@ const SocketContext = createContext<ContextProps>({
   answerCall: () => { },
 });
 
-const socket: Socket = io(process.env.SERVER_URL);
+const socket: Socket = io(process.env.SERVER_URL || 'localhost://5000');
 
 const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -60,14 +59,12 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [name, setName] = useState('');
   const [activeForCall, setActiveForCall] = useState<any[]>([]);
   const userId = useSelector((state: any) => state.user?._id);
-  const token = useSelector((state: any) => state.token);
   const isVideo = useSelector((state: any) => state.videoCall)
   const [userToCall, setUserToCall] = useState('')
-  const dispatch = useDispatch()
 
   const myVideo = useRef<HTMLVideoElement>(null);
   const userVideo = useRef<HTMLVideoElement>(null);
-  const connectionRef = useRef<Peer.Instance | null>(null);
+  const connectionRef: any = useRef(null);
 
   useEffect(() => {
     if (isVideo) {
@@ -165,7 +162,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if (connectionRef.current) {
-      connectionRef.current.destroy();
+      connectionRef?.current?.destroy();
     }
   };
 

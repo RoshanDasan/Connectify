@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Card, CardActions, CardContent, CardMedia, IconButton, Typography, useTheme } from '@mui/material';
+import { Box, Card, CardActions, CardContent, CardMedia, IconButton, Typography} from '@mui/material';
 import { Favorite, Comment } from '@mui/icons-material';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -10,7 +10,6 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({ image, likes, comments }) => {
-  const theme = useTheme();
 
   return (
     <Card sx={{ maxWidth: '400px', margin: '1rem' }}>

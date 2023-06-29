@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChatBubbleOutlineOutlined, FavoriteOutlined, FavoriteBorderOutlined, DeleteOutlined, Send, VolumeOffOutlined, VolumeUpOutlined, ClosedCaptionOff, RollerShadesClosed } from "@mui/icons-material";
+import { ChatBubbleOutlineOutlined, FavoriteOutlined, FavoriteBorderOutlined, DeleteOutlined, Send, VolumeOffOutlined, VolumeUpOutlined } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Divider, IconButton, TextField, Typography } from "@mui/material";
 import Flex from "../../components/DisplayFlex";
 import PostHeader from '../../components/PostHeader';
@@ -32,7 +32,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
   const { name }: any = useSelector((state: any) => state.user);
   const [isLike, setIsLike] = useState(likes.includes(user));
   const [likecount, setLikecount] = useState(likes.length);
-  const [showReplyComment, setShowReplyComment] = useState({ status: false, index: -1 })
+  const [showReplyComment, setShowReplyComment]: any = useState({ status: false, index: -1 })
 
   const handleLike = async (id: string, userId: string) => {
     likePost(id, userId, token);
@@ -49,7 +49,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
   const submitHandle = async () => {
     if (comment && !comment.match(/^\s/)) {
       if (reply.userId) {
-        const response = await useReplyComment(id, reply.userId, reply.comment, comment)
+        await useReplyComment(id, reply.userId, reply.comment, comment)
         setReply({})
 
       } else {
@@ -98,7 +98,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
         {video ? (
           <video
             src={video}
-            alt="video"
+
             width="100%"
             style={{ borderRadius: '0.75rem', marginTop: '0.75rem' }}
             autoPlay

@@ -1,5 +1,5 @@
 import baseURL from '../api';
-import { useQuery, useMutation } from 'react-query';
+import {  useMutation } from 'react-query';
 
 export const getUser = async (userId: string, token: string) => {
 
@@ -66,13 +66,11 @@ export const requestResponse = async (id: string, friendId: string, response: st
   }
 }
 
-export const useSearchUser = (prefix = 'roshan', type: any) => {
+export const useSearchUser = async (prefix = 'roshan', type: any) => {
   const sender = prefix || 'qwertyuiop';
-
-  return useQuery(['searchUser', prefix], async () => {
     const response = await baseURL.get(`/user/search/${sender}`, { params: { type } });
     return response.data.users;
-  });
+
 };
 
 

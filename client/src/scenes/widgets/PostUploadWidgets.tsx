@@ -24,7 +24,6 @@ import WidgetWraper from '../../components/WidgetWraper';
 import { uploadPost } from '../../api/apiConnection/postConnection';
 import { setUpdatePost } from '../../state';
 import { getUser } from '../../api/apiConnection/userConnection';
-import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { storage } from '../../api/googleAuth/GoogleAuth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -42,8 +41,6 @@ const PostUploadWidget: React.FC<Props> = ({ onButtonClick }) => {
   const [valid, setValid] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [crop, setCrop] = useState<ReactCrop.Crop>({ aspect: 16 / 9 });
-  const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [alert, setAlert] = useState('')
   const { _id, userName } = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
@@ -129,14 +126,11 @@ const PostUploadWidget: React.FC<Props> = ({ onButtonClick }) => {
     };
   }, []);
 
-  const handleImageCrop = (imageDataUrl: string) => {
 
-    setCroppedImage(imageDataUrl);
-  };
 
   return (
     <>
-    {alert.length > 0 && <Alert severity="error">{alert}</Alert>}
+      {alert.length > 0 && <Alert severity="error">{alert}</Alert>}
       <WidgetWraper>
         <Flex gap="1.5rem">
           {dp ? (
@@ -202,58 +196,59 @@ const PostUploadWidget: React.FC<Props> = ({ onButtonClick }) => {
 
         {isImage && (
           <Box border="1px solid black" borderRadius="5px" mt="1rem" p="1rem">
-            {!croppedImage && (
-              <Dropzone
-                multiple={true}
-                accept='image/*, video/*'
-                onDrop={(acceptedFiles, rejectedFiles) => {
-                  console.log(acceptedFiles[0].name.endsWith('mp4'), 'acc');
-                  console.log(rejectedFiles, 'rej');
-                  if (acceptedFiles[0] && (acceptedFiles[0] && (acceptedFiles[0].name.endsWith('.jpg') || acceptedFiles[0].name.endsWith('.png') || acceptedFiles[0].name.endsWith('.mp4')))) {
-                    setImage(acceptedFiles[0])
-                    setAlert('')
-                  } else {
-                    setAlert('Please select a valid file')
-                  }
-                }
-                }
-              >
-                {({ getRootProps, getInputProps }) => (
-                  <Flex>
-                    <Box
-                      {...getRootProps()}
-                      sx={{ '&:hover': { cursor: 'pointer' } }}
-                    >
-                      <TextField {...getInputProps()} />
-                      {!image ? (
-                        <p>Upload image or video here</p>
-                      ) : (
-                        <Flex alignItems="center">
-                          <Typography>{image.name}</Typography>
-                          <EditOutlined fontSize="small" />
-                        </Flex>
-                      )}
-                    </Box>
-                    <CameraAltOutlined />
 
-                    {image && (
-                      <IconButton
-                        onClick={() => setImage(null)}
-                        sx={{ width: '15%' }}
-                      >
-                        <DeleteOutlined fontSize="small" />
-                      </IconButton>
+            <Dropzone
+              multiple={true}
+              // accept='image/*, video/*'
+              onDrop={(acceptedFiles, rejectedFiles) => {
+                console.log(acceptedFiles[0].name.endsWith('mp4'), 'acc');
+                console.log(rejectedFiles, 'rej');
+                if (acceptedFiles[0] && (acceptedFiles[0] && (acceptedFiles[0].name.endsWith('.jpg') || acceptedFiles[0].name.endsWith('.png') || acceptedFiles[0].name.endsWith('.mp4')))) {
+                  setImage(acceptedFiles[0])
+                  setAlert('')
+                } else {
+                  setAlert('Please select a valid file')
+                }
+              }
+              }
+            >
+              {({ getRootProps, getInputProps }: any) => (
+                <Flex>
+                  <Box
+                    {...getRootProps()}
+                    sx={{ '&:hover': { cursor: 'pointer' } }}
+                  >
+                    <TextField {...getInputProps()} />
+
+                    {!image ? (
+                      <p>Upload image or video here</p>
+                    ) : (
+                      <Flex alignItems="center">
+                        <Typography>{image.name}</Typography>
+                        <EditOutlined fontSize="small" />
+                      </Flex>
                     )}
-                  </Flex>
-                )}
-              </Dropzone>
-            )}
+                  </Box>
+                  <CameraAltOutlined />
 
+                  {image && (
+                    <IconButton
+                      onClick={() => setImage(null)}
+                      sx={{ width: '15%' }}
+                    >
+                      <DeleteOutlined fontSize="small" />
+                    </IconButton>
+                  )}
+                </Flex>
+              )}
+            </Dropzone>
+
+            {/* 
             {image && !croppedImage && !image.name.toLowerCase().endsWith('.mp4') && (
               <>
                 <img src={URL.createObjectURL(image)} alt="" width={100} />
                 <ReactCrop
-                  src={URL.createObjectURL(image)}
+                  // src={URL.createObjectURL(image)}
                   onImageLoaded={(image: { naturalHeight: any; naturalWidth: any; }) => {
                     const aspectRatio = 16 / 9;
                     const height = image.naturalHeight;
@@ -338,7 +333,7 @@ const PostUploadWidget: React.FC<Props> = ({ onButtonClick }) => {
                   <DeleteOutlined fontSize="small" />
                 </IconButton>
               </Box>
-            )}
+            )} */}
           </Box>
         )}
 

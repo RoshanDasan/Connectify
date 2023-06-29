@@ -1,13 +1,11 @@
 import './App.css';
-import { useEffect, useMemo, useRef, lazy, Suspense } from 'react';
+import { useMemo,  lazy, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import { io } from 'socket.io-client';
-import { setLogout, setNotification } from './state';
+import { setLogout} from './state';
 import { themeSettings } from './theme';
-import { getUser } from './api/apiConnection/userConnection';
 import LoadingSkeleton from './components/skeleton/LoadingSkeleton';
 
 // user Lazy components
@@ -29,9 +27,7 @@ function App() {
   const token = useSelector((state: any) => state?.token);
   const isBlock = useSelector((state: any) => state?.user?.isBlock);
   const isAdminAuth = useSelector((state: any) => state?.admintoken);
-  const userId = useSelector((state: any) => state?.user?._id);
 
-  const socket: any = useRef(null);
   const dispatch = useDispatch();
 
   // useEffect(() => {

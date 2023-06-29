@@ -26,21 +26,21 @@ const AdminLogin = () => {
   const handleSubmit = async (values: any) => {
 
     let response: any = await adminLogin(values);
-    
+
     if (response) {
       dispatch(
         setAdminLogin({
           admin: response.admin,
           admintoken: response.token,
         })
-        
-        )
-        navigate('/admin/home')
+
+      )
+      navigate('/admin/home')
 
       toast.success('Admin Logged In')
     }
   };
-
+  setIsSignup(false)
   const getValidationSchema = () => {
     if (isSignup) {
       return yup.object().shape({
@@ -63,9 +63,7 @@ const AdminLogin = () => {
     onSubmit: handleSubmit,
   });
 
-  const switchMode = () => {
-    setIsSignup((prevIsSignup) => !prevIsSignup);
-  };
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -96,10 +94,10 @@ const AdminLogin = () => {
             />
 
           </Grid>
-          <Button type="submit" fullWidth variant="contained" color="info" className={classes.submit} sx={{marginTop:'15px', marginBottom:'15px'}}>
+          <Button type="submit" fullWidth variant="contained" color="info" className={classes.submit} sx={{ marginTop: '15px', marginBottom: '15px' }}>
             Sign Up
           </Button>
-        
+
           <div id='googleLoginButton'></div>
         </form>
       </Paper>

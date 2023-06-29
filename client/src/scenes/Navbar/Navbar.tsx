@@ -26,7 +26,6 @@ const Navbar: React.FC = () => {
 
   const theme = useTheme();
   const light = theme.palette.background.paper;
-  const dark = theme.palette.secondary.dark;
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.paper;
 

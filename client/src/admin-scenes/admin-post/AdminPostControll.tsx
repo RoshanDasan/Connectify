@@ -2,7 +2,6 @@ import { Box, Button, Typography, useMediaQuery } from '@mui/material'
 import { makeStyles } from '@mui/styles';
 import AdminSidebar from '../../scenes/Sidebar/AdminSidebar'
 import PostList from '../../admin-components/postList';
-import { ToastContainer } from 'react-toastify';
 import Flex from '../../components/DisplayFlex';
 import { useState } from 'react';
 

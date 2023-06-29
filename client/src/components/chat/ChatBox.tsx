@@ -9,13 +9,14 @@ import { format } from 'timeago.js';
 import { Send, PhotoCamera, VideoCall } from '@mui/icons-material';
 import InputEmoji from 'react-input-emoji';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer} from 'react-toastify';
 
 interface ChatBoxProps {
   chat: any;
   currentUser: string;
   setSendMessage: (message: any) => void;
   receiveMessage: any;
+  online: any;
 }
 
 const ChatBox: React.FC<ChatBoxProps> = ({ chat, currentUser, setSendMessage, receiveMessage, online }: any) => {
