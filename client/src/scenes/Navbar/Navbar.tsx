@@ -19,17 +19,16 @@ const Navbar: React.FC = () => {
   const { answerCall, call, callAccepted }: any = useContext(SocketContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state: any) => state.user);
+  const { _id, userName } = useSelector((state: any) => state.user);
   const notifications = useSelector((state: any) => state.notifications);
   const isNonMobileScreens = useMediaQuery('(min-width:1000px)');
-  
+
 
   const theme = useTheme();
   const light = theme.palette.background.paper;
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.paper;
 
-  const fullName = user.userName;
 
   const handleLogout = () => {
     dispatch(setLogout());
@@ -49,7 +48,7 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      { call.isReceiveCall && !callAccepted && (
+      {call.isReceiveCall && !callAccepted && (
         <Box sx={{
           width: '100%',
           height: 100,
@@ -61,7 +60,7 @@ const Navbar: React.FC = () => {
         }}>
           <Typography variant='h3' textAlign='center' color='white'>{call.name} is calling .....</Typography>
 
-       <Button  onClick={handleCallAccept}>Accept</Button>
+          <Button onClick={handleCallAccept}>Accept</Button>
         </Box>
 
       )}
@@ -127,7 +126,7 @@ const Navbar: React.FC = () => {
                 </div>
               )}
             </PopupState>
-            <Typography>{fullName}</Typography>
+            <Typography>{userName}</Typography>
             <FormControl sx={{ component: 'div' }}>
               {/* Add form control content */}
             </FormControl>
@@ -204,7 +203,7 @@ const Navbar: React.FC = () => {
               </PopupState>
               <FormControl sx={{ component: 'div' }}>
                 <Select
-                  value={fullName}
+                  value={userName}
                   sx={{
                     backgroundColor: light,
                     width: '150px',
@@ -220,9 +219,9 @@ const Navbar: React.FC = () => {
                   }}
                   input={<InputBase />}
                 >
-                  <MenuItem value={fullName}>
+                  <MenuItem value={userName}>
 
-                    <Button variant='text' sx={{ color: 'black' }} onClick={() => navigate(`/profile/${user._id}`)}>{fullName}</Button>
+                    <Button variant='text' sx={{ color: 'black' }} onClick={() => navigate(`/profile/${_id}`)}>{userName}</Button>
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Log Out</MenuItem>
                 </Select>

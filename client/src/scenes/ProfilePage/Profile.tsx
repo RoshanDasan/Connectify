@@ -10,10 +10,11 @@ import { getUser, followUser, blockUserByUser, sendRequest } from '../../api/api
 import Navbar from '../Navbar/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import { useFollowers, useFollowings, getPostByUser } from '../../api/apiConnection/postConnection';
-import { setBlockUser, setCurrentChat, setSendRequest, removeSendRequest, setUnfollower, setUnblockUser} from '../../state';
+import { setBlockUser, setCurrentChat, setSendRequest, removeSendRequest, setUnfollower, setUnblockUser } from '../../state';
 import { useDispatch } from 'react-redux';
 import { getSingleChat } from '../../api/apiConnection/chatConnection';
 import { createChat } from '../../api/apiConnection/chatConnection';
+import ErrorPage from '../../components/ErrorPage';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -87,6 +88,7 @@ const Profile = () => {
   const [blockUserState, setBlockUserState] = useState('')
   const [isRequested, setIsRequested] = useState(requested.some((user: any) => user.id === id))
   const [isFriend, setIsFriend] = useState(followers.some((user: any) => user === id))
+  const [noUser, setNoUser] = useState(false)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -96,7 +98,6 @@ const Profile = () => {
 
   const [openModal, setOpenModal]: any = useState(false);
 
-console.log(followers,'fo');
 
   const handleOpenModal = async (type: any) => {
 
@@ -127,10 +128,17 @@ console.log(followers,'fo');
   const getPosts = async () => {
     try {
       const userDetails = await getUser(id, token);
+
+      if (userDetails.length === 0) {
+        setNoUser(true)
+      }
       const postsDetails = await getPostByUser(id, token);
       setUserDetails(userDetails);
       setUserPosts(postsDetails);
     } catch (error) {
+      // throw new Error('This is an intentional error.');
+      setNoUser(true)
+
       throw error;
     }
   };
@@ -161,7 +169,6 @@ console.log(followers,'fo');
 
 
   }
-  console.log(requested, 'req');
 
 
   const handleFollowbutton = () => {
@@ -254,12 +261,17 @@ console.log(followers,'fo');
 
   return (
     <>
-      <Navbar />
-      {!isMobile && <Sidebar />}
+      {noUser ? <ErrorPage /> : 
+      <>
+        <Navbar />
+        {!isMobile && <Sidebar />}
+
+
 
       <Flex />
 
       <div className={classes.root} style={{ marginLeft: '15vw' }}>
+
         <Flex>
           <div className={classes.profileContainer}>
             {userDetails.dp ? (
@@ -398,34 +410,34 @@ console.log(followers,'fo');
                         </div>
                       </div>
                       {friend._id !== userId ? (
-                        
-                          mainUser.followers.includes(friend._id) ? (
+
+                        mainUser.followers.includes(friend._id) ? (
+                          <Button
+                            sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
+                            onClick={() => setUnfollow(friend._id)}
+                          >
+                            Remove
+                          </Button>
+                        ) : (
+                          requested.some((request: any) => request.id === friend._id) ? (
                             <Button
                               sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
-                              onClick={() => setUnfollow(friend._id)}
+                              onClick={() => handleSendRequest(friend._id)}
                             >
-                              Remove
+                              Requested
                             </Button>
                           ) : (
-                            requested.some((request: any) => request.id === friend._id) ? (
-                              <Button
-                                sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
-                                onClick={() => handleSendRequest(friend._id)}
-                              >
-                                Requested
-                              </Button>
-                            ) : (
-                              <Button
-                                sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
-                                onClick={() => handleRemoveRequest(friend._id, friend.userName, friend.dp)}
-                              >
-                                Request
-                              </Button>
-                            )
+                            <Button
+                              sx={{ backgroundColor: 'whitesmoke', borderRadius: '10px', color: 'black' }}
+                              onClick={() => handleRemoveRequest(friend._id, friend.userName, friend.dp)}
+                            >
+                              Request
+                            </Button>
                           )
-                        
-                      ):(
-                        <Button sx={{color:'black'}} onClick={() => navigate(`/profile/${userId}`)}>view</Button>
+                        )
+
+                      ) : (
+                        <Button sx={{ color: 'black' }} onClick={() => navigate(`/profile/${userId}`)}>view</Button>
                       )}
 
                     </Flex>
@@ -465,6 +477,10 @@ console.log(followers,'fo');
         </Flex>
         <ToastContainer position="bottom-left" />
       </div>
+      </>
+      
+    }
+
     </>
   );
 };

@@ -7,6 +7,7 @@ import { createTheme } from '@mui/material/styles';
 import { setLogout} from './state';
 import { themeSettings } from './theme';
 import LoadingSkeleton from './components/skeleton/LoadingSkeleton';
+import ErrorPage from './components/ErrorPage';
 
 // user Lazy components
 const AuthLazy = lazy(() => import('./scenes/Auth/Auth'))
@@ -143,6 +144,13 @@ function App() {
               <Suspense  fallback={<LoadingSkeleton />}>
                 {isAdminAuth ? <AdminPostLazy /> : <AdminLoginLazy />}
               </Suspense>
+            }
+          />
+          <Route
+            path="/*"
+            element={
+              
+            <ErrorPage/>
             }
           />
         </Routes>

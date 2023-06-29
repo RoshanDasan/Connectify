@@ -17,13 +17,14 @@ import Sidebar from '../scenes/Sidebar/Sidebar';
 import Navbar from '../scenes/Navbar/Navbar';
 import { useParams } from 'react-router-dom';
 import { getUser, useUpdateProfile } from '../api/apiConnection/userConnection';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { ToastContainer } from 'react-toastify';
 import { storage } from '../api/googleAuth/GoogleAuth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid'
 import { CloseOutlined } from '@mui/icons-material';
+import { setuserName } from '../state';
 
 type FormValues = {
   userName: string;
@@ -42,6 +43,7 @@ const EditProfile: React.FC = () => {
   const [disable, setDisable] = useState(true);
   const [alert, setAlert] = useState('')
   const [updateUsername, setUpdateUsername] = useState(false)
+  const dispatch = useDispatch()
 
   const getDetails = async () => {
     const userDetails: any = await getUser(id, token);
@@ -137,7 +139,8 @@ const EditProfile: React.FC = () => {
 
     updateProfileMutation.mutate({ id, values: formData, token });
     setClick(!click);
-    // toast.success('profile updated');
+    dispatch(setuserName({ userName: formValues.userName }))
+
     setAlert('success')
   };
 

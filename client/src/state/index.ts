@@ -61,6 +61,12 @@ export const authSlice = createSlice({
         console.error("user do not exist");
       }
     },
+    
+    setuserName: (state, action: PayloadAction<{ userName: string }>) => {
+      if (state.user) {
+        state.user.userName = action.payload.userName
+      }
+    },
 
     setFollower: (state, action: PayloadAction<{ followers: any }>) => {
       if (state.user) {
@@ -135,10 +141,10 @@ export const authSlice = createSlice({
       state.notifications = [];
     },
 
-    setVideocallTrue:(state: any) => {
+    setVideocallTrue: (state: any) => {
       state.videoCall = true
     },
-    setVideocallfalse:(state: any) => {
+    setVideocallfalse: (state: any) => {
       state.videoCall = false
     },
 
@@ -148,14 +154,14 @@ export const authSlice = createSlice({
     },
 
     setSendRequest: (state: any, action: PayloadAction<{ id: string, userName: string, dp: string }>) => {
-      state.user.requested.push({id: action.payload.id, userName: action.payload.userName, dp: action.payload.dp})
+      state.user.requested.push({ id: action.payload.id, userName: action.payload.userName, dp: action.payload.dp })
     },
-    removeSendRequest:(state: any, action:PayloadAction<{id: string}>) => {
+    removeSendRequest: (state: any, action: PayloadAction<{ id: string }>) => {
       const filtered = state.user.requested.filter((user: any) => user.id !== action.payload.id)
       state.user.requested = filtered;
     }
 
-   
+
   }
 });
 
@@ -164,6 +170,7 @@ export const {
   setLogin,
   setLogout,
   setUser,
+  setuserName,
   setFollower,
   setPosts,
   setPost,

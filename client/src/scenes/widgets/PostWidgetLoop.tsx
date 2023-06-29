@@ -51,16 +51,16 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
       if (reply.userId) {
         await useReplyComment(id, reply.userId, reply.comment, comment)
         setReply({})
-
+        globalClick()
       } else {
         await postComment(id, user, `${name} : ${comment}`, token);
         const response: any = await getPostById(id, token);
         const { comments } = response.data.post;
         setComments(comments);
+        globalClick()
       }
-      globalClick()
       setComment('');
-
+      
     } else {
     }
   };
@@ -85,6 +85,7 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
     const splitted = comment.split(':')
     const name = splitted[0].slice(0, splitted[0].length - 1)
     setReply({ name: `@${name}`, userId, comment })
+    globalClick()
   }
 
   const VideoPlayer = () => {
@@ -203,7 +204,10 @@ const PostWidget: React.FC<PostWidgetProps> = ({ id, userId, description, userNa
                     </p>
                     {showReplyComment[index] && (
                       reply.map((replies: any, replyIndex: number) => (
+                        <>
+                        <Divider />
                         <p key={replyIndex}>{replies.reply}</p>
+                        </>
                       ))
                     )}
                   </div>
