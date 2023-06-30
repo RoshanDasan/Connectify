@@ -19,7 +19,7 @@ const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: ['https://connectfy.online', 'https://www.connectfy.online'],
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });

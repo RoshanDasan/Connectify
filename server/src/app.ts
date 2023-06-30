@@ -1,4 +1,4 @@
-import express,{ Request, Response, Application, NextFunction } from 'express';
+import express, { Request, Response, Application, NextFunction } from 'express';
 import http from 'http';
 import connectDB from './framework/database/Mongodb/connection/connection';
 import serverConfig from './framework/webserver/server';
@@ -17,7 +17,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: ['https://connectfy.online', 'https://www.connectfy.online'],
+        origin: "*",
         methods: ["GET", "POST"]
     }
 })

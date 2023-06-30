@@ -10,7 +10,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const expressConfig = (app) => {
     const corsEnable = {
-        origin: ['https://connectfy.online', 'https://www.connectfy.online'],
+        origin: "*",
         exposeHeaders: ['Cross-Origin-Opener-Policy', 'Cross-Origin-Resourse-Policy']
     };
     // express middlewares configuration 

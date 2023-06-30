@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import { setLogout, setMultipleMode } from './state';
+import { setLogout } from './state';
 import { themeSettings } from './theme';
 import LoadingSkeleton from './components/skeleton/LoadingSkeleton';
 import ErrorPage from './components/ErrorPage';
@@ -30,14 +30,14 @@ function App() {
   const isAdminAuth = useSelector((state: any) => state?.admintoken);
 
   const dispatch = useDispatch();
-  dispatch(setMultipleMode())
+  // dispatch(setMultipleMode())
 
- 
+
   if (isBlock) {
     dispatch(setLogout());
   }
 
-    const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
 
   return (
