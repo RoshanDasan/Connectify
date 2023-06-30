@@ -1,12 +1,12 @@
 import './App.css';
-import { useMemo, lazy, Suspense, useEffect } from 'react';
+import { useMemo, lazy, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { setLogout } from './state';
 import { themeSettings } from './theme';
-import { reSetMode } from './state/index'
+import { setMode } from './state/index'
 import LoadingSkeleton from './components/skeleton/LoadingSkeleton';
 import ErrorPage from './components/ErrorPage';
 
@@ -37,10 +37,9 @@ function App() {
     dispatch(setLogout());
   }
 
-  useEffect(() => {
-    dispatch(reSetMode({ mode }))
-  }, [mode])
 
+  dispatch(setMode)
+  dispatch(setMode)
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
