@@ -1,46 +1,49 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Typography, Avatar, Button, Paper, Grid, Container } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import useStyles from '../../scenes/Auth/styles';
-import Input from './Input';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
 import { setAdminLogin } from '../../state';
 import { adminLogin } from '../../api/apiConnection/authConnect';
+import Input from './Input';
+import useStyles from '../../scenes/Auth/styles';
 
-const AdminLogin = () => {
-
-  let classes = useStyles();
+const AdminLogin: React.FC = () => {
+  const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
-  const [isSignup, setIsSignup] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: { email: string; password: string }) => {
+    try {
+      const response: any = await adminLogin(values);
 
-    let response: any = await adminLogin(values);
-
-    if (response) {
-      dispatch(
-        setAdminLogin({
-          admin: response.admin,
-          admintoken: response.token,
-        })
-
-      )
-      navigate('/admin/home')
-
-      toast.success('Admin Logged In')
+      if (response) {
+        dispatch(
+          setAdminLogin({
+            admin: response.admin,
+            admintoken: response.token,
+          })
+        );
+        navigate('/admin/home');
+        toast.success('Admin Logged In');
+      }
+    } catch (error) {
+      toast.error('Failed to log in');
     }
   };
-  setIsSignup(false)
+
+  // useEffect(() => {
+  //   isSignup(false);
+  // }, []); // Empty dependency array ensures it runs only once on mount
+
   const getValidationSchema = () => {
     if (isSignup) {
       return yup.object().shape({
@@ -54,6 +57,8 @@ const AdminLogin = () => {
     }
   };
 
+  const isSignup = false;
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -63,13 +68,11 @@ const AdminLogin = () => {
     onSubmit: handleSubmit,
   });
 
-
-
   return (
     <Container component="main" maxWidth="xs">
       <ToastContainer position="bottom-left" />
       <Paper className={classes.paper} elevation={6}>
-        <Avatar className={classes.avatar}></Avatar>
+        <Avatar className={classes.avatar} />
         <Typography component="h1" variant="h5">
           Admin Login
         </Typography>
@@ -92,17 +95,22 @@ const AdminLogin = () => {
               type={showPassword ? 'text' : 'password'}
               handleShowPassword={handleShowPassword}
             />
-
           </Grid>
-          <Button type="submit" fullWidth variant="contained" color="info" className={classes.submit} sx={{ marginTop: '15px', marginBottom: '15px' }}>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="info"
+            className={classes.submit}
+            sx={{ marginTop: '15px', marginBottom: '15px' }}
+          >
             Sign Up
           </Button>
-
-          <div id='googleLoginButton'></div>
+          <div id="googleLoginButton"></div>
         </form>
       </Paper>
     </Container>
-  )
-}
+  );
+};
 
-export default AdminLogin
+export default AdminLogin;
