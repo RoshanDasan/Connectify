@@ -48,7 +48,7 @@ const SocketContext = createContext<ContextProps>({
   answerCall: () => { },
 });
 
-const socket: Socket = io(process.env.SERVER_URL || 'https://connectfy.online/api');
+const socket: Socket = io(process.env.BASE_URL || 'https://connectfy.online/api');
 
 const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [stream, setStream] = useState<MediaStream | null>(null);

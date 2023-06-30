@@ -36,13 +36,10 @@ const AdminLogin: React.FC = () => {
         toast.success('Admin Logged In');
       }
     } catch (error) {
-      toast.error('Failed to log in');
+      toast.error('Failed to logIn');
     }
   };
 
-  // useEffect(() => {
-  //   isSignup(false);
-  // }, []); // Empty dependency array ensures it runs only once on mount
 
   const getValidationSchema = () => {
     if (isSignup) {
