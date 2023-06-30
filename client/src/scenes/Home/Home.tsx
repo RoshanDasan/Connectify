@@ -11,8 +11,7 @@ import PostsWidgets from '../widgets/PostsWidgets';
 import FriensList from '../widgets/FriensList';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser, setVideocallfalse } from '../../state';
-import { getUser } from '../../api/apiConnection/userConnection';
+import { setVideocallfalse } from '../../state';
 
 
 const useStyles = makeStyles((theme: any) => ({
@@ -31,22 +30,20 @@ const Home = () => {
   const classes = useStyles();
   const isNonMobileScreens = useMediaQuery('(min-width: 800px)');
   const dispatch = useDispatch()
-
-  const token: any = useSelector((state: any) => state.token);
+  const [data, setData] = useState(false);
   const userId: any = useSelector((state: any) => state.user._id);
 
-  const initialHandle = async () => {
-    const userDetails: any = await getUser(userId, token);
-    dispatch(
-      setUser({
-        user: userDetails
-      })
-    )
-  }
-  const [data, setData] = useState(false);
+  // const initialHandle = async () => {
+  //   const userDetails: any = await getUser(userId, token);
+  //   dispatch(
+  //     setUser({
+  //       user: userDetails
+  //     })
+  //   )
+  // }
 
   useEffect(() => {
-    initialHandle()
+    // initialHandle()
     dispatch(setVideocallfalse())
   }, [])
 
