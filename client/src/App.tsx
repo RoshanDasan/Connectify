@@ -1,11 +1,12 @@
 import './App.css';
-import { useMemo,  lazy, Suspense } from 'react';
+import { useMemo, lazy, Suspense, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import { setLogout} from './state';
+import { setLogout } from './state';
 import { themeSettings } from './theme';
+import { reSetMode } from './state/index'
 import LoadingSkeleton from './components/skeleton/LoadingSkeleton';
 import ErrorPage from './components/ErrorPage';
 
@@ -35,6 +36,11 @@ function App() {
   if (isBlock) {
     dispatch(setLogout());
   }
+
+  useEffect(() => {
+    dispatch(reSetMode({ mode }))
+  }, [mode])
+
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
@@ -100,7 +106,7 @@ function App() {
             <Suspense fallback={<LoadingSkeleton />}>
               {isAdminAuth ? <AdminHomeLazy /> : <AdminLoginLazy />}
             </Suspense>
-            } />
+          } />
 
           <Route
             path="/admin/home"
@@ -121,8 +127,8 @@ function App() {
           <Route
             path="/admin/post/control"
             element={
-              
-              <Suspense  fallback={<LoadingSkeleton />}>
+
+              <Suspense fallback={<LoadingSkeleton />}>
                 {isAdminAuth ? <AdminPostLazy /> : <AdminLoginLazy />}
               </Suspense>
             }
@@ -130,8 +136,8 @@ function App() {
           <Route
             path="/*"
             element={
-              
-            <ErrorPage/>
+
+              <ErrorPage />
             }
           />
         </Routes>
