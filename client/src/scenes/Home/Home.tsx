@@ -11,7 +11,7 @@ import PostsWidgets from '../widgets/PostsWidgets';
 import FriensList from '../widgets/FriensList';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setVideocallfalse } from '../../state';
+import {  setVideocallfalse } from '../../state';
 
 
 const useStyles = makeStyles((theme: any) => ({
@@ -42,14 +42,16 @@ const Home = () => {
   //   )
   // }
 
+
   useEffect(() => {
     // initialHandle()
+  
     dispatch(setVideocallfalse())
   }, [])
 
   const handleButtonClick = () => {
     // Update the state or perform any action
-    
+
     setData(() => !data);
   };
 
@@ -62,7 +64,7 @@ const Home = () => {
         <Box flexBasis={isNonMobileScreens ? '26%' : '100%'} mt={!isNonMobileScreens ? '2rem' : undefined}>
 
           <PostUploadWidgets onButtonClick={handleButtonClick} />
-          <PostsWidgets data={data} onButtonClick={handleButtonClick}/>
+          <PostsWidgets data={data} onButtonClick={handleButtonClick} />
 
         </Box>
         {isNonMobileScreens && (

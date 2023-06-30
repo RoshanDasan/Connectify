@@ -33,8 +33,9 @@ export const authSlice = createSlice({
     setMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
     },
-    reSetMode: (state, action: PayloadAction<{mode: string}>) => {
-      state.mode = action.payload.mode
+    setMultipleMode:(state: any) => {
+      state.mode = state.mode === "light" ? "dark" : "light";
+      state.mode = state.mode === "light" ? "dark" : "light";    
     },
     setLogin: (state, action: PayloadAction<{ user: any; token: any }>) => {
       state.user = action.payload.user;
@@ -170,7 +171,7 @@ export const authSlice = createSlice({
 
 export const {
   setMode,
-  reSetMode,
+  setMultipleMode,
   setLogin,
   setLogout,
   setUser,
