@@ -17,7 +17,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "*",
+        origin: ["wss://connectfy.online", "wss://www.connectfy.online"],
         methods: ["GET", "POST"]
     }
 })
