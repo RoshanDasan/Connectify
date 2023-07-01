@@ -29,23 +29,23 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    socket.current = io('http://localhost:5000');
+    socket.current = io('https://connectfy.online/api');
     if (userId) {
       socket.current.emit('new-user-add', userId);
-
+  
       socket.current.on('get-users', (users: any) => {
         setOnlineUsers(users);
         console.log(users);
-
       });
     }
-
+  
     return () => {
       if (socket.current) {
         socket.current.disconnect();
       }
     };
   }, [userId]);
+  
 
   // send message to socket server
   useEffect(() => {

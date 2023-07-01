@@ -1,4 +1,4 @@
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 interface User {
@@ -18,7 +18,7 @@ const socketConfig = (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEven
       }
       io.emit("get-users", activeUsers);
     });
-
+ 
     socket.on("send-message", (data: any) => {
       const { receiverId } = data;
       const user = activeUsers.find((user) => user.userId === receiverId);
