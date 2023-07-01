@@ -9,8 +9,8 @@ interface User {
 let activeUsers: User[] = [];
 let activeVideoCall: User[] = [];
 
-const socketConfig = (io: Server<DefaultEventsMap, any>) => {
-  io.on("connection", (socket: Socket<DefaultEventsMap, any>) => {
+const socketConfig = (io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => {
+  io.on("connection", (socket) => {
     socket.on("new-user-add", (newUserId: string) => {
       if (!activeUsers.some((user) => user.userId === newUserId)) {
         activeUsers.push({ userId: newUserId, socketId: socket.id });
@@ -27,7 +27,7 @@ const socketConfig = (io: Server<DefaultEventsMap, any>) => {
         io.to(user.socketId).emit("notification", data)
         io.to(user.socketId).emit("receive-message", data)
       }
-      
+
     });
 
     socket.on("me", (userId) => {
