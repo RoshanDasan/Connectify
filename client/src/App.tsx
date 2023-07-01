@@ -1,5 +1,5 @@
 import './App.css';
-import { useMemo, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
@@ -37,7 +37,7 @@ function App() {
     dispatch(setLogout());
   }
 
-  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  const theme = createTheme(themeSettings(mode))
 
 
   return (
