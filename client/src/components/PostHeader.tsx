@@ -22,7 +22,7 @@ import { reportPost } from "../api/apiConnection/postConnection";
 
 
 // eslint-disable-next-line react/prop-types
-const PostHeader = ({ postId, name, image, friendId, buttonClick }: any) => {
+const PostHeader = ({ postId, name, friendId, buttonClick }: any) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openModal, setOpenModal] = React.useState(false); // State for modal visibility
@@ -103,16 +103,9 @@ const PostHeader = ({ postId, name, image, friendId, buttonClick }: any) => {
 
     return (
         <Flex m='0.5rem 0 1.5rem 0' >
-           
+
             <Flex gap="1rem" onClick={() => navigate(`/profile/${friendId}`)}>
-                {/* <UserImage image='../assets/photo.jpg' size="55px" /> */}
-                {image ? (
-                    <div className="profile-picture">
-                        <Avatar alt={name} src={`http://localhost:5000/uploads/${image}`} />
-                    </div>
-                ) : (
-                    <Avatar alt={name} />
-                )}
+                <Avatar alt={name} />
                 <Box
 
                 >

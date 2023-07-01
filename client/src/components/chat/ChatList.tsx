@@ -36,7 +36,7 @@ const ChatList = ({ data, userId, token, online }: any) => {
                 {online && <div className="online-dot"></div>}
 
 
-                <Avatar alt={userData.userName} src={`http://localhost:5000/uploads/${userData.dp}`} sx={{ mr: '10px' }} />
+                <Avatar alt={userData.userName} src={userData.dp} sx={{ mr: '10px' }} />
               </div>
             ) : (
               <Avatar alt={userData?.userName} sx={{ m: '10px' }} />

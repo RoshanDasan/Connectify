@@ -199,7 +199,6 @@ const PostUploadWidget: React.FC<Props> = ({ onButtonClick }) => {
 
             <Dropzone
               multiple={true}
-              // accept='image/*, video/*'
               onDrop={(acceptedFiles, rejectedFiles) => {
                 console.log(acceptedFiles[0].name.endsWith('mp4'), 'acc');
                 console.log(rejectedFiles, 'rej');
@@ -243,97 +242,7 @@ const PostUploadWidget: React.FC<Props> = ({ onButtonClick }) => {
               )}
             </Dropzone>
 
-            {/* 
-            {image && !croppedImage && !image.name.toLowerCase().endsWith('.mp4') && (
-              <>
-                <img src={URL.createObjectURL(image)} alt="" width={100} />
-                <ReactCrop
-                  // src={URL.createObjectURL(image)}
-                  onImageLoaded={(image: { naturalHeight: any; naturalWidth: any; }) => {
-                    const aspectRatio = 16 / 9;
-                    const height = image.naturalHeight;
-                    const width = image.naturalWidth;
-                    const cropHeight = width / aspectRatio;
-
-                    if (cropHeight < height) {
-                      setCrop((prevCrop: any) => ({
-                        ...prevCrop,
-                        unit: '%',
-                        width: 100,
-                        height: (cropHeight / height) * 100,
-                        aspect: aspectRatio,
-                      }));
-                    } else {
-                      const cropWidth = height * aspectRatio;
-                      setCrop((prevCrop: any) => ({
-                        ...prevCrop,
-                        unit: '%',
-                        width: (cropWidth / width) * 100,
-                        height: 100,
-                        aspect: aspectRatio,
-                      }));
-                    }
-                  }}
-                  crop={crop}
-                  onChange={(newCrop) => setCrop(newCrop)}
-                  onComplete={(crop) => {
-                    if (!image) return;
-                    const imageObj = new Image();
-                    imageObj.src = URL.createObjectURL(image);
-                    const canvas = document.createElement('canvas');
-                    const scaleX = imageObj.naturalWidth / imageObj.width;
-                    const scaleY = imageObj.naturalHeight / imageObj.height;
-                    canvas.width = crop.width!;
-                    canvas.height = crop.height!;
-                    const ctx = canvas.getContext('2d');
-
-                    if (ctx) {
-                      ctx.drawImage(
-                        imageObj,
-                        crop.x! * scaleX,
-                        crop.y! * scaleY,
-                        crop.width! * scaleX,
-                        crop.height! * scaleY,
-                        0,
-                        0,
-                        crop.width!,
-                        crop.height!
-                      );
-
-                      const reader = new FileReader();
-                      canvas.toBlob((blob) => {
-                        if (blob) {
-                          reader.readAsDataURL(blob);
-                          reader.onloadend = () => {
-                            handleImageCrop(reader.result as string);
-                          };
-                        }
-                      });
-                    }
-                  }}
-                />
-              </>
-
-            )}
-
-            {croppedImage && (
-              <Box>
-                <img
-                  src={croppedImage}
-                  alt="Cropped"
-                  style={{ maxWidth: '100%' }}
-                />
-                <IconButton
-                  onClick={() => {
-                    setCroppedImage(null);
-                    setImage(null);
-                  }}
-                  sx={{ position: 'absolute', top: '1rem', right: '1rem' }}
-                >
-                  <DeleteOutlined fontSize="small" />
-                </IconButton>
-              </Box>
-            )} */}
+          
           </Box>
         )}
 
