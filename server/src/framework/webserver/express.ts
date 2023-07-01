@@ -8,7 +8,7 @@ import bodyParser from "body-parser";
 const expressConfig = (app: Application) => {
 
     const corsEnable = {
-        origin: "*",
+        origin: ['https://connectfy.online', 'https://www.connectfy.online'],
         exposeHeaders: ['Cross-Origin-Opener-Policy', 'Cross-Origin-Resourse-Policy']
     };
 
@@ -19,6 +19,7 @@ const expressConfig = (app: Application) => {
     app.use(cookieParser());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }))
+    app.use(CORS(corsEnable));
     app.use(express.urlencoded({ extended: true }))
 
 

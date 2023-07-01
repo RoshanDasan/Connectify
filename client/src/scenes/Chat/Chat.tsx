@@ -8,82 +8,95 @@ import { io, Socket } from 'socket.io-client';
 import { setCurrentChat, unsetNotificationOpen } from '../../state';
 import Navbar from '../Navbar/Navbar';
 
-
 const Chat = () => {
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState([])
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [sendMessage, setSendMessage] = useState(null);
   const [receiveMessage, setReceiveMessage] = useState(null);
   const userId = useSelector((state: any) => state.user?._id);
   const token = useSelector((state: any) => state.token);
-  const notification = useSelector((state: any) => state.notifications)
+  // const notification = useSelector((state: any) => state.notifications);
   const socket = useRef<Socket | null>(null);
   const currentchatstate: any = useSelector((state: any) => state.currentchat);
   const dispatch = useDispatch();
 
-
   const handleCurrentChat = (chat: any) => {
-    console.log(chat);
-
     dispatch(setCurrentChat({ currentchat: chat }));
   };
 
   useEffect(() => {
-    socket.current = io('wss://connectfy.online/api');
+    socket.current = io("https://connectfy.online", { transports: ['websocket'] });
+
     if (userId) {
+
       socket.current.emit('new-user-add', userId);
-  
+
       socket.current.on('get-users', (users: any) => {
         setOnlineUsers(users);
-        console.log(users);
       });
     }
-  
+
+    socket.current.on('connect', () => {
+      console.log('Connected to the server');
+    });
+
+    socket.current.on('connect_error', (error) => {
+      console.error('Connection error:', error);
+      // Add error handling logic here
+    });
+
     return () => {
       if (socket.current) {
         socket.current.disconnect();
       }
     };
   }, [userId]);
-  
 
-  // send message to socket server
+
   useEffect(() => {
-    if (sendMessage !== null) socket.current?.emit('send-message', sendMessage);
+    if (sendMessage !== null) {
+      socket.current?.emit('send-message', sendMessage);
+    }
   }, [sendMessage]);
 
-  // receive message from socket server
   useEffect(() => {
-    socket.current?.on('receive-message', (data: any) => {
-      console.log('recivee');
+    const receiveMessageHandler = (data: any) => {
 
       setReceiveMessage(data);
-      console.log('Received message:', data);
-    });
+    };
+
+    socket.current?.on('receive-message', receiveMessageHandler);
+
+    return () => {
+      socket.current?.off('receive-message', receiveMessageHandler);
+    };
   }, []);
 
   useEffect(() => {
+    dispatch(unsetNotificationOpen());
+  }, []);
 
-    dispatch(unsetNotificationOpen())
-  }, [notification])
+  const getChatList = async () => {
+    try {
+      const { chats } = await getChat(userId, token);
+      console.log(chats, 'chats');
+
+      setChats(chats);
+    } catch (error) {
+      throw error;
+    }
+  };
 
   useEffect(() => {
-    const getChatList = async () => {
-      try {
-        const { chats } = await getChat(userId, token);
-        setChats(chats);
-      } catch (error) {
-        throw error;
-      }
-    };
+
+
     if (userId) {
       getChatList();
     }
-  }, [currentchatstate]);
+  }, [currentchatstate, token, userId]);
 
   const checkOnline = (chat: any) => {
     const chatMember = chat?.members.find((member: any) => member !== userId);
-
     const online = onlineUsers?.find((user: any) => user.userId === chatMember);
     return online ? true : false;
   };
