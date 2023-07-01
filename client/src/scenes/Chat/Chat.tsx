@@ -29,7 +29,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    socket.current = io('https://connectfy.online');
+    socket.current = io('https://connectfy.online/api');
     if (userId) {
       socket.current.emit('new-user-add', userId);
 
