@@ -15,7 +15,8 @@ export const userDbRepository = (repository: ReturnType<userRepositoryMongoDB>) 
 
     const getAllUsers = async () => {
         return await repository.getAllUsers()
-    };
+
+    }
 
     const getUserByEmail = async (email: string) => {
         return await repository.getUserByEmail(email);

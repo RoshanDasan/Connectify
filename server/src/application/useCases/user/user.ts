@@ -80,6 +80,7 @@ export const unfollow = async (id: any, friendId: any, repository: ReturnType<Us
         status: 'unfollow',
         friend
     }
+
 }
 
 export const searchUserByPrefix = async (prefix: any, type: any, repository: ReturnType<UserDbInterface>) => {

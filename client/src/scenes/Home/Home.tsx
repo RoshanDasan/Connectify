@@ -53,8 +53,6 @@ const Home = () => {
     // Update the state or perform any action
 
     setData(() => !data);
-    console.log('global click');
-    
   };
 
 
