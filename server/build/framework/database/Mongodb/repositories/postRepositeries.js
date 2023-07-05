@@ -39,6 +39,12 @@ const postRepositoryMongoDb = () => {
         });
         return updateResult;
     };
+    const pushComment = async (postId, comments) => {
+        const deleteResult = await postModel_1.default.updateOne({ _id: postId }, {
+            $set: { comments }
+        });
+        return deleteResult;
+    };
     const replyComment = async (_id, userId, comment, reply) => {
         const updateResult = await postModel_1.default.updateOne({ _id, "comments.comment": comment }, {
             $push: {
@@ -75,6 +81,7 @@ const postRepositoryMongoDb = () => {
         dislikePost,
         likePost,
         insertComment,
+        pushComment,
         replyComment,
         editPost,
         reportPost,

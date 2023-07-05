@@ -25,6 +25,10 @@ const postDbInterface = (repositories) => {
         const insertResult = await repositories.insertComment(postId, userId, comment);
         return insertResult;
     };
+    const pushComment = async (postId, comments) => {
+        const deleteComment = await repositories.pushComment(postId, comments);
+        return deleteComment;
+    };
     const replyComment = async (postId, userId, comment, reply) => {
         const response = await repositories.replyComment(postId, userId, comment, reply);
         return response;
@@ -50,6 +54,7 @@ const postDbInterface = (repositories) => {
         dislikePost,
         likePost,
         insertComment,
+        pushComment,
         replyComment,
         editPost,
         reportPost,
