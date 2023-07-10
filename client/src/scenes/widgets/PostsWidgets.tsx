@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPosts } from '../../state';
+import {  useSelector } from 'react-redux';
+// import { setPosts } from '../../state';
 import PostWidgetLoop from './PostWidgetLoop';
 import { getPosts } from '../../api/apiConnection/postConnection';
 import { CircularProgress } from '@mui/material';
@@ -8,7 +8,7 @@ import { CircularProgress } from '@mui/material';
 
 
 const PostsWidgets = ({ data, onButtonClick }: any) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const token: string = useSelector((state: any) => state.token);
   const userId: string = useSelector((state: any) => state.user._id);
   const user: any = useSelector((state: any) => state.user);
@@ -31,7 +31,7 @@ const PostsWidgets = ({ data, onButtonClick }: any) => {
       const friendPosts = postResponse.filter((singlePost: any) => user.followers.includes(singlePost.userId) || singlePost.userId == userId)
 
       setPost(friendPosts);
-      dispatch(setPosts({ posts: postResponse }));
+      // dispatch(setPosts({ posts: postResponse }));
       setLoading(false)
     } catch (error) {
       // Handle any potential errors here
