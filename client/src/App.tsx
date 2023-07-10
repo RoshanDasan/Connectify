@@ -39,7 +39,7 @@ function App() {
     // Switch to light mode after a delay
     const timeout = setTimeout(() => {
       dispatch(setMode());
-    }, 500); // Change the delay as per your requirement (2 seconds in this example)
+    }, 1000); // Change the delay as per your requirement (2 seconds in this example)
 
     return () => clearTimeout(timeout); // Cleanup the timeout when the component unmounts
   }, []);
