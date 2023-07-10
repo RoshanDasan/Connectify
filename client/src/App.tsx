@@ -1,17 +1,18 @@
 import './App.css';
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import { setLogout, setMode } from './state';
+import { setLogout} from './state';
 import { themeSettings } from './theme';
 import LoadingSkeleton from './components/skeleton/LoadingSkeleton';
 import ErrorPage from './components/ErrorPage';
+import Home from './scenes/Home/Home';
 
 // user Lazy components
 const AuthLazy = lazy(() => import('./scenes/Auth/Auth'))
-const HomeLazy = lazy(() => import('./scenes/Home/Home'));
+// const HomeLazy = lazy(() => import('./scenes/Home/Home'));
 const ProfileLazy = lazy(() => import('./scenes/ProfilePage/Profile'));
 const ProfileEditLazy = lazy(() => import('./components/EditProfile'));
 const ChatLazy = lazy(() => import('./scenes/Chat/Chat'));
@@ -32,17 +33,17 @@ function App() {
   const dispatch = useDispatch();
   // dispatch(setMultipleMode())
 
-  useEffect(() => {
-    // Start with dark mode
-    dispatch(setMode());
+  // useEffect(() => {
+  //   // Start with dark mode
+  //   dispatch(setMode());
 
-    // Switch to light mode after a delay
-    const timeout = setTimeout(() => {
-      dispatch(setMode());
-    }, 500); // Change the delay as per your requirement (2 seconds in this example)
+  //   // Switch to light mode after a delay
+  //   const timeout = setTimeout(() => {
+  //     dispatch(setMode());
+  //   }, 1000); // Change the delay as per your requirement (2 seconds in this example)
 
-    return () => clearTimeout(timeout); // Cleanup the timeout when the component unmounts
-  }, []);
+  //   return () => clearTimeout(timeout); // Cleanup the timeout when the component unmounts
+  // }, []);
 
 
   if (isBlock) {
@@ -61,7 +62,7 @@ function App() {
           <Route path="/"
             element={
               <Suspense fallback={<LoadingSkeleton />}>
-                {token ? <HomeLazy /> : <AuthLazy />}
+                {token ? <Home /> : <AuthLazy />}
               </Suspense>
             }
           />
@@ -70,7 +71,7 @@ function App() {
             path="/home"
             element={
               <Suspense fallback={<LoadingSkeleton />}>
-                {token ? <HomeLazy /> : <AuthLazy />}
+                {token ? <Home /> : <AuthLazy />}
 
               </Suspense>
             }
