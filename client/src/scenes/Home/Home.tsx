@@ -11,7 +11,7 @@ import PostsWidgets from '../widgets/PostsWidgets';
 import FriensList from '../widgets/FriensList';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import {  setVideocallfalse } from '../../state';
+import {  setMode, setVideocallfalse } from '../../state';
 
 
 const useStyles = makeStyles((theme: any) => ({
@@ -33,14 +33,17 @@ const Home = () => {
   const [data, setData] = useState(false);
   const userId: any = useSelector((state: any) => state.user._id);
 
-  // const initialHandle = async () => {
-  //   const userDetails: any = await getUser(userId, token);
-  //   dispatch(
-  //     setUser({
-  //       user: userDetails
-  //     })
-  //   )
-  // }
+  useEffect(() => {
+    // Start with dark mode
+    dispatch(setMode());
+
+    // Switch to light mode after a delay
+    const timeout = setTimeout(() => {
+      dispatch(setMode());
+    }, 1500); // Change the delay as per your requirement (2 seconds in this example)
+
+    return () => clearTimeout(timeout); // Cleanup the timeout when the component unmounts
+  }, []);
 
 
   useEffect(() => {

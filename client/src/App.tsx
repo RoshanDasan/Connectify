@@ -8,11 +8,11 @@ import { setLogout} from './state';
 import { themeSettings } from './theme';
 import LoadingSkeleton from './components/skeleton/LoadingSkeleton';
 import ErrorPage from './components/ErrorPage';
-import Home from './scenes/Home/Home';
+
 
 // user Lazy components
 const AuthLazy = lazy(() => import('./scenes/Auth/Auth'))
-// const HomeLazy = lazy(() => import('./scenes/Home/Home'));
+const HomeLazy = lazy(() => import('./scenes/Home/Home'));
 const ProfileLazy = lazy(() => import('./scenes/ProfilePage/Profile'));
 const ProfileEditLazy = lazy(() => import('./components/EditProfile'));
 const ChatLazy = lazy(() => import('./scenes/Chat/Chat'));
@@ -31,19 +31,7 @@ function App() {
   const isAdminAuth = useSelector((state: any) => state?.admintoken);
 
   const dispatch = useDispatch();
-  // dispatch(setMultipleMode())
 
-  // useEffect(() => {
-  //   // Start with dark mode
-  //   dispatch(setMode());
-
-  //   // Switch to light mode after a delay
-  //   const timeout = setTimeout(() => {
-  //     dispatch(setMode());
-  //   }, 1000); // Change the delay as per your requirement (2 seconds in this example)
-
-  //   return () => clearTimeout(timeout); // Cleanup the timeout when the component unmounts
-  // }, []);
 
 
   if (isBlock) {
@@ -62,7 +50,7 @@ function App() {
           <Route path="/"
             element={
               <Suspense fallback={<LoadingSkeleton />}>
-                {token ? <Home /> : <AuthLazy />}
+                {token ? <HomeLazy /> : <AuthLazy />}
               </Suspense>
             }
           />
@@ -71,7 +59,7 @@ function App() {
             path="/home"
             element={
               <Suspense fallback={<LoadingSkeleton />}>
-                {token ? <Home /> : <AuthLazy />}
+                {token ? <HomeLazy /> : <AuthLazy />}
 
               </Suspense>
             }
