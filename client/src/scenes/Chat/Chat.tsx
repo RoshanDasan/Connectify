@@ -25,7 +25,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    socket.current = io("https://connectfy.online", { transports: ['websocket'] });
+    socket.current = io("http://localhost:5000", { transports: ['websocket'] });
 
     if (userId) {
 
